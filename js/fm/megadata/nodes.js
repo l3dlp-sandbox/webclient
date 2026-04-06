@@ -968,8 +968,14 @@ MegaData.prototype.copyNodes = async function(cn, t, del, tree, extra) {
             tree.isImporting = true;
         }
         else {
+            const opts = {
+                target: t,
+                cfp: true,
+                clears4: M.getNodeRoot(t) === 'shares'
+            };
+
             // 1. get all nodes into memory
-            tree = await this.getCopyNodes(cn, {target: t, cfp: true}, async() => {
+            tree = await this.getCopyNodes(cn, opts, async() => {
                 const handles = [...cn];
                 const names = Object.create(null);
                 const parents = Object.create(null);
@@ -2861,6 +2867,7 @@ MegaData.prototype.getCopyNodesSync = function(blk) {
     const handles = pick('handles');
     const parents = pick('parents');
     const clearna = pick('clearna');
+    const clears4 = pick('clears4');
 
     // add all subtrees under handles[], including the roots
     for (let i = 0; i < handles.length; i++) {
@@ -2897,9 +2904,13 @@ MegaData.prototype.getCopyNodesSync = function(blk) {
             n.name = M.getSafeName(names[n.h]);
         }
 
+        // check it need to clear s4 attribute
+        if (clearna || clears4) {
+            delete n.s4;
+        }
+
         // check it need to clear node attribute
         if (clearna) {
-            delete n.s4;
             delete n.lbl;
             delete n.fav;
             delete n.sen;
