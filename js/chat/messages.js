@@ -334,7 +334,11 @@ Message.prototype._onAttachmentReceived = function(data) {
             if (n.fa) {
                 if (megaChat._shallLoadImageFor(n)) {
                     // storing a reference to the message to fire trackDataChange once the preview is loaded
-                    n.mo = this;
+                    Object.defineProperty(n, 'mo', {
+                        value: this,
+                        configurable: true,
+                        writable: true,
+                    });
                 }
                 if (String(n.fa).indexOf(':8*') > 0) {
                     Object.assign(n, MediaAttribute(n).data);

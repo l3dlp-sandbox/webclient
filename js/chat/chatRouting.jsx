@@ -106,6 +106,10 @@ export default class ChatRouting {
                 resolve = null;
             }
             else if (section === 'p') {
+                if (!location.startsWith('fm')) {
+                    location = `fm/${location}`;
+                    args.route.location = location;
+                }
                 megaChat.smartOpenChat([u_handle, roomId], 'private', undefined, undefined, undefined, true)
                     .then(resolve)
                     .catch(reject);

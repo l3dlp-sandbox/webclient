@@ -83,6 +83,10 @@ class ChatRouting {
         ChatRouting.gPageHandlers.redirect(args.route, 'fm/chat').then(resolve).catch(reject);
         resolve = null;
       } else if (section === 'p') {
+        if (!location.startsWith('fm')) {
+          location = `fm/${location}`;
+          args.route.location = location;
+        }
         megaChat.smartOpenChat([u_handle, roomId], 'private', undefined, undefined, undefined, true).then(resolve).catch(reject);
         resolve = null;
       } else {
@@ -4367,15 +4371,15 @@ ChatRoom.prototype.setRoomTopic = async function (newTopic) {
 };
 ChatRoom.prototype.leave = function (notify) {
   const valid = this.type === 'group' || this.type === 'public';
-  console.assert(valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
-  if (!valid) {
-    return;
-  }
+  console.assert(!notify || valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
   this._leaving = true;
-  this.topic = '';
-  if (notify) {
+  if (notify && valid) {
     this.trigger('onLeaveChatRequested');
+  } else if (notify) {
+    this._leaving = false;
+    return false;
   }
+  this.topic = '';
   if (this.state !== ChatRoom.STATE.LEFT) {
     this.setState(ChatRoom.STATE.LEAVING);
     this.setState(ChatRoom.STATE.LEFT);

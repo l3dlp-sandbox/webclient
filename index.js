@@ -443,13 +443,14 @@ function init_page() {
 
     if (is_chatlink || page.substr(0, 4) === 'chat') {
         if (fminitialized && megaChatIsReady) {
-            // tried to navigate internally to a chat link, do a force redirect.
+            // tried to navigate internally to a chat link, do a force redirect if the user joined the chat.
             // Can be triggered by the back button.
-            assert(
-                megaChat.initialChatId,
-                'missing .initialChatId, did this page initialized from a standalone chat/meeting link?'
-            );
-            loadSubPage(`fm/chat/c/${megaChat.initialChatId}`);
+            if (megaChat.initialChatId) {
+                loadSubPage(`fm/chat/c/${megaChat.initialChatId}`);
+                return false;
+            }
+            // Didn't join the chat link so reload the chat link
+            location.reload();
             return false;
         }
 
