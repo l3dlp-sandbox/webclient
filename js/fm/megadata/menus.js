@@ -268,6 +268,10 @@ MegaData.prototype.menuItems = async function menuItems(evt, isTree) {
         if (selNode.vhl) {
             items['.vhl-item'] = 1;
         }
+
+        if (!isTree && M.currentdirid === 'recents') {
+            items['.open-in-location'] = 1;
+        }
     }
 
     // Allow to mark as Favourite/Labeled from multi-selection
