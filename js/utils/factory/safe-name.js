@@ -4,7 +4,7 @@ factory.define('safe-name', () => {
     return freeze({
         getSafeName(name) {
             // http://msdn.microsoft.com/en-us/library/aa365247(VS.85)
-            name = `${name}`.replace(/["*/:<>?\\|]+/g, '.');
+            name = `${name}`.replace(/["*/:<>?\\|]+/g, '-');
 
             if (name.length > 240) {
                 name = `${name.slice(0, 240)}.${name.split('.').pop()}`;
