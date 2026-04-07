@@ -6401,7 +6401,7 @@ ul.token-input-list-mega {
     width: 100%;
     color: var(--banner-text-error);
     font: var(--text-body1);
-    margin-top: 6px;
+    margin-top: 2px;
     border-radius: 4px;
     box-sizing: border-box;
     z-index: 100;
@@ -6422,7 +6422,7 @@ ul.token-input-list-mega {
     width: 100%;
     color: var(--banner-text-warning);
     font: var(--text-body1);
-    margin-top: 6px;
+    margin-top: 2px;
     border-radius: 4px;
     box-sizing: border-box;
     z-index: 100;

@@ -1444,8 +1444,9 @@ function renameDialog() {
             }
         });
 
-        $('header h2', $dialog)
-            .text(n.t ? s4Folder ? l.s4_bucket_rename : l[425] : l[426]);
+        $('header h2', $dialog).text(
+            n.t ? s4Folder && M.getS4NodeType(n) === 'bucket' ? l.s4_bucket_rename : l[425] : l[426]
+        );
         $input.val(n.name);
 
         const icon = fileIcon(n);
@@ -1493,9 +1494,7 @@ function renameDialog() {
         });
 
         $input.rebind('keyup.rename-f', () => {
-            if (!s4Folder) {
-                ltWSpaceWarning.check();
-            }
+            ltWSpaceWarning.check();
         });
     }
 }

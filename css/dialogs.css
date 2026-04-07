@@ -9542,6 +9542,9 @@ body.web-desktop .mega-sheet.report-abuse .sheet {
     position: relative;
     width: 100%;
 }
+.mega-dialog.s4 .mega-input.error ~ .error-msg {
+    display: block;
+}
 .mega-dialog.s4 .input-container .user-input-wrap {
     flex: 1;
     vertical-align: top;

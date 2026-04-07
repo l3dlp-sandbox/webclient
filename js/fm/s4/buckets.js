@@ -11,8 +11,12 @@ lazy(s4, 'buckets', () => {
             this.$bucketNameInput = $('input', this.$dialogContainer).val('');
             this.megaInput = new mega.ui.MegaInputs(
                 this.$bucketNameInput,
-                {onShowError: true}
+                {
+                    onShowError: true,
+                    $msgCn: $('.error-msg', this.$dialogContainer)
+                }
             );
+            this.ltWSpaceWarning = new InputFloatWarning(this.$dialogContainer);
         }
 
         destroy() {
@@ -42,6 +46,8 @@ lazy(s4, 'buckets', () => {
                 else {
                     this.$dialogProgress.addClass('disabled');
                 }
+
+                this.ltWSpaceWarning.check();
 
                 if (e.which === 13) {
                     this.$dialogProgress.trigger('click');
