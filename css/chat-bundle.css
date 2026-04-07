@@ -4509,7 +4509,7 @@ body.theme-dark #schedule-dialog .recurring-edit-banner a {
 .meetings-datepicker-calendar {
   position: absolute;
   padding: 8px 0;
-  min-width: 300px;
+  width: 300px;
   border: var(--context-menu-border);
   border-radius: 20px;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);

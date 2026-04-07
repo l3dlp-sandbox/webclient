@@ -778,6 +778,9 @@
                 classes = 'datepicker -' + main + '-' + sec + '- -from-' + main + '-';
 
             if (this.visible) classes += ' active';
+            if (this.opts.classes) {
+                classes = `${classes} ${this.opts.classes}`;
+            }
 
             this.$datepicker
                 .removeAttr('class')
