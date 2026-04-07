@@ -10,6 +10,29 @@ mobile.signin = {
     previousEmailUsed: null,
 
     /**
+     * Reset the login button loading state
+     * @returns {void}
+     */
+    resetLoading() {
+
+        'use strict';
+
+        this.$screen.find('.signin-button').removeClass('loading');
+    },
+
+    /**
+     * Initialise listener to reset loading state from external login flows
+     * @returns {void}
+     */
+    initResetLoadingListener() {
+
+        'use strict';
+
+        mBroadcaster.removeListener('login:reset-loading');
+        mBroadcaster.addListener('login:reset-loading', () => this.resetLoading());
+    },
+
+    /**
      * Render the signin screen
      */
     show: function() {
@@ -18,6 +41,9 @@ mobile.signin = {
 
         // Cache the selector
         this.$screen = $('.mobile.signin-register-block');
+
+        // Initialise listener for external login flow resets
+        this.initResetLoadingListener();
 
         // Show the login/register screen
         this.$screen.removeClass('hidden');
@@ -236,7 +262,7 @@ mobile.signin.old = {
         'use strict';
 
         // Hide the loading spinner
-        mobile.signin.$screen.find('.signin-button').removeClass('loading');
+        mobile.signin.resetLoading();
 
         // @todo: Unify 2FA calls for desktop and mobile
         // If there was a 2FA error, show a message that the PIN code was incorrect
@@ -338,7 +364,7 @@ mobile.signin.new = {
         'use strict';
 
         // Hide the loading spinner
-        mobile.signin.$screen.find('.signin-button').removeClass('loading');
+        mobile.signin.resetLoading();
 
         // If email confirm code is ok
         if (confirmok) {
