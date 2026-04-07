@@ -971,6 +971,7 @@ MegaData.prototype.copyNodes = async function(cn, t, del, tree, extra) {
             const opts = {
                 target: t,
                 cfp: true,
+                exclver: true,
                 clears4: M.getNodeRoot(t) === 'shares'
             };
 
@@ -2868,10 +2869,11 @@ MegaData.prototype.getCopyNodesSync = function(blk) {
     const parents = pick('parents');
     const clearna = pick('clearna');
     const clears4 = pick('clears4');
+    const exclver = pick('exclver');
 
     // add all subtrees under handles[], including the roots
     for (let i = 0; i < handles.length; i++) {
-        var tempR = this.getNodesSync(handles[i], true, true);
+        var tempR = this.getNodesSync(handles[i], true, true, exclver);
         if (parents[handles[i]]) {
             for (var kh = 0; kh < tempR.length; kh++) {
                 if (!parents[tempR[kh]]) {
