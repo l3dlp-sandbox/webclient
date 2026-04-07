@@ -3,7 +3,7 @@ import { Avatar } from '../../contacts.jsx';
 import ModalDialogsUI from '../../../../ui/modalDialogs.jsx';
 import Button from '../button.jsx';
 import Call from '../call.jsx';
-import { Emoji } from '../../../../ui/utils.jsx';
+import { OFlowEmoji } from '../../../../ui/utils.jsx';
 
 export default class Incoming extends React.Component {
     static NAMESPACE = 'incoming-dialog';
@@ -11,7 +11,6 @@ export default class Incoming extends React.Component {
     state = {
         video: false,
         unsupported: undefined,
-        hoveredSwitch: true,
         hideOverlay: false,
     };
 
@@ -31,8 +30,7 @@ export default class Incoming extends React.Component {
     }
 
     renderSwitchControls = () => {
-        const className = `mega-button large round switch ${this.state.hoveredSwitch ? 'hovered' : ''}`;
-        const toggleHover = () => this.setState(state => ({ hoveredSwitch: !state.hoveredSwitch }));
+        const className = 'mega-component nav-elem icon-only switch';
 
         return (
             <div className="switch-button">
@@ -40,14 +38,12 @@ export default class Incoming extends React.Component {
                     className="switch-button-container simpletip"
                     data-simpletip={l.end_and_answer /* `End & Answer` */}
                     data-simpletipposition="top"
-                    onMouseEnter={toggleHover}
-                    onMouseLeave={toggleHover}
                     onClick={ev => {
                         ev.stopPropagation();
                         this.props.onSwitch();
                     }}>
-                    <Button className={`${className} negative`} icon="icon-end-call"/>
-                    <Button className={`${className} positive`} icon="icon-phone"/>
+                    <Button className={`${className} negative`} icon="icon-phone-02-thin-outline"/>
+                    <Button className={`${className} positive`} icon="icon-phone-01-thin-outline"/>
                 </div>
             </div>
         );
@@ -61,38 +57,35 @@ export default class Incoming extends React.Component {
             <>
                 <Button
                     className={`
-                        mega-button
-                        positive
+                        mega-component
+                        nav-elem
+                        icon-only
                         answer
                         ${unsupported ? 'disabled' : ''}
                     `}
-                    icon="icon-phone"
+                    icon="icon-phone-01-thin-outline"
                     simpletip={unsupported ? null : { position: 'top', label: l[7205] /* `Answer` */ }}
                     onClick={unsupported ? null : onAnswer}>
-                    <span>{l[7205] /* `Answer` */}</span>
                 </Button>
                 <Button
                     className={`
-                        mega-button
-                        large
-                        round
+                        mega-component
+                        nav-elem
+                        icon-only
+                        secondary
                         video
-                        ${video ? '' : 'negative'}
                         ${unsupported ? 'disabled' : ''}
                     `}
-                    icon={video ? 'icon-video-call-filled' : 'icon-video-off'}
+                    icon={video ? 'icon-video-regular-outline' : 'icon-video-off-regular-outline'}
                     simpletip={
                         unsupported ?
                             null :
                             {
                                 position: 'top',
-                                label: video ? l[22894] /* `Disable video` */ : l[22893] /* `Enable video` */
+                                label: video ? l[22894] /* `Disable camera` */ : l[22893] /* `Enable camera` */
                             }
                     }
                     onClick={() => unsupported ? null : this.setState({ video: !video }, () => onToggleVideo(video))}>
-                    <span>
-                        {video ? l[22894] /* `Disable video` */ : l[22893] /* `Enable video` */}
-                    </span>
                 </Button>
             </>
         );
@@ -122,7 +115,7 @@ export default class Incoming extends React.Component {
                         </div>
                         <div className={`${NAMESPACE}-info`}>
                             <h1>
-                                <Emoji>{chatRoom.getRoomTitle()}</Emoji>
+                                <OFlowEmoji>{chatRoom.getRoomTitle()}</OFlowEmoji>
                             </h1>
                             <span>
                                 {isPrivateRoom ? l[17878] /* `Incoming call` */ : l[19995] /* `Incoming group call` */}
@@ -135,15 +128,14 @@ export default class Incoming extends React.Component {
                             `}>
                             <Button
                                 className={`
-                                    mega-button
-                                    large
-                                    round
+                                    mega-component
+                                    nav-elem
+                                    icon-only
                                     negative
                                 `}
-                                icon="icon-end-call"
+                                icon="icon-phone-02-thin-outline"
                                 simpletip={{ position: 'top', label: rejectLabel }}
                                 onClick={onReject}>
-                                <span>{rejectLabel}</span>
                             </Button>
                             {CALL_IN_PROGRESS ? this.renderSwitchControls() : this.renderAnswerControls()}
                         </div>
