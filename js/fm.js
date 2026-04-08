@@ -1972,7 +1972,6 @@ function closeDialog(ev) {
     if ($.fingerprintDialog && $.shareCollaboratorsDialog && $.shareDialog) {
 
         // Fingerprint dialog will be closed, then Share Collaborators dialog put to front and Share dialog behind it
-        delete $.fingerprintDialog;
 
         // eslint-disable-next-line local-rules/hints
         $.dialog = $.shareCollaboratorsDialog;
@@ -1980,7 +1979,6 @@ function closeDialog(ev) {
     else if ($.fingerprintDialog && $.shareWithUnverifiedDialog && $.shareDialog) {
 
         // Fingerprint dialog will be closed, then Unverified Contacts dialog put to front and Share dialog behind it
-        delete $.fingerprintDialog;
 
         // eslint-disable-next-line local-rules/hints
         $.dialog = $.shareWithUnverifiedDialog;
@@ -1991,6 +1989,8 @@ function closeDialog(ev) {
         // eslint-disable-next-line local-rules/hints
         $.dialog = $.shareDialog;
     }
+
+    delete $.fingerprintDialog;
 
     mBroadcaster.sendMessage('closedialog');
 }
@@ -2819,7 +2819,12 @@ function fingerprintDialog(userid, isAdminVerify, callback) {
     $('button.js-close, .dialog-skip-button', $dialog).rebind('click', skipOrCloseFunction);
 
     // On clicking the background overlay
-    $backgroundOverlay.rebind('click.closeMsgDialog', skipOrCloseFunction);
+    $backgroundOverlay.rebind('click.closeMsgDialog', () => {
+        if (isAdminVerify === null || isAdminVerify === true) {
+            return false;
+        }
+        return skipOrCloseFunction();
+    });
 
     $('.dialog-approve-button', $dialog).rebind('click', () => {
 
