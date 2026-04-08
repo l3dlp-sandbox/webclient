@@ -469,7 +469,7 @@ mega.ui.MegaInputs.prototype.underlinedText._strengthChecker = function() {
 
                 var $passStatus = $wrapper.find('.password-status');
                 var $passStatusBar = $wrapper.find('.account-pass-lines');
-                const $messageContainer = this.options.$msgCn || $('.message-container', $wrapper);
+                const $messageContainer = self.options.$msgCn || $('.message-container', $wrapper);
 
                 $passStatus
                     .add($passStatusBar)

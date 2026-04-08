@@ -561,6 +561,13 @@ button.nav-elem.pro-only:active {
     color: var(--mobile-text-error);
 }
 
+.nav-elem .right-badge.indicator {
+    border-radius: 50%;
+    height: 8px;
+    padding: 0;
+    width: 8px;
+}
+
 .nav-elem.text-only span.primary-text:hover,
 .nav-elem.text-only span.primary-text:active {
     color: var(--mobile-button-primary-pressed);
