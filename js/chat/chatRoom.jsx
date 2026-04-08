@@ -1134,16 +1134,17 @@ ChatRoom.prototype.setRoomTopic = async function(newTopic) {
 
 ChatRoom.prototype.leave = function(notify) {
     const valid = this.type === 'group' || this.type === 'public';
-    console.assert(valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
-    if (!valid) {
-        return;
-    }
+    console.assert(!notify || valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
     this._leaving = true;
-    this.topic = '';
 
-    if (notify) {
+    if (notify && valid) {
         this.trigger('onLeaveChatRequested');
     }
+    else if (notify) {
+        this._leaving = false;
+        return false;
+    }
+    this.topic = '';
 
     if (this.state !== ChatRoom.STATE.LEFT) {
         this.setState(ChatRoom.STATE.LEAVING);

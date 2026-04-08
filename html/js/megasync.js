@@ -31,7 +31,7 @@ var megasync = (function() {
         mac_silicon: `https://mega.${mega.tld}/MEGAsyncSetupArm64.dmg`,
         linux: "https://mega.io/desktop"
     };
-    var usemsync = localStorage.usemsync;
+    let canShowDeniedPerm = false;
 
     let userOS;
 
@@ -197,10 +197,11 @@ var megasync = (function() {
     }
 
     async function promptDeniedPermission() {
-        const skipShow = await M.getPersistentData('lnapermprompt').catch(nop);
+        const skipShow = !canShowDeniedPerm || await M.getPersistentData('lnapermprompt').catch(nop);
         if (skipShow) {
             throw new Error('Permission denied');
         }
+        canShowDeniedPerm = false;
         eventlog(501025);
         let hideAgain = false;
         const res = await asyncMsgDialog('warninga', '', l.lna_reset_title, `
@@ -237,6 +238,7 @@ var megasync = (function() {
         if (state === 'denied') {
             await promptDeniedPermission();
         }
+        canShowDeniedPerm = false;
         // var timeout = (args.a === 'v') ? 250 : 0;
         var timeout = 0;
         args = JSON.stringify(args);
@@ -263,7 +265,7 @@ var megasync = (function() {
                     lastXHRStatus = xhr.status;
                     xhr.onreadystatechange = (ev) => {
                         if (!timer) {
-                            timer = tSleep(3);
+                            timer = tSleep(1);
                             timer.then(() => {
                                 if (lastXHRStatus === 0) {
                                     // Recheck permissions just in case they denied in the timeout
@@ -618,6 +620,10 @@ var megasync = (function() {
         SyncAPI({ a: "ufo", h: handle, bid: getNewBid() }, next);
     };
 
+    ns.uploadFilesAndFolders = function(handle,next) {
+        SyncAPI({ a: "uff", h: handle, bid: getNewBid() }, next);
+    };
+
     ns.syncFolder = function(handle,next) {
         SyncAPI({a: "s", h: handle, u: u_handle}, next);
     };
@@ -697,6 +703,9 @@ var megasync = (function() {
             ns.periodicCheck(resolve);
         });
         return preCheckPromise;
+    };
+    ns.allowShowingBlockedDialog = () => {
+        canShowDeniedPerm = true;
     };
 
     return ns;

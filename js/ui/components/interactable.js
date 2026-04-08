@@ -305,7 +305,7 @@ class MegaInteractable extends MegaComponent {
         }
 
         const { text, badgeClass } = options;
-        if (!text) {
+        if (text === undefined) {
             elm.remove();
             return;
         }

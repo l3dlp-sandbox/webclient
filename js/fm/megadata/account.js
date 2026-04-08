@@ -787,7 +787,7 @@ MegaData.prototype.showPlanExpiringBanner = async function(data) {
         data.slevel = data.slevel || slevel || account.slevel;
         return M.showPlanExpiredBanner(data);
     }
-    if (today.getTime() < (expiry - 4 * 86400) * 1000) {
+    if (account.nextplan || today.getTime() < (account.suntil - 4 * 86400) * 1000) {
         return;
     }
     today.setHours(0, 0, 0, 0);

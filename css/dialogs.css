@@ -813,6 +813,10 @@ body.de .mega-dialog.contact-picker-widget {
     background-color: var(--surface-black-bar);
     transition: all 200ms ease-in-out;
 }
+.nw-dark-overlay.megasync-overlay,
+.nw-dark-overlay.megasync-upload-overlay {
+    z-index: 1002;
+}
 .nw-dark-overlay.megasync-overlay .default-select-dropdown::before,
 .nw-dark-overlay.megasync-overlay .default-select-dropdown::after {
     content: unset;
@@ -9541,6 +9545,9 @@ body.web-desktop .mega-sheet.report-abuse .sheet {
     margin-top: 4px;
     position: relative;
     width: 100%;
+}
+.mega-dialog.s4 .mega-input.error ~ .error-msg {
+    display: block;
 }
 .mega-dialog.s4 .input-container .user-input-wrap {
     flex: 1;

@@ -129,7 +129,7 @@
     };
 
     shrink.bitdef = freeze({
-        s4a: ['s4thumbs', 'skipcdtos4', 'skips4tocd', 'skips4tos4', 's4onboarded', 'skipSenToS4'],
+        s4a: ['s4thumbs', 'skipcdtos4', 'skips4tocd', 'skips4tos4', 's4onboarded', 'skipSenToS4', 's4actupd'],
         v04: ['rvonbrddl', 'rvonbrdfd', 'rvonbrdas'],
         lit: ['skipstartml', 'skipexitml'],
         xb1: [

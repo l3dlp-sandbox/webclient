@@ -83,6 +83,10 @@ class ChatRouting {
         ChatRouting.gPageHandlers.redirect(args.route, 'fm/chat').then(resolve).catch(reject);
         resolve = null;
       } else if (section === 'p') {
+        if (!location.startsWith('fm')) {
+          location = `fm/${location}`;
+          args.route.location = location;
+        }
         megaChat.smartOpenChat([u_handle, roomId], 'private', undefined, undefined, undefined, true).then(resolve).catch(reject);
         resolve = null;
       } else {
@@ -4367,15 +4371,15 @@ ChatRoom.prototype.setRoomTopic = async function (newTopic) {
 };
 ChatRoom.prototype.leave = function (notify) {
   const valid = this.type === 'group' || this.type === 'public';
-  console.assert(valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
-  if (!valid) {
-    return;
-  }
+  console.assert(!notify || valid, `Can't leave room "${this.roomId}" of type "${this.type}"`);
   this._leaving = true;
-  this.topic = '';
-  if (notify) {
+  if (notify && valid) {
     this.trigger('onLeaveChatRequested');
+  } else if (notify) {
+    this._leaving = false;
+    return false;
   }
+  this.topic = '';
   if (this.state !== ChatRoom.STATE.LEFT) {
     this.setState(ChatRoom.STATE.LEAVING);
     this.setState(ChatRoom.STATE.LEFT);
@@ -29122,32 +29126,25 @@ class Incoming extends react1().Component {
     this.state = {
       video: false,
       unsupported: undefined,
-      hoveredSwitch: true,
       hideOverlay: false
     };
     this.renderSwitchControls = () => {
-      const className = `mega-button large round switch ${this.state.hoveredSwitch ? 'hovered' : ''}`;
-      const toggleHover = () => this.setState(state => ({
-        hoveredSwitch: !state.hoveredSwitch
-      }));
       return react1().createElement("div", {
         className: "switch-button"
       }, react1().createElement("div", {
         className: "switch-button-container simpletip",
         "data-simpletip": l.end_and_answer,
         "data-simpletipposition": "top",
-        onMouseEnter: toggleHover,
-        onMouseLeave: toggleHover,
         onClick: ev => {
           ev.stopPropagation();
           this.props.onSwitch();
         }
       }, react1().createElement(_button_jsx4__.A, {
-        className: `${className} negative`,
-        icon: "icon-end-call"
+        className: `${"mega-component nav-elem icon-only switch"} negative`,
+        icon: "icon-phone-02-thin-outline"
       }), react1().createElement(_button_jsx4__.A, {
-        className: `${className} positive`,
-        icon: "icon-phone"
+        className: `${"mega-component nav-elem icon-only switch"} positive`,
+        icon: "icon-phone-01-thin-outline"
       })));
     };
     this.renderAnswerControls = () => {
@@ -29161,27 +29158,28 @@ class Incoming extends react1().Component {
       } = this.props;
       return react1().createElement(react1().Fragment, null, react1().createElement(_button_jsx4__.A, {
         className: `
-                        mega-button
-                        positive
+                        mega-component
+                        nav-elem
+                        icon-only
                         answer
                         ${unsupported ? 'disabled' : ''}
                     `,
-        icon: "icon-phone",
+        icon: "icon-phone-01-thin-outline",
         simpletip: unsupported ? null : {
           position: 'top',
           label: l[7205]
         },
         onClick: unsupported ? null : onAnswer
-      }, react1().createElement("span", null, l[7205])), react1().createElement(_button_jsx4__.A, {
+      }), react1().createElement(_button_jsx4__.A, {
         className: `
-                        mega-button
-                        large
-                        round
+                        mega-component
+                        nav-elem
+                        icon-only
+                        secondary
                         video
-                        ${video ? '' : 'negative'}
                         ${unsupported ? 'disabled' : ''}
                     `,
-        icon: video ? 'icon-video-call-filled' : 'icon-video-off',
+        icon: video ? 'icon-video-regular-outline' : 'icon-video-off-regular-outline',
         simpletip: unsupported ? null : {
           position: 'top',
           label: video ? l[22894] : l[22893]
@@ -29189,7 +29187,7 @@ class Incoming extends react1().Component {
         onClick: () => unsupported ? null : this.setState({
           video: !video
         }, () => onToggleVideo(video))
-      }, react1().createElement("span", null, video ? l[22894] : l[22893])));
+      }));
     };
     this.state.unsupported = !megaChat.hasSupportForCalls;
     this.state.hideOverlay = document.body.classList.contains('overlayed') && !$.msgDialog;
@@ -29233,25 +29231,25 @@ class Incoming extends react1().Component {
         contact: M.u[callerId]
       })), react1().createElement("div", {
         className: `${NAMESPACE}-info`
-      }, react1().createElement("h1", null, react1().createElement(_ui_utils_jsx6__.zT, null, chatRoom.getRoomTitle())), react1().createElement("span", null, isPrivateRoom ? l[17878] : l[19995])), react1().createElement("div", {
+      }, react1().createElement("h1", null, react1().createElement(_ui_utils_jsx6__.sp, null, chatRoom.getRoomTitle())), react1().createElement("span", null, isPrivateRoom ? l[17878] : l[19995])), react1().createElement("div", {
         className: `
                                 ${NAMESPACE}-controls
                                 ${CALL_IN_PROGRESS ? 'call-in-progress' : ''}
                             `
       }, react1().createElement(_button_jsx4__.A, {
         className: `
-                                    mega-button
-                                    large
-                                    round
+                                    mega-component
+                                    nav-elem
+                                    icon-only
                                     negative
                                 `,
-        icon: "icon-end-call",
+        icon: "icon-phone-02-thin-outline",
         simpletip: {
           position: 'top',
           label: rejectLabel
         },
         onClick: onReject
-      }, react1().createElement("span", null, rejectLabel)), CALL_IN_PROGRESS ? this.renderSwitchControls() : this.renderAnswerControls()), unsupported && react1().createElement("div", {
+      }), CALL_IN_PROGRESS ? this.renderSwitchControls() : this.renderAnswerControls()), unsupported && react1().createElement("div", {
         className: `${NAMESPACE}-unsupported`
       }, react1().createElement("div", {
         className: "unsupported-message"

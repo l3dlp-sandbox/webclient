@@ -221,7 +221,14 @@ lazy(mega.ui, 'notifyUtils', () => {
                 const {userHandle, type, data} = notifications[i];
 
                 if (userHandle) {
-                    this.payload.u.add(userHandle);
+                    if (typeof userHandle !== 'string' || userHandle.length !== 11 || type === 'ipc') {
+                        if (self.d) {
+                            console.warn(`Unexpected user-handle on ${type}-notif...`, userHandle, notifications[i]);
+                        }
+                    }
+                    else {
+                        this.payload.u.add(userHandle);
+                    }
                 }
 
                 if (!mega.lite.inLiteMode) {

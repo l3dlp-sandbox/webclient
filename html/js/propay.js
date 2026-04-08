@@ -2064,9 +2064,7 @@ pro.propay = {
         const biggestSaveOption = [0, 0];
         let {durationOptions} = this.planObj;
 
-        if (!this.planObj.isIn('validFeatures')) {
-            durationOptions = durationOptions.filter(([,,,,months]) => months >= this.initialDuration);
-        }
+        durationOptions = durationOptions.filter(([,,,,months]) => months >= this.initialDuration);
 
         const appendDurationOption = ([,al,,,months]) => {
             if (discountMonths === months) {
@@ -2179,6 +2177,8 @@ pro.propay = {
 
                 if (newDuration) {
                     this.planObj = pro.getPlanObj(al, newDuration);
+                    this.selectedProPackage = this.planObj.planArray;
+
                     this.selectedPeriod = this.newDuration = newDuration;
 
                     this.renderPlanInfo();
@@ -2250,6 +2250,7 @@ pro.propay = {
                 this.selectedPeriod = duration;
                 sessionStorage['pro.period'] = this.selectedPeriod;
                 this.planObj = pro.getPlanObj(this.planNum, this.selectedPeriod);
+                this.selectedProPackage = this.planObj.planArray;
 
                 if (this.currentGateway && this.currentGateway.gatewayId === 0) {
                     this.usingBalance = this.usingBalance && pro.propay.useBalance();
@@ -2390,6 +2391,7 @@ pro.propay = {
 
         if (reloadedPlans) {
             this.planObj = pro.getPlanObj(this.planNum, this.selectedPeriod);
+            this.selectedProPackage = this.planObj.planArray;
         }
 
         this.currentGateway = this.gatewaysByName[this.currentGatewayName];

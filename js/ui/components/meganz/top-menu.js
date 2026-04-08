@@ -358,10 +358,10 @@ class MegaTopMenu extends MegaMobileTopMenu {
             simpletipWrapper: 'body',
             simpletipOffset: '-16',
             eventLog: 500636,
-            rightBadge: u_attr.b && !u_attr.s4 ? {
-                badgeClass: 'brand-filled',
-                text: l[24648]
-            } : null,
+            rightBadge: (u_attr.s4 || fmconfig.s4actupd) ? null : {
+                badgeClass: 'indicator brand-filled',
+                text: ''
+            },
             binding: () => s4.main.render()
         });
 

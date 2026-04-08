@@ -1175,7 +1175,6 @@ accountUI.account = {
                 var $addNumberButton = $('.add-number-button', $phoneSettings);
                 var $buttonsContainer = $('.gsm-mod-rem-btns', $content);
                 var $removeNumberButton = $('.rem-gsm', $buttonsContainer);
-                var $modifyNumberButton = $('.modify-gsm', $buttonsContainer);
 
                 // If the phone is already added, show that
                 if (typeof u_attr.smsv !== 'undefined') {
@@ -1192,13 +1191,6 @@ accountUI.account = {
                                         msgDialog('info', '', l[23427]);
                                     })
                                     .catch(dump);
-                            }
-                        });
-                    });
-                    $modifyNumberButton.rebind('click.gsmmodify', () => {
-                        msgDialog('confirmation', '', l[23429], l[23430], answer => {
-                            if (answer) {
-                                sms.phoneInput.init();
                             }
                         });
                     });

@@ -275,8 +275,8 @@ mega.ui.MegaInputs.prototype.underlinedText._updateShowHideErrorAndMessage = fun
             this.options.onShowMessage(msg);
         }
         else if (msg) {
-            var $wrapper = this.$input.parent();
-            var $msgContainer = $wrapper.find('.message-container');
+            const $wrapper = this.$input.parent();
+            const $msgContainer = this.options.$msgCn || $('.message-container', $wrapper);
 
             if (fix) {
                 $wrapper.addClass('fix-msg');
@@ -469,7 +469,7 @@ mega.ui.MegaInputs.prototype.underlinedText._strengthChecker = function() {
 
                 var $passStatus = $wrapper.find('.password-status');
                 var $passStatusBar = $wrapper.find('.account-pass-lines');
-                var $messageContainer = $('.message-container', $wrapper);
+                const $messageContainer = self.options.$msgCn || $('.message-container', $wrapper);
 
                 $passStatus
                     .add($passStatusBar)
@@ -528,16 +528,17 @@ mega.ui.MegaInputs.prototype.underlinedText._botSpaceCalc = function() {
 
     'use strict';
 
-    var $wrapper = this.$input.parent();
+    const $wrapper = this.$input.parent();
+    const $msgContainer = $('.message-container', $wrapper);
 
-    if ($wrapper.hasClass('msg')) {
+    if ($wrapper.hasClass('msg') && $msgContainer.length) {
         if (this.origBotSpace === undefined) {
             this.origBotSpace = parseInt($wrapper.css('margin-bottom'));
         }
 
         $wrapper.css('margin-bottom',
                      this.origBotSpace
-                     + $('.message-container', $wrapper).outerHeight()
+                     + $msgContainer.outerHeight()
                      + ($wrapper.hasClass('fix-msg') ? 4 : 9));
     }
 };

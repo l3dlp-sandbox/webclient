@@ -270,6 +270,7 @@ lazy(mega.devices, 'ui', () => {
          * @returns {void}
          */
         add(eventId) {
+            megasync.allowShowingBlockedDialog();
             megasync.isInstalled((err, is) => {
                 if (eventId) {
                     eventlog(eventId);
@@ -722,11 +723,6 @@ lazy(mega.devices, 'ui', () => {
              * {jQuery} $emptyAddActions - jQuery object
              */
             this.$emptyAddActions = $('.fm-add-sb-actions', this.$emptyDevices);
-
-            /**
-             * {jQuery} $emptyAppDLButtons - jQuery object
-             */
-            this.$emptyAppDLButtons = $('.fm-app-links', this.$emptyDevices);
 
             /**
              * {Shimmer} shimmer - Shimmer instance
@@ -1352,24 +1348,11 @@ lazy(mega.devices, 'ui', () => {
 
         /**
          * Handles the visibility of Add Backup & Add Sync buttons for the header and empty devices
-         * @param {Boolean|undefined} appIsInstalled whether desktop app is installed. If `undefined`, it rechecks
          * @returns {void}
          */
-        handleAddBtnVisibility(appIsInstalled) {
-            if (appIsInstalled === undefined) {
-                megasync.isInstalled((err, is) => {
-                    appIsInstalled = !err || is;
-                });
-            }
+        handleAddBtnVisibility() {
             if (!this.hasDevices) {
-                if (appIsInstalled) {
-                    this.hideAppDlButtons();
-                    this.showEmptyActionButtons();
-                }
-                else {
-                    this.showAppDlButtons();
-                    this.hideEmptyActionButtons();
-                }
+                this.showEmptyActionButtons();
             }
         }
 
@@ -1465,15 +1448,8 @@ lazy(mega.devices, 'ui', () => {
             this.$emptyDevices.removeClass('hidden');
             mega.ui.secondaryNav.hideActionButtons();
             mega.ui.secondaryNav.hideCard();
-            megasync.isInstalled((err, is) => {
-                const appFound = !err || is;
-                const descText = appFound
-                    ? l.dc_empty_desc_withapp
-                    : l.dc_empty_desc_noapp;
-                $('.fm-empty-description', this.$emptyDevices).safeHTML(descText);
-                onIdle(clickURLs);
-                this.handleAddBtnVisibility(appFound);
-            });
+            this.handleAddBtnVisibility();
+            onIdle(clickURLs);
         }
 
         /**
@@ -1490,26 +1466,6 @@ lazy(mega.devices, 'ui', () => {
          */
         hideEmptyActionButtons() {
             this.$emptyAddActions.addClass('hidden');
-        }
-
-        /**
-         * Shows the mega app download buttons in the device centre empty devices UI
-         * @returns {void}
-         */
-        showAppDlButtons() {
-            if (this.$emptyAppDLButtons) {
-                this.$emptyAppDLButtons.removeClass('hidden');
-            }
-        }
-
-        /**
-         * Hides the mega app download buttons in the device centre empty devices UI
-         * @returns {void}
-         */
-        hideAppDlButtons() {
-            if (this.$emptyAppDLButtons) {
-                this.$emptyAppDLButtons.addClass('hidden');
-            }
         }
 
         /**
@@ -1888,10 +1844,6 @@ lazy(mega.devices, 'ui', () => {
             if (this.$emptyActiveFolders) {
                 $('.js-inactive-filter-select', this.$emptyActiveFolders).off('click.dc.inactive.folders');
             }
-            if (this.$emptyAppDLButtons) {
-                $('.mega-app-desktop', this.$emptyAppDLButtons).off('click.dc.download');
-                $('.mega-app-mobile', this.$emptyAppDLButtons).off('click.dc.download');
-            }
             if (this.$emptyAddActions) {
                 $('.cta-add-backup', this.$emptyAddActions).off('click.dc.backup.add');
                 $('.cta-add-sync', this.$emptyAddActions).off('click.dc.sync.add');
@@ -1921,16 +1873,6 @@ lazy(mega.devices, 'ui', () => {
             if (this.$emptyActiveFolders) {
                 $('.js-inactive-filter-select', this.$emptyActiveFolders).rebind('click.dc.inactive.folders', () => {
                     this.filterChipUtils.autoSelect('folderactivity', 1, false, true);
-                });
-            }
-            if (this.$emptyAppDLButtons) {
-                $('.mega-app-desktop', this.$emptyAppDLButtons).rebind('click.dc.download', () => {
-                    window.open('https://mega.io/desktop', '_blank', 'noopener,noreferrer');
-                    eventlog(500843);
-                });
-                $('.mega-app-mobile', this.$emptyAppDLButtons).rebind('click.dc.download', () => {
-                    window.open('https://mega.io/mobile', '_blank', 'noopener,noreferrer');
-                    eventlog(500844);
                 });
             }
             if (this.$emptyAddActions) {

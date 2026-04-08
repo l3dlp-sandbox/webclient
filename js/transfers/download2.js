@@ -2129,7 +2129,7 @@ var dlmanager = {
      * @return {MegaPromise}
      */
     isMEGAsyncRunning: function(minVersion, getVersionInfo) {
-        var timeout = 400;
+        var timeout = 1500;
         var logger = this.logger;
         var promise = new MegaPromise();
 

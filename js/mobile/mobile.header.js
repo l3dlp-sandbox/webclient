@@ -55,21 +55,36 @@ class MegaMobileHeader extends MegaComponent {
             this.renderLoggedIn();
         }
         else {
-            const loginLink = new MegaLink({
+            const authConfig = isPublicLink()
+                ? {
+                    text: l[968],
+                    page: 'register'
+                }
+                : {
+                    text: l.log_in,
+                    page: 'login',
+                    onBeforeRedirect: () => {
+                        login_next = getCleanSitePath();
+                    }
+                };
+
+            const authLink = new MegaLink({
                 parentNode: actionsNode,
-                text: l.log_in,
-                type: "normal",
-                componentClassname: "underline no-bg login-button"
+                text: authConfig.text,
+                type: 'normal',
+                componentClassname: 'underline no-bg login-button'
             });
 
-            loginLink.on('tap', () => {
+            authLink.on('tap', () => {
+                if (authConfig.onBeforeRedirect) {
+                    authConfig.onBeforeRedirect();
+                }
 
-                login_next = getCleanSitePath();
-                loadSubPage('login');
+                loadSubPage(authConfig.page);
             });
 
             mBroadcaster.once('login2', () => {
-                this.renderLoggedIn(loginLink);
+                this.renderLoggedIn(authLink);
             });
         }
 
