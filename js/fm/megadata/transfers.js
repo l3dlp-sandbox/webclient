@@ -444,6 +444,9 @@ MegaData.prototype.addWebDownload = function(n, z, preview, zipname) {
             return;
         }
         else {
+            // Forcibly check permission is blocked for megasync integration.
+            megasync.allowShowingBlockedDialog();
+            megasync.megaSyncRequest({ a: 'v' }).always(nop);
             // this means the setting is ON to user MEGASync. but we got here because either
             // MEGASync is not installed (or working), or there were an error when we tried to use MEGASync.
             return dlmanager.showMEGASyncOverlay(true);
@@ -1073,6 +1076,7 @@ MegaData.prototype.addUpload = function(u, ignoreWarning, emptyFolders, target) 
                 }
             }, 2000);
         };
+        megasync.allowShowingBlockedDialog();
         dlmanager.isMEGAsyncRunning('3.0', 1)
             .done(function(ms, syncData) {
                 showMEGAsyncDialog(u_handle === syncData.u ? l[8912] : l.megasync_check_logins, syncData);

@@ -1744,11 +1744,6 @@ mBroadcaster.once('boot_done', function populate_l() {
 
     l.invite_subject_text = escapeHTML(encodeURIComponent(l.invite_subject_text));
 
-    l.dc_empty_desc_noapp = escapeHTML(l.dc_empty_desc_noapp)
-        .replace('[A]', `<a href="${l.mega_help_host}/installs-apps/desktop/backup-vs-sync"
-                            target="_blank" class="clickurl">`)
-        .replace('[/A]', '</a>');
-
     l.dc_empty_desc_withapp = escapeHTML(l.dc_empty_desc_withapp)
         .replace('[A]', `<a href="${l.mega_help_host}/installs-apps/desktop/backup-vs-sync"
                             target="_blank" class="clickurl">`)

@@ -1309,6 +1309,7 @@
                     }
 
                     const handle = mega.ui.contextMenu.selectedItems[0];
+                    megasync.allowShowingBlockedDialog();
                     megasync.isInstalled((err, is) => {
                         if (!err || is) {
                             if (megasync.currUser === u_handle) {

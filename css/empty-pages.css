@@ -165,11 +165,6 @@
     cursor: pointer;
 }
 
-.fm-empty-device-list .fm-app-links {
-    display: flex;
-    justify-content: center;
-}
-
 .fm-empty-device-list .fm-mega-app-link-container {
     display: flex;
     flex-direction: column;

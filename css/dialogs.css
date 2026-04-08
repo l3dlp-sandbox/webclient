@@ -813,6 +813,10 @@ body.de .mega-dialog.contact-picker-widget {
     background-color: var(--surface-black-bar);
     transition: all 200ms ease-in-out;
 }
+.nw-dark-overlay.megasync-overlay,
+.nw-dark-overlay.megasync-upload-overlay {
+    z-index: 1002;
+}
 .nw-dark-overlay.megasync-overlay .default-select-dropdown::before,
 .nw-dark-overlay.megasync-overlay .default-select-dropdown::after {
     content: unset;
