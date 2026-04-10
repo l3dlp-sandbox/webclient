@@ -1567,6 +1567,12 @@ pro.propay = {
             + (showCurrency === false ? '' : ` ${currency}`);
     },
 
+    getMonthlyPlan() {
+        'use strict';
+
+        return this.planObj && (this.planObj.months === 1 ? this.planObj : pro.getPlanObj(this.planObj.level, 1));
+    },
+
     renderPlanInfo() {
         'use strict';
 
@@ -1659,7 +1665,7 @@ pro.propay = {
                     || l.special_offer)
                 .replace('%2', formatPercentage(pro.calculateSavings([
                     this.discountInfo.pd,
-                    this.planObj.hasYearlyDiscount && this.instantDiscount ? pro.yearlyDiscountPercentage : 0
+                    this.planObj.hasYearlyDiscount ? pro.yearlyDiscountPercentage : 0
                 ])))
                 .replace('%3', this.planObj.name)
                 .replace('%4', this.getNumOfMonthsWording(this.discountInfo.m ||this.planObj.months, true));
@@ -1738,30 +1744,35 @@ pro.propay = {
             return `${ast ? '*' : ''} ${curr}`;
         };
 
-        if (this.planObj.taxInfo) {
+        let monthlyPlan = this.getMonthlyPlan();
+        const {months} = this.planObj;
 
-            let localNet;
-            let localTotal;
+        if (this.planObj.taxInfo) {
+            if (!monthlyPlan || !monthlyPlan.taxInfo) {
+                monthlyPlan = false;
+            }
+
             let localTaxAmount;
 
+            const {price, priceEuro, taxedPrice, taxedPriceEuro} = this.planObj.getPricing();
+            let localNet = forceEuro ? this.planObj.priceEuro : this.planObj.price;
+            let localTotal = forceEuro ? this.planObj.taxedPriceEuro : this.planObj.taxedPrice;
+
             if (this.anyPlanOfLevelDiscounted) {
-                const months = this.planObj.months;
-                const monthlyPlan = months === 1 ? this.planObj : pro.getPlanObj(this.planObj.level, 1);
+                localNet = forceEuro ? priceEuro : price;
+                localTotal = forceEuro ? taxedPriceEuro : taxedPrice;
                 if (monthlyPlan) {
                     const {taxAmount, taxAmountEur} = monthlyPlan.taxInfo;
-                    localNet = ((!forceEuro && monthlyPlan.price) || monthlyPlan.priceEur) * months;
                     localTaxAmount = ((!forceEuro && taxAmount) || taxAmountEur) * months;
                 }
                 else {
                     const {taxAmount, taxAmountEur} = this.planObj.taxInfo;
-                    localNet = ((!forceEuro && this.planObj.price) || this.planObj.priceEur);
                     localTaxAmount = ((!forceEuro && taxAmount) || taxAmountEur);
                 }
             }
             else if (this.discountInfo) {
-                const {ltpn, etpn, ltp, etp} = this.discountInfo;
-                localNet = (!forceEuro && ltpn) || etpn;
-                localTotal = (!forceEuro && ltp) || etp;
+                localNet = forceEuro ? priceEuro : price;
+                localTotal = forceEuro ? taxedPriceEuro : taxedPrice;
                 localTaxAmount = localTotal - localNet;
             }
 
@@ -1803,18 +1814,15 @@ pro.propay = {
         if (discountInfo) {
 
             let {lda, eda} = discountInfo;
-            if (this.instantDiscount) {
-                const months = this.planObj.months;
-                const monthlyPlan = months === 1 ? this.planObj : pro.getPlanObj(this.planObj.level, 1);
-                const {ldtp, edtp} = discountInfo;
-                if (monthlyPlan.taxInfo) {
-                    lda = monthlyPlan.taxInfo.taxedPrice * months - ldtp;
-                    eda = monthlyPlan.taxInfo.taxedPriceEuro * months - edtp;
-                }
-                else if (monthlyPlan) {
-                    lda = monthlyPlan.price * months - ldtp;
-                    eda = monthlyPlan.priceEuro * months - edtp;
-                }
+            const {ldtp, edtp} = discountInfo;
+
+            if (monthlyPlan && monthlyPlan.taxInfo) {
+                lda = monthlyPlan.taxInfo.taxedPrice * months - ldtp;
+                eda = monthlyPlan.taxInfo.taxedPriceEuro * months - edtp;
+            }
+            else if (monthlyPlan) {
+                lda = monthlyPlan.price * months - ldtp;
+                eda = monthlyPlan.priceEuro * months - edtp;
             }
 
             $('.pricing-element .duration-type', $planCard)
@@ -1830,7 +1838,7 @@ pro.propay = {
                 $('.discount-amount-descr', $discountAmount)
                     .text(l.discount_save_amount.replace('%1', formatPercentage(pro.calculateSavings([
                         discountInfo.pd,
-                        this.planObj.hasYearlyDiscount && this.instantDiscount ? pro.yearlyDiscountPercentage : 0
+                        this.planObj.hasYearlyDiscount ? pro.yearlyDiscountPercentage : 0
                     ]))));
 
                 $('.discount-amount-value', $discountAmount)
@@ -1841,17 +1849,13 @@ pro.propay = {
             if (!this.planObj.taxInfo) {
                 $preDiscount.removeClass('hidden');
 
-
-                let preTaxPrice;
                 const months = this.planObj.months;
                 const monthlyPlan = months === 1 ? this.planObj : pro.getPlanObj(this.planObj.level, 1);
-                if (this.anyPlanOfLevelDiscounted && monthlyPlan) {
-                    preTaxPrice = monthlyPlan.getFormattedPrice('narrowSymbol', forceEuro, false, months);
-                }
-                else {
-                    preTaxPrice = this.planObj
+
+                const preTaxPrice = monthlyPlan
+                    ? monthlyPlan.getFormattedPrice('narrowSymbol', forceEuro, false, months)
+                    : this.planObj
                         .getFormattedPrice('narrowSymbol', forceEuro, this.isVoucherBalance(), discountDuration);
-                }
 
                 $('.pre-discount-value', $preDiscount)
                     .text(preTaxPrice
@@ -1869,8 +1873,6 @@ pro.propay = {
 
         // TODO: Clean this up
         if (currentDiscount && discountInfo.md && discountInfo.pd && discountInfo.al === pro.propay.planNum) {
-
-            let oldPrice;
 
             if (is_mobile && !formattedPlanPrice) {
                 formattedPlanPrice = this.getFormattedPriceNote(discountInfo.ldtp || discountInfo.edtp);
@@ -1893,23 +1895,21 @@ pro.propay = {
 
             const showTaxInfo = (txva !== undefined) && tx && txn && ltpn && ldtpn && ltp;
 
+            let {price, priceEuro, taxedPrice, taxedPriceEuro} = this.planObj.getPricing();
+
             if (!showTaxInfo) {
                 ldtpn = ldtp;
                 ltpn = ltp;
             }
 
-            const price = ltp;
+            price = isEuro
+                ? showTaxInfo ? taxedPriceEuro : priceEuro
+                : showTaxInfo ? taxedPrice : price;
 
-            if (price) {
-                oldPrice = createPriceHTML(
-                    formatCurrency(price, this.planObj.currency, 'narrowSymbol'),
-                    true
-                );
-            }
-            else {
-                oldPrice = createPriceHTML(this.planObj
-                    .getFormattedPrice('narrowSymbol', this.isVoucherBalance(), false, discountDuration), true);
-            }
+            const oldPrice = createPriceHTML(
+                formatCurrency(price, this.planObj.currency, 'narrowSymbol'),
+                true
+            );
 
             const newPrice = createPriceHTML(formatCurrency(ldtp, this.planObj.currency, 'narrowSymbol'));
 
@@ -1931,7 +1931,10 @@ pro.propay = {
             }
             else {
                 discountHeaderText = discountHeaderText
-                    .replace('%1', formatPercentage(discountInfo.pd / 100));
+                    .replace('%1', formatPercentage(pro.calculateSavings([
+                        this.discountInfo.pd,
+                        this.planObj.hasYearlyDiscount ? pro.yearlyDiscountPercentage : 0
+                    ])));
                 addNumMonths = true;
             }
 
@@ -4141,8 +4144,9 @@ pro.propay = {
         } = dci;
 
         const matchedPlan = await pro.propay.getDiscountedPlanInfo(al, m);
+        const matchedPlanObj = pro.getPlanObj(matchedPlan);
 
-        if (!matchedPlan) {
+        if (!matchedPlan || !matchedPlanObj) {
             return;
         }
 
@@ -4231,7 +4235,7 @@ pro.propay = {
             onShow: () => {
                 const { contentNode, headerTitleNode, overlayNode } = sheet;
                 const newPrice = isEuro ? (isBeforeTax ? edtpn : edtp) : (isBeforeTax ? ldtpn : ldtp);
-                const prevPrice = isEuro ? (isBeforeTax ? etpn : etp) : (isBeforeTax ? ltpn : ltp);
+                const prevPrice = matchedPlanObj.getPricing(true)[isEuro ? 'priceEuro' : 'price'];
 
                 const img = mCreateElement(
                     'div',
@@ -4253,8 +4257,11 @@ pro.propay = {
                 contentNode.querySelector('h1').textContent = pro.getProPlanName(al);
                 contentNode.querySelector('.promo-overtext').textContent = l.notif_limited_time_offer;
 
+                const percentageDiscount = pro.calculateSavings(
+                    [pd, matchedPlanObj.hasYearlyDiscount ? pro.yearlyDiscountPercentage : 0]);
+
                 contentNode.querySelector('.duration').appendChild(
-                    parseHTML(mega.icu.format(l.for_months, m).replace('%1', `${pd}%`))
+                    parseHTML(mega.icu.format(l.for_months, m).replace('%1', formatPercentage(percentageDiscount)))
                 );
                 contentNode.querySelector('.previous-price .amount').textContent = formatCurrency(
                     prevPrice,

@@ -1191,6 +1191,37 @@ var pro = {
                     };
                 });
 
+
+                thisPlan.getPricing = (useMonthlyPrice) => {
+                    let plan;
+                    let months;
+                    if (useMonthlyPrice === undefined) {
+                        useMonthlyPrice = true;
+                    }
+
+                    plan = thisPlan.monthlyPlan;
+                    months = useMonthlyPrice ? thisPlan.months : 1;
+
+                    // If there is no monthly plan, use the regular plan's pricing
+                    if (!plan) {
+                        useMonthlyPrice = false;
+                        months = 1;
+                        plan = thisPlan;
+                    }
+
+                    const price = plan.price * months;
+                    const priceEuro = plan.priceEuro * months;
+                    const taxedPrice = plan.taxInfo ? plan.taxInfo.taxedPrice * months : price;
+                    const taxedPriceEuro = plan.taxInfo ? plan.taxInfo.taxedPriceEuro * months : priceEuro;
+
+                    return {
+                        price,
+                        priceEuro,
+                        taxedPrice,
+                        taxedPriceEuro,
+                    };
+                };
+
                 thisPlan.getInstantDiscountInfo = async() => {
                     if (thisPlan.fullDiscountInfo !== undefined) {
                         return thisPlan.fullDiscountInfo;
@@ -1506,14 +1537,14 @@ var pro = {
     },
 
     /**
-     * Rounds the number up to the nearest whole number, unless it is within 0.05 of the nearest whole number in which
+     * Rounds the number up to the nearest whole number, unless it is within 0.005 of the nearest whole number in which
      * case it rounds down
      * @param {number} number - The number to round up
      * @returns {number} - The rounded number
      */
     softCeil(number) {
         'use strict';
-        return Math.ceil(Math.round(number * 10) / 10);
+        return Math.ceil(Math.round(number * 100) / 100);
     },
 
     getStandardisedTaxInfo(planTaxInfo, type) {
