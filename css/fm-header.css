@@ -837,3 +837,25 @@ body:not(.small-nav) .fm-right-header.buttons-up .fm-header-chips-and-view-butto
         display: none;
     }
 }
+.fm-right-header.albums-grid-header {
+    justify-content: flex-start;
+    height: 64px;
+}
+.fm-right-header.albums-grid-header .fm-header-chips-and-view-buttons {
+    margin-top: -64px;
+}
+.fm-right-header.albums-grid-header.buttons-up .fm-header-chips-and-view-buttons {
+    margin-top: 4px;
+}
+.fm-right-header.albums-grid-header .fm-header-buttons .fm-new-album {
+    z-index: 1;
+    margin-inline-start: auto;
+    margin-inline-end: 8px;
+    height: 48px;
+}
+.fm-right-header.albums-grid-header .fm-header-grid-extra .select-all-checkbox {
+    display: none;
+}
+.fm-right-header.albums-grid-header .fm-header-grid-extra .sort-direction-button {
+    margin-inline: 8px;
+}

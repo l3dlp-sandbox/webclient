@@ -663,7 +663,9 @@ function fmtopUI() {
     mega.ui.secondaryNav.updateInfoChipsAndViews();
     mega.ui.secondaryNav.breadcrumbHolder.classList.remove('top-spacer');
     mega.ui.secondaryNav.chipsViewsWrapper.classList.remove('no-crumb', 'grid-spacer');
-    mega.ui.secondaryNav.domNode.classList.remove('no-small-content', 'crumb-info', 's4-spacer', 'search-link');
+    mega.ui.secondaryNav.domNode.classList.remove(
+        'no-small-content', 'crumb-info', 's4-spacer', 'search-link', 'albums-grid-header'
+    );
     mega.ui.secondaryNav.updateSmallNavButton(
         !(M.gallery === 1 || M.albums)
         && (
@@ -806,6 +808,7 @@ function fmtopUI() {
         }
         else if (M.isAlbumsPage(1)) {
             primary = '.fm-new-album';
+            mega.ui.secondaryNav.domNode.classList.add('albums-grid-header');
         }
         else if (M.currentrootid === 's4' && M.currentCustomView) {
             const {subType, original, nodeID, containerID} = M.currentCustomView;

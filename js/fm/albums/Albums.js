@@ -565,44 +565,70 @@ lazy(mega.gallery, 'albums', () => {
 
     /**
      * Sorting albums by given names in attributes
-     * @param {String} labelA Album label A
-     * @param {String} labelB Album label B
-     * @param {String} direction Default is ascending order (1)
+     * @param {object} albumA Album with label A
+     * @param {object} albumB Album with label B
+     * @param {number} direction Default is ascending order (1)
      * @returns {Number}
      */
-    const sortLabels = (labelA, labelB, direction = 1) => {
-        if (labelA < labelB) {
-            return -direction;
-        }
-
-        if (labelA > labelB) {
-            return direction;
-        }
-
-        return 0;
+    const sortLabels = (albumA, albumB, direction = 1) => {
+        return M.compareStrings(albumA.label, albumB.label, direction);
     };
 
-    const sortAlbumsArray = (a, b) => {
-        if ((a.filterFn && b.filterFn) || a.cts === b.cts) {
-            return sortLabels(a.label, b.label);
+    const sortNumeric = (field, albumA, albumB, direction = 1) => {
+        if (typeof albumA[field] === 'number' && typeof albumB[field] === 'number') {
+            if (albumA[field] < albumB[field]) {
+                return -direction;
+            }
+            if (albumA[field] > albumB[field]) {
+                return direction;
+            }
+        }
+        else {
+            if (typeof albumA[field] === 'number') {
+                return direction;
+            }
+            if (typeof albumB[field] === 'number') {
+                return -direction;
+            }
         }
 
-        if (a.filterFn) {
-            return -1;
-        }
-        else if (b.filterFn) {
-            return 1;
-        }
-
-        return b.cts - a.cts;
+        return sortLabels(albumA, albumB, direction);
     };
+
+    const sortAlbumsArray = (a, b, n, d) => {
+        let sortFn;
+        switch (n) {
+            case 'name': {
+                sortFn = sortLabels;
+                break;
+            }
+            case 'date': {
+                sortFn = sortNumeric.bind(null, 'cts');
+                break;
+            }
+            case 'mtime': {
+                sortFn = sortNumeric.bind(null, 'ts');
+                break;
+            }
+        }
+        return sortFn(a, b, d);
+    };
+
+    lazy(scope, 'albumCols', () => freeze({
+        timeAd: { viewed: true },
+        timeMd: { viewed: true },
+        fname: { viewed: true },
+    }));
 
     const sortStore = () => {
+        const {n, d} = fmconfig.sortmodes[M.currentdirid] || M.sortmode || {n: 'date', d: 1};
         const albumKeys = Object.keys(scope.albums.store);
 
         albumKeys.sort((keyA, keyB) => sortAlbumsArray(
             scope.albums.store[keyA],
-            scope.albums.store[keyB]
+            scope.albums.store[keyB],
+            n,
+            d
         ));
 
         const obj = Object.create(null);
@@ -612,6 +638,21 @@ lazy(mega.gallery, 'albums', () => {
         }
 
         scope.albums.store = obj;
+    };
+
+    scope.doSortAlbums = (n, d) => {
+        if (!M.albums) {
+            return;
+        }
+        n = String(n).replace(/\W/g, '');
+        if (M.isAlbumsPage(1)) {
+            M.sortmode = {n, d};
+            if (!M.fmsorting) {
+                fmsortmode(M.currentdirid, n, d);
+            }
+            sortStore();
+            scope.albums.grid.showAllAlbums();
+        }
     };
 
     /**
@@ -2918,7 +2959,7 @@ lazy(mega.gallery, 'albums', () => {
                 }
             });
             mega.ui.secondaryNav.showActionButtons('.fm-new-album');
-            mega.ui.secondaryNav.updateInfoChipsAndViews(true);
+            mega.ui.secondaryNav.updateInfoChipsAndViews();
             mega.ui.secondaryNav.expand();
         }
 
@@ -2936,9 +2977,11 @@ lazy(mega.gallery, 'albums', () => {
             mega.ui.secondaryNav.hideBreadcrumb();
             mega.ui.secondaryNav.updateLayoutButton(true);
             if (albumId) {
+                mega.ui.secondaryNav.domNode.classList.remove('albums-grid-header');
                 this.setSpecificAlbumButtons(albumId);
             }
             else {
+                mega.ui.secondaryNav.domNode.classList.add('albums-grid-header');
                 this.setGlobalButtons();
             }
         }
@@ -3321,9 +3364,8 @@ lazy(mega.gallery, 'albums', () => {
             delay('render:albums_grid', () => {
                 applyPs(this.el, !albumsCount);
                 if (mega.ui.secondaryNav) {
-                    // Bind scroll event for albums view since it has action buttons.
-                    const noScroll = mega.ui.secondaryNav.bindScrollEvents(this.el);
-                    if (noScroll && !mega.ui.secondaryNav.actionsHolder && !mega.ui.secondaryNav.isSmall) {
+                    mega.ui.secondaryNav.updateSortOptions();
+                    if (!mega.ui.secondaryNav.actionsHolder && !mega.ui.secondaryNav.isSmall) {
                         mega.ui.secondaryNav.domNode.classList.remove('buttons-up');
                         mega.ui.secondaryNav.domNode.querySelector('.fm-card-holder')
                             .before(mega.ui.header.domNode.querySelector('.fm-header-buttons'));
@@ -3574,6 +3616,8 @@ lazy(mega.gallery, 'albums', () => {
             $('.gallery-tabs-bl', '.fm-right-files-block').addClass('hidden');
 
             if (M.isAlbumsPage(1)) {
+                M.sortmode = fmconfig.sortmodes[M.currentdirid] || {n: 'date', d: 1};
+                sortStore();
                 this.showAllAlbums();
                 this.header.update();
                 return;
