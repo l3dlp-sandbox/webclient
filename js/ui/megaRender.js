@@ -547,8 +547,8 @@ mBroadcaster.once('boot_done', () => {
 
                 sharedFolderUI();
 
-                $('.grid-table tbody tr').not('.conversationsApp .grid-table tbody tr').remove();
-                $('.file-block-scrolling a').remove();
+                $('.grid-table:not(.fm-dialog-table) tbody tr').not('.conversationsApp .grid-table tbody tr').remove();
+                $('.file-block-scrolling:not(.megaList2) a').remove();
 
                 // eslint-disable-next-line local-rules/jquery-replacements
                 $(aListSelector).show().parent().children('table').show();
