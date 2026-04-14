@@ -7,7 +7,7 @@ export class GenericNodePropsComponent extends MegaRenderMixin {
         if (this.props.node.h) {
             this.nodeProps = NodeProperties.get(this.props.node);
 
-            this.changeListener = this.changeListener.bind(this);
+            this.changeListener = this.props.node instanceof MegaDataObject ? null : this.changeListener.bind(this);
         }
     }
     changeListener() {

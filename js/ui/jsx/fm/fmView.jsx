@@ -41,12 +41,14 @@ export default class FMView extends MegaRenderMixin {
         this.onContextMenu = this.onContextMenu.bind(this);
 
         if (this.dataSource?.addChangeListener) {
-            this._listener = this.dataSource.addChangeListener(() => {
+            this._listener = this.dataSource.addChangeListener((...args) => {
                 if (!this.isMounted()) {
                     return;
                 }
-
-                this.setState({'entries': this.getEntries()});
+                if (args.length > 2 && args[3] === 'ats') {
+                    return;
+                }
+                delay('fmviewcl', () => this.setState({'entries': this.getEntries()}), 500);
             });
         }
         this.initSelectionManager();

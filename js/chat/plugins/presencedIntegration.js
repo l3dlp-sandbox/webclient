@@ -82,6 +82,11 @@ PresencedIntegration.cssClassToPresence = function(strPresence) {
     }
 };
 
+PresencedIntegration.minuteBucket = function() {
+    'use strict';
+    return Math.floor(unixtime() / 60) * 60;
+};
+
 PresencedIntegration.prototype.init = function() {
     if (is_chatlink) {
         return;
@@ -125,7 +130,7 @@ PresencedIntegration.prototype.init = function() {
         null, // prefschangedcb
         function(user, minutes) {
             if (M.u[user]) {
-                M.u[user].lastGreen = unixtime() - (minutes * 60);
+                M.u[user].lastGreen = PresencedIntegration.minuteBucket() - (minutes * 60);
             }
 
             if (PRESENCE2_DEBUG) {
@@ -245,7 +250,7 @@ PresencedIntegration.prototype._peerstatuscb = function(user_hash, presence, isW
 
     if (contact) {
         if (contact.presence === UserPresence.PRESENCE.ONLINE && presence !== UserPresence.PRESENCE.ONLINE) {
-            contact.lastGreen = unixtime();
+            contact.lastGreen = PresencedIntegration.minuteBucket();
         }
         contact.presence = presence;
     }
@@ -254,7 +259,7 @@ PresencedIntegration.prototype._peerstatuscb = function(user_hash, presence, isW
         contact = M.setUser(user_hash);
         contact.presence = presence;
         if (presence === UserPresence.PRESENCE.ONLINE) {
-            contact.lastGreen = unixtime();
+            contact.lastGreen = PresencedIntegration.minuteBucket();
         }
 
         M.syncUsersFullname(user_hash).catch(dump);

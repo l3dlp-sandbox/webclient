@@ -34413,18 +34413,14 @@ const REaCt = REQ_.n(React_);
 const mixins = REQ_(137);
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
 const esm_extends = REQ_(168);
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/applyDecoratedDescriptor.js
-const applyDecoratedDescriptor = REQ_(793);
 // EXTERNAL MODULE: ./js/ui/perfectScrollbar.jsx
 const perfectScrollbar = REQ_(486);
 ;// ./js/ui/jsx/megaList/megaList2.jsx
 
 
-let _dec, _class;
 
 
-
-const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 extends mixins.w9 {
+class MegaList2 extends mixins.w9 {
   constructor(props) {
     super(props);
     this._calculated = false;
@@ -34447,6 +34443,7 @@ const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 exte
     this.thumbsLoadingHandlers = new MapSet();
     this.thumbsThatRequireLoading = new MapSet();
     this.requestThumbnailCb = this.requestThumbnailCb.bind(this);
+    this._throttledStage = 0;
   }
   specShouldComponentUpdate(nextProps) {
     let invalidate = false;
@@ -34503,9 +34500,6 @@ const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 exte
       return this.domRef.getScrollPositionX();
     });
     lazy(calculated, 'scrollTop', () => {
-      if (this.adapterChangedDoRepaint) {
-        return 0;
-      }
       return this.domRef.getScrollPositionY();
     });
     lazy(calculated, 'scrolledPercentX', () => {
@@ -34568,7 +34562,12 @@ const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 exte
     }
   }
   _getCalcsThatTriggerChange() {
-    return [this.props.entries.length, this._calculated.scrollHeight, this._calculated.itemWidth, this._calculated.itemHeight, this._calculated.contentWidth, this._calculated.itemsPerRow, this._calculated.contentHeight, this._calculated.visibleFirstItemNum, this._calculated.visibleLastItemNum];
+    return `
+            ${this.props.entries.length},${this._calculated.scrollHeight},${this._calculated.itemWidth},
+            ${this._calculated.itemHeight},${this._calculated.contentWidth},${this._calculated.itemsPerRow}
+            ${this._calculated.contentHeight},${this._calculated.visibleFirstItemNum},
+            ${this._calculated.visibleLastItemNum}
+        `;
   }
   indexOfEntry(nodeHandle, prop) {
     prop = prop || 'h';
@@ -34604,12 +34603,16 @@ const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 exte
     if (!this.isMounted()) {
       return;
     }
-    const oldCalc = JSON.stringify(this._getCalcsThatTriggerChange());
+    if (this._throttledStage++) {
+      return;
+    }
+    const oldCalc = this._getCalcsThatTriggerChange();
     this._contentUpdated();
-    const newCalc = JSON.stringify(this._getCalcsThatTriggerChange());
+    const newCalc = this._getCalcsThatTriggerChange();
     if (oldCalc !== newCalc) {
       this.forceUpdate();
     }
+    this._throttledStage = 0;
   }
   onResizeDoUpdate() {
     super.onResizeDoUpdate();
@@ -34757,7 +34760,7 @@ const MegaList2 = (_dec = (0,mixins.hG)(30, true), _class = class MegaList2 exte
       calculated: this._calculated
     }, listAdapterOpts), nodes)));
   }
-}, (0,applyDecoratedDescriptor.A)(_class.prototype, "onPsUserScroll", [_dec], Object.getOwnPropertyDescriptor(_class.prototype, "onPsUserScroll"), _class.prototype), _class);
+}
 // EXTERNAL MODULE: ./js/ui/jsx/fm/nodes/genericNodePropsComponent.jsx + 1 modules
 const genericNodePropsComponent = REQ_(984);
 ;// ./js/ui/jsx/fm/nodes/genericGrid.jsx
@@ -35755,13 +35758,16 @@ class FMView extends mixins.w9 {
     this.onAttachClicked = this.onAttachClicked.bind(this);
     this.onContextMenu = this.onContextMenu.bind(this);
     if ((_this$dataSource = this.dataSource) != null && _this$dataSource.addChangeListener) {
-      this._listener = this.dataSource.addChangeListener(() => {
+      this._listener = this.dataSource.addChangeListener((...args) => {
         if (!this.isMounted()) {
           return;
         }
-        this.setState({
+        if (args.length > 2 && args[3] === 'ats') {
+          return;
+        }
+        delay('fmviewcl', () => this.setState({
           'entries': this.getEntries()
-        });
+        }), 500);
       });
     }
     this.initSelectionManager();
@@ -36324,7 +36330,7 @@ class GenericNodePropsComponent extends mixins.w9 {
     super(props);
     if (this.props.node.h) {
       this.nodeProps = NodeProperties.get(this.props.node);
-      this.changeListener = this.changeListener.bind(this);
+      this.changeListener = this.props.node instanceof MegaDataObject ? null : this.changeListener.bind(this);
     }
   }
   changeListener() {
