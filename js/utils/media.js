@@ -3909,8 +3909,8 @@ FullScreenManager.prototype.enterFullscreen = function() {
 
         const format = isMediaSourceSupported() ? mp4brands.has(container) ? '--mp4-brand--$' : container : 0;
         switch (format) {
+            case 'qt  ':
             case '--mp4-brand--$':
-            case 'qt  ' + (mega.chrome || audiocodec ? '$' : ''):
                 if (videocodec === 'avc1') {
                     mime = 'video/mp4; codecs="avc1.640029';
 
