@@ -1253,7 +1253,7 @@ MegaData.prototype.showOverStorageQuota = async function(quota, options) {
 
             $('.chart.data .size-txt', $strgdlg).text(strQuotaUsed);
             $('.chart.data .pecents-txt', $strgdlg).text(strQuotaLimit[0]);
-            $('.chart.data .gb-txt', $strgdlg).text(strQuotaLimit[1]);
+            $('.chart.data .gb-txt', $strgdlg).text('\u00A0' + strQuotaLimit[1]);
             $('.chart.body .perc-txt', $strgdlg).text(quota.percent + '%');
         }
         else {
