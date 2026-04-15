@@ -109,7 +109,7 @@
 
         if (cfg.viewercfg) {
             const xs3 = parse(cfg.viewercfg) || {};
-            cfg.xs3 = stringify(xs3.speed << 16 | xs3.order << 8 | xs3.repeat << 1 | xs3.sub);
+            cfg.xs3 = stringify(xs3.speed << 16 | xs3.order << 8 | xs3.playVid << 3 | xs3.repeat << 1 | xs3.sub);
             delete cfg.viewercfg;
         }
 
@@ -258,6 +258,7 @@
             config.viewercfg = {};
             config.viewercfg.speed = config.xs3 >> 16 & 0xFF;
             config.viewercfg.order = config.xs3 >> 8 & 0xFF;
+            config.viewercfg.playVid = config.xs3 >> 3 & 1;
             config.viewercfg.repeat = config.xs3 >> 1 & 1;
             config.viewercfg.sub = config.xs3 & 1;
         }

@@ -104,6 +104,7 @@ lazy(s4, 'buckets', () => {
             delete this.progress;
             this.megaInput.$input.val('');
             this.megaInput.hideError();
+            this.ltWSpaceWarning.hide();
             this.$dialogProgress.addClass('disabled');
             mLoadingSpinner.hide('s4-loading-toast');
         }

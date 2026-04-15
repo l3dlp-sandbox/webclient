@@ -223,7 +223,9 @@ lazy(s4, 'main', () => {
             return loadSubPage('fm');
         }
 
-        const canEnable = u_attr.p && !pro.filter.simple.miniPlans.has(u_attr.p) || u_attr.pf;
+        // Ignore Started and Basic accounts
+        const canEnable = u_attr.p && u_attr.p !== 12 &&
+            !pro.filter.simple.miniPlans.has(u_attr.p) || u_attr.pf;
         const domNode = fmNode.querySelector('.fm-activate-section') || ce(
             'div', fmNode, { class: 'fm-empty-section s4 fm-activate-section hidden' }
         );
@@ -257,7 +259,14 @@ lazy(s4, 'main', () => {
                 loadingDialog.show('activates4.s4a');
                 api.send({ a: 's4a' })
                     .then(() => location.reload())
-                    .catch(tell)
+                    .catch(ex => {
+                        if (ex === EACCESS) {
+                            console.error('Error activation S4...', ex);
+                            loadSubPage('pro');
+                            return;
+                        }
+                        tell(ex);
+                    })
                     .finally(() => loadingDialog.hide('activates4.s4a'));
             }
         });

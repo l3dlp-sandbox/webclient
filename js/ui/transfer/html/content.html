@@ -1,49 +1,3 @@
-<!-- Context menu !-->
-<div class="it-menu context js-dashboard-menu" tabindex="0">
-    <div class="body">
-        <div class="section">
-            <button class="it-menu-item js-tr-details">
-                <i class="sprite-it-x24-mono icon-info"></i>
-                <span>[$19284]</span>
-            </button>
-        </div>
-        <div class="section">
-            <button class="it-menu-item js-tr-open">
-                <i class="sprite-it-x24-mono icon-arrow-up-right-square"></i>
-                <span>[$transferit_open_link]</span>
-            </button>
-            <button class="it-menu-item js-tr-copy-link">
-                <i class="sprite-it-x24-mono icon-chain"></i>
-                <span>[$1394]</span>
-            </button>
-            <button class="it-menu-item js-share-qr">
-                <i class="sprite-it-x24-mono icon-qr"></i>
-                <span>[$transferit_share_qr]</span>
-            </button>
-            <button class="it-menu-item js-tr-edit-link-title">
-                <i class="sprite-it-x24-mono icon-edit"></i>
-                <span>[$transferit_edit_title]</span>
-            </button>
-            <button class="it-menu-item js-tr-change-password">
-                <i class="sprite-it-x24-mono icon-lock-open"></i>
-                <span>[$23262]</span>
-            </button>
-            <button class="it-menu-item js-tr-change-exp-date">
-                <i class="sprite-it-x24-mono icon-calendar"></i>
-                <span>[$transferit_change_exp_date]</span>
-            </button>
-            <button class="it-menu-item js-tr-change-schedule">
-                <i class="sprite-it-x24-mono icon-schedule"></i>
-                <span>[$transferit_change_schedule]</span>
-            </button>
-            <button class="it-menu-item js-tr-delete-transfer negative">
-                <i class="sprite-it-x24-mono icon-trash-can"></i>
-                <span>[$transferit_delete_transfer]</span>
-            </button>
-        </div>
-    </div>
-</div>
-
 <!-- Add files !-->
 <div class="it-box-holder js-add-files-section hidden">
     <section class="it-box lg-shadow modal add-files-box">
@@ -604,6 +558,55 @@
 
 <!-- Dashboard !-->
 <div class="it-box-holder js-dashboard-section hidden">
+    <!-- Context menu !-->
+    <div class="it-menu context width-md js-dashboard-menu" tabindex="0">
+        <div class="body">
+            <div class="section js-tr-details-section">
+                <button class="it-menu-item js-tr-details">
+                    <i class="sprite-it-x24-mono icon-info"></i>
+                    <span>[$19284]</span>
+                </button>
+            </div>
+            <div class="section">
+                <button class="it-menu-item js-tr-open">
+                    <i class="sprite-it-x24-mono icon-arrow-up-right-square"></i>
+                    <span>[$transferit_open_link]</span>
+                </button>
+                <button class="it-menu-item js-tr-copy-link">
+                    <i class="sprite-it-x24-mono icon-chain"></i>
+                    <span>[$1394]</span>
+                </button>
+                <button class="it-menu-item js-share-qr">
+                    <i class="sprite-it-x24-mono icon-qr"></i>
+                    <span>[$transferit_share_qr]</span>
+                </button>
+                <button class="it-menu-item js-tr-edit-link-title">
+                    <i class="sprite-it-x24-mono icon-edit"></i>
+                    <span>[$transferit_edit_title]</span>
+                </button>
+                <button class="it-menu-item js-tr-change-password">
+                    <i class="sprite-it-x24-mono icon-lock"></i>
+                    <span>[$23262]</span>
+                </button>
+                <button class="it-menu-item js-tr-remove-password">
+                    <i class="sprite-it-x24-mono icon-lock-open"></i>
+                    <span>[$transferit_remove_pass]</span>
+                </button>
+                <button class="it-menu-item js-tr-change-exp-date">
+                    <i class="sprite-it-x24-mono icon-calendar"></i>
+                    <span>[$transferit_change_exp_date]</span>
+                </button>
+                <button class="it-menu-item js-tr-change-schedule">
+                    <i class="sprite-it-x24-mono icon-schedule"></i>
+                    <span>[$transferit_change_schedule]</span>
+                </button>
+                <button class="it-menu-item js-tr-delete-transfer negative">
+                    <i class="sprite-it-x24-mono icon-trash-can"></i>
+                    <span>[$transferit_delete_transfer]</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <section class="it-box lg-shadow dashboard-box items-box">
         <div class="body">
@@ -686,61 +689,56 @@
                 </div>
             </div>
             <div class="content details-body js-details-content hidden">
-                <div>
+                <div class="details-header">
                     <button class="it-button ghost lg-size js-back">
                         <i class="sprite-it-x24-mono icon-arrow-big-left"></i>
                         <span>[$transferit_back_to_transfers]</span>
                     </button>
+                    <button class="it-button js-new-transfer-btn">
+                        <span>[$transferit_new_transfer]</span>
+                    </button>
                 </div>
                 <div class="items-wrap">
                     <div class="desktop-scroll-area bottom">
-                        <div class="section">
-                            <div class="info-body">
-                                <div class="name-body">
-                                    <h5 class="align-start js-name"></h5>
-                                    <button class="it-button ghost js-tr-edit-link-title">
-                                        <i class="sprite-it-x24-mono icon-edit"></i>
+                        <div class="sections-wrap">
+                            <div class="section info-wrap">
+                                <div class="info-body">
+                                    <div class="name-body">
+                                        <h5 class="align-start js-name"></h5>
+                                        <button class="it-button ghost js-tr-edit-link-title">
+                                            <i class="sprite-it-x24-mono icon-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="info js-transfer-info"></div>
+                                    <div class="items-label js-total-views"></div>
+                                </div>
+                                <div class="nav-body">
+                                    <button class="it-button ghost js-download">
+                                        <i class="sprite-it-x24-mono icon-arrow-small-down"></i>
+                                        <span>[$58]</span>
+                                        <span class="progress-bar"></span>
+                                    </button>
+                                    <button class="it-button ghost js-tr-copy-link">
+                                        <i class="sprite-it-x24-mono icon-chain"></i>
+                                        <span>[$1394]</span>
+                                    </button>
+                                    <button class="it-button ghost js-context">
+                                        <i class="sprite-it-x24-mono icon-more-horizontal"></i>
+                                        <span>[$tooltip_more]</span>
                                     </button>
                                 </div>
-                                <div class="info js-transfer-info"></div>
-                                <div class="items-label js-total-views"></div>
                             </div>
-                        </div>
-                        <div class="section">
-                            <div class="control-btns js-ctrl-btns">
-                                <button class="it-button ghost js-tr-open">
-                                    <i class="sprite-it-x24-mono icon-arrow-up-right-square"></i>
-                                    <span>[$transferit_open_link]</span>
-                                </button>
-                                <button class="it-button ghost js-tr-copy-link">
-                                    <i class="sprite-it-x24-mono icon-chain"></i>
-                                    <span>[$1394]</span>
-                                </button>
-                                <button class="it-button ghost js-share-qr">
-                                    <i class="sprite-it-x24-mono icon-qr"></i>
-                                    <span>[$transferit_share_qr]</span>
-                                </button>
-                                <button class="it-button ghost js-tr-change-password">
-                                    <i class="sprite-it-x24-mono icon-lock-open"></i>
-                                    <span>[$23262]</span>
-                                </button>
-                                <button class="it-button ghost js-tr-change-exp-date">
-                                    <i class="sprite-it-x24-mono icon-calendar"></i>
-                                    <span>[$transferit_change_exp_date]</span>
-                                </button>
-                                <button class="it-button ghost js-tr-change-schedule">
-                                    <i class="sprite-it-x24-mono icon-schedule"></i>
-                                    <span>[$transferit_change_schedule]</span>
-                                </button>
-                                <button class="it-button ghost js-tr-delete-transfer negative">
-                                    <i class="sprite-it-x24-mono icon-trash-can"></i>
+                            <div class="section full-height">
+                                <div class="items-label js-recipients-num"></div>
+                                <div class="it-grid list-type alternating-bg recipients js-recipients-container"></div>
+                            </div>
+                            <div class="section">
+                                <button class="it-button xl-size acn negative js-tr-delete-transfer">
+                                    <div class="sprite-it-x24-mono icon-trash-can"></div>
                                     <span>[$transferit_delete_transfer]</span>
+                                    <span class="progress-bar"></span>
                                 </button>
                             </div>
-                        </div>
-                        <div class="section">
-                            <div class="items-label js-recipients-num"></div>
-                            <div class="it-grid list-type alternating-bg recipients js-recipients-container"></div>
                         </div>
                     </div>
                 </div>

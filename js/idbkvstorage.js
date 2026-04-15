@@ -85,7 +85,12 @@ IndexedDBKVStorage.prototype.setItem = function __IDBKVSetItem(k, v) {
     return new MegaPromise((resolve) => {
         delete this.delcache[k];
 
-        if (this.dbcache[k] !== v) {
+        if (k.includes(`^!keys`)) {
+            if (self.d) {
+                console.info(`IndexedDBKVStorage: Will NOT save ${k}...`);
+            }
+        }
+        else if (this.dbcache[k] !== v) {
             this.newcache[k] = v;
             this.saveState();
         }
@@ -98,7 +103,7 @@ IndexedDBKVStorage.prototype.getItem = function __IDBKVGetItem(k) {
     'use strict';
     var self = this;
     return new MegaPromise(function(resolve, reject) {
-        if (!self.delcache[k]) {
+        if (!self.delcache[k] && !k.includes(`^!keys`)) {
 
             if (self.newcache[k] !== undefined) {
                 // record recently (over)written

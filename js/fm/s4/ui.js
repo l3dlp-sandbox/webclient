@@ -680,15 +680,22 @@ lazy(s4, 'ui', () => {
         }
 
         getInvalidNodeNameError(n, name) {
-            // even s4 nodes can't be named as dot or double dot, because it will break the path resolution
-            if (name === '.' || name === '..') {
-                return {
-                    '.': l.invalid_node_name_as_dot,
-                    '..': l.invalid_node_name_as_doubledot
-                }[name];
+            if (!(name = name || n.name)) {
+                // undecryptable?
+                return l[8566];
             }
-            if (s4.kernel.getS4NodeType(n.h) === 'bucket' && !s4.kernel.isValidBucketName(name || n.name)) {
-                return l.s4_invalid_bucket_name;
+            // even s4 nodes can't be named as dot or double dot, because it will break the path resolution
+            const errMsg = M.safeNameError(name, n.t, 250);
+
+            if (errMsg) {
+                return errMsg;
+            }
+
+            switch (M.getS4NodeType(n)) {
+                case 'bucket':
+                    return !s4.kernel.isValidBucketName(name) && l.s4_invalid_bucket_name;
+                case 'object':
+                    return !s4.kernel.isValidObjectName(name) && l[8566];
             }
         }
 

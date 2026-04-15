@@ -343,19 +343,12 @@ function api_reqfailed(channel, error) {
                 // Log the user out for all scenarios except SMS required (500)
                 u_logout(true);
 
+                // Notify UI to reset login loading state (EBLOCKED bypasses normal login flow)
+                mBroadcaster.sendMessage('login:reset-loading');
+
                 // if fm-overlay click handler was initialized, we remove the handler to prevent dialog skip
                 $('.fm-dialog-overlay').off('click.fm');
-                if (is_mobile) {
-                    parsepage(pages['mobile']);
-                }
-                msgDialog('warninga', dialogTitle,
-                    reasonText,
-                    false,
-                    function () {
-                        var redirectUrl = getAppBaseUrl() + '#contact';
-                        window.location.replace(redirectUrl);
-                    }
-                );
+                msgDialog('warninga', dialogTitle, reasonText);
             }
         });
     }

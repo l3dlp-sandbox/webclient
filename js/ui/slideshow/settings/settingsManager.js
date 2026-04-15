@@ -8,8 +8,8 @@ lazy(mega.slideshow.settings, 'manager', () => {
          * @returns {SlideshowSettingsManager} instance
          */
         constructor() {
-            const {order, speed, repeat, sub} = mega.slideshow.settings;
-            this._settings = [speed, order, repeat, sub];
+            const { order, speed, repeat, sub, playVid } = mega.slideshow.settings;
+            this._settings = [speed, order, repeat, sub, playVid];
 
             Object.freeze(this);
         }

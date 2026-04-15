@@ -209,6 +209,8 @@
 }
 
 .it-dialog.modal > .body > .content > p {
+    overflow: hidden;
+    overflow-wrap: break-word;
     padding: 24px 0 0;
     text-align: start;
 }

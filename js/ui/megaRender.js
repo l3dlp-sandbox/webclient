@@ -547,8 +547,8 @@ mBroadcaster.once('boot_done', () => {
 
                 sharedFolderUI();
 
-                $('.grid-table tbody tr').not('.conversationsApp .grid-table tbody tr').remove();
-                $('.file-block-scrolling a').remove();
+                $('.grid-table:not(.fm-dialog-table) tbody tr').not('.conversationsApp .grid-table tbody tr').remove();
+                $('.file-block-scrolling:not(.megaList2) a').remove();
 
                 // eslint-disable-next-line local-rules/jquery-replacements
                 $(aListSelector).show().parent().children('table').show();
@@ -929,6 +929,8 @@ mBroadcaster.once('boot_done', () => {
             const hasTerm = str => !!str && str.length >= term.length
                 && ((str = str.toLowerCase()).includes(term) || termArr.every(str.includes.bind(str)));
 
+            let isBackup = false;
+
             const getPath = () => {
                 const maxLen = 5;
                 let arr = [
@@ -954,6 +956,7 @@ mBroadcaster.once('boot_done', () => {
                 // This is a Backup folder
                 if (arr[arr.length - 1].h === M.InboxID && arr[arr.length - 2].h === M.BackupsId) {
                     arr = [...arr.slice(0, -2), { h: '', name: l.restricted_folder_button }];
+                    isBackup = true;
                 }
 
                 return arr.length > maxLen
@@ -1030,6 +1033,13 @@ mBroadcaster.once('boot_done', () => {
                     (acc, { name }) => acc ? `${acc}[I class="${dividerClass}"][/I]${name}` : name,
                     ''
                 );
+            }
+
+            if (isBackup) {
+                const type = aTemplate.querySelector('.type');
+                if (type) {
+                    type.textContent = l[20606];
+                }
             }
         },
 

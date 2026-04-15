@@ -1392,7 +1392,7 @@ function renameDialog() {
         var $dialog = $('.mega-dialog.rename-dialog');
         var $input = $('input', $dialog);
         var errMsg = '';
-        const s4Folder = n.t && n.s4;
+        const s4nodeType = M.getS4NodeType(n);
 
         M.safeShowDialog('rename', function() {
             $dialog.removeClass('hidden').addClass('active');
@@ -1411,12 +1411,15 @@ function renameDialog() {
                 errMsg = '';
 
                 if (n.name && value !== n.name) {
-                    if (s4Folder || value.trim() && !(errMsg = M.safeNameError(value, n.t))) {
+                    if (!value.trim()) {
+                        errMsg = l[5744];
+                    }
+                    else if (s4nodeType || !(errMsg = M.safeNameError(value, n.t))) {
                         var targetFolder = n.p;
                         if (duplicated(value, targetFolder)) {
                             errMsg = l[23219];
                         }
-                        else if (!s4Folder || !(errMsg = s4.ui.getInvalidNodeNameError(n, value))) {
+                        else if (!s4nodeType || !(errMsg = s4.ui.getInvalidNodeNameError(n, value))) {
                             M.rename(n.h, value).catch(tell);
                         }
                     }
@@ -1444,9 +1447,8 @@ function renameDialog() {
             }
         });
 
-        $('header h2', $dialog).text(
-            n.t ? s4Folder && M.getS4NodeType(n) === 'bucket' ? l.s4_bucket_rename : l[425] : l[426]
-        );
+        $('header h2', $dialog)
+            .text(n.t ? s4nodeType === 'bucket' ? l.s4_bucket_rename : l[425] : l[426]);
         $input.val(n.name);
 
         const icon = fileIcon(n);
@@ -3159,14 +3161,12 @@ Object.defineProperty(FMResizablePane, 'refresh', {
     value() {
         'use strict';
 
-        const width = M.fmTabPages && M.fmTabPages['cloud-drive'][M.currentrootid] ? undefined : 400;
-        if (M.fmTabPages && FMResizablePane.last !== width) {
+        if (M.fmTabPages) {
             // @todo revamp if we ever use other than '.fm-left-panel' for these
             const cl = $('.fm-left-panel:visible, .mega-top-menu.ui-resizable:not(.hidden)').data('fmresizable');
 
             if (cl && !(cl.options.shrinkBelow && fmconfig.smallLhp)) {
-                FMResizablePane.last = width;
-                cl.setOption('maxWidth', width);
+                cl.setOption('maxWidth', M.fmTabPages['cloud-drive'][M.currentrootid] ? null : 400);
             }
             else if (cl) {
                 cl.refresh();

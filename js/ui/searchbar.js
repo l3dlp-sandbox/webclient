@@ -774,6 +774,9 @@ lazy(mega.ui, 'searchbar', () => {
             const $fileNamePrefix = $('.prefix', $fileName);
             const $fileNameMatch = $('.middle-txt', $fileName);
             const $fileNameSuffix = $('.suffix', $fileName);
+            const $owner = $('.dropdown-search-results-item-owner', $item);
+            const $ownerAvatar = $('.owner-avatar', $owner);
+            const $ownerName = $('.owner-name', $owner);
             const $dir = $('.dropdown-search-results-item-location', $item);
             const thumbUri = thumbnails.get(node.fa);
             const maxLen = 30;
@@ -810,9 +813,15 @@ lazy(mega.ui, 'searchbar', () => {
             // Add location as a blue link to link to the parent dir
             const $locLink = $('<span>');
             $locLink.addClass('location-link text-ellipsis');
-            $locLink.attr('data-parent-handle', node.p);
+            $locLink.attr('data-parent-handle', M.getNodeParent(node));
             $locLink.text(dir);
             $dir.safeAppend($locLink.prop('outerHTML'));
+
+            if (node.u && node.u !== u_handle) {
+                $ownerAvatar.safeAppend(useravatar.contact(node.u));
+                $ownerName.text(M.getNameByHandle(node.u));
+                $owner.removeClass('hidden');
+            }
 
             if (mega.sensitives.isSensitive(node)) {
                 $item.addClass('is-sensitive');

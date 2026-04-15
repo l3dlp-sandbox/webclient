@@ -127,6 +127,25 @@
 .dropdown-search .dropdown-search-results .dropdown-search-results-item {
     position: relative;
 }
+.dropdown-search .dropdown-search-results .dropdown-search-results-item-owner {
+    align-items: center;
+    margin-top: 4px;
+}
+.dropdown-search .dropdown-search-results .dropdown-search-results-item-owner .owner-avatar .avatar-wrapper,
+.dropdown-search .dropdown-search-results .dropdown-search-results-item-owner .owner-avatar .avatar-wrapper img {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 9px;
+}
+.dropdown-search .dropdown-search-results .dropdown-search-results-item-owner .owner-avatar .avatar-wrapper .verified_icon {
+    display: none;
+}
+.dropdown-search .dropdown-search-results .dropdown-search-results-item-owner .owner-name {
+    font: var(--mobile-font-caption-large-regular);
+    color: var(--mobile-text-secondary);
+    margin-inline-start: 8px;
+}
 .middle-txt {
     color: var(--text-color-high);
     font-weight: bold;

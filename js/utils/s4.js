@@ -755,8 +755,6 @@ lazy(s4, 'kernel', () => {
         });
     };
 
-    const objRestricted = Uint16Array.from('\\^{}%`[]"<>~#|', ch => ch.codePointAt(0));
-
     // @private
     const validator = freeze({
         isValidUserName(name) {
@@ -769,6 +767,8 @@ lazy(s4, 'kernel', () => {
             return /^[\w +,./:=@-]{1,32}$/.test(name);
         },
         isValidBucketName(name) {
+            name = typeof name === 'string' && name || '';
+
             if (!/^[\da-z][\d.a-z-]{1,61}[\da-z]$/.test(name)) {
                 return false;
             }
@@ -785,18 +785,18 @@ lazy(s4, 'kernel', () => {
         isValidObjectName(name) {
             let idx = 0;
             let count = 0;
-            const {length} = typeof name === 'string' && name || '';
+            const {length} = name = typeof name === 'string' && name || '';
 
             while (length > idx) {
                 const ch = name.codePointAt(idx++);
-                const valid = ch > 0x1F && ch < 0x7B && !objRestricted[ch];
+                const valid = ch > 0x1F;
 
                 if (!valid || ++count > 0x3ff) {
                     return false;
                 }
             }
 
-            return count > 0;
+            return count > 0 && name !== '.' && name !== '..';
         },
         /** @memberOf validator */
         satisfy: freeze({
@@ -1510,8 +1510,12 @@ lazy(s4, 'kernel', () => {
             let path = M.getPath(o.h).reverse();
             let data = BigInt(mega.hton(c.ph)) << 128n | mega.htole(await getEncryptionKey(c.h));
 
-            path = path.slice(path.indexOf(c.h) + 1).filter(Boolean)
-                .map(h => encodeURIComponent(M.getNameByHandle(h)));
+            path = path.slice(path.indexOf(c.h) + 1)
+                .map((h) => {
+                    const name = M.getNameByHandle(h);
+                    return validator.isValidObjectName(name) && encodeURIComponent(name);
+                })
+                .filter(Boolean);
 
             data = leftPadBase32(data << 9n | crc(data, 0x14Dn, 9n), 37).toLowerCase();
 

@@ -219,16 +219,19 @@
 
             this.NAMESPACE = 'recoverykey-logout-overlay';
 
-            if (is_mobile) {
-                // When the user presses the browser's back button, the parameter dialogShown should be updated
-                // if the overlay is no longer visible.
-                window.addEventListener('popstate', () => {
-                    if (mega.ui.overlay.name === this.NAMESPACE
-                        && mega.ui.passwordReminderDialog.dialogShown !== mega.ui.overlay.visible) {
-                        mega.ui.passwordReminderDialog.dialogShown = mega.ui.overlay.visible;
+            // When the user presses the browser's back button, the parameter dialogShown should be updated
+            // if the overlay is no longer visible.
+            window.addEventListener('popstate', () => {
+                const component = is_mobile ? mega.ui.overlay : mega.ui.sheet;
+                if (component.name === this.NAMESPACE && this.dialogShown) {
+                    if (this.promise) {
+                        this.promise.reject();
                     }
-                });
-            }
+                    this.dialogShown = false;
+                    this.succeeded = false;
+                    this.isLogout = false;
+                }
+            });
         }
 
         async onConfirmClicked() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {PerfectScrollbar} from "../../perfectScrollbar.jsx";
-import {MegaRenderMixin, SoonFcWrap} from "../../../chat/mixins";
+import { MegaRenderMixin } from "../../../chat/mixins.js";
 
 /**
  * Required props:
@@ -34,6 +34,7 @@ export class MegaList2 extends MegaRenderMixin {
         this.thumbsLoadingHandlers = new MapSet();
         this.thumbsThatRequireLoading = new MapSet();
         this.requestThumbnailCb = this.requestThumbnailCb.bind(this);
+        this._throttledStage = 0;
     }
     specShouldComponentUpdate(nextProps) {
         let invalidate = false;
@@ -109,10 +110,6 @@ export class MegaList2 extends MegaRenderMixin {
             return this.domRef.getScrollPositionX();
         });
         lazy(calculated, 'scrollTop', () => {
-            if (this.adapterChangedDoRepaint) {
-                // fake scrollTop 0, until a repaint is done on the PS
-                return 0;
-            }
             return this.domRef.getScrollPositionY();
         });
         lazy(calculated, 'scrolledPercentX', () => {
@@ -211,17 +208,12 @@ export class MegaList2 extends MegaRenderMixin {
         }
     }
     _getCalcsThatTriggerChange() {
-        return [
-            this.props.entries.length,
-            this._calculated.scrollHeight,
-            this._calculated.itemWidth,
-            this._calculated.itemHeight,
-            this._calculated.contentWidth,
-            this._calculated.itemsPerRow,
-            this._calculated.contentHeight,
-            this._calculated.visibleFirstItemNum,
-            this._calculated.visibleLastItemNum
-        ];
+        return `
+            ${this.props.entries.length},${this._calculated.scrollHeight},${this._calculated.itemWidth},
+            ${this._calculated.itemHeight},${this._calculated.contentWidth},${this._calculated.itemsPerRow}
+            ${this._calculated.contentHeight},${this._calculated.visibleFirstItemNum},
+            ${this._calculated.visibleLastItemNum}
+        `;
     }
     indexOfEntry(nodeHandle, prop) {
         prop = prop || 'h';
@@ -266,18 +258,21 @@ export class MegaList2 extends MegaRenderMixin {
 
         return false;
     }
-    @SoonFcWrap(30, true)
     onPsUserScroll() {
         if (!this.isMounted()) {
             // can happen, because of the SoonFc
             return;
         }
-        let oldCalc = JSON.stringify(this._getCalcsThatTriggerChange());
+        if (this._throttledStage++) {
+            return;
+        }
+        const oldCalc = this._getCalcsThatTriggerChange();
         this._contentUpdated();
-        let newCalc = JSON.stringify(this._getCalcsThatTriggerChange());
+        const newCalc = this._getCalcsThatTriggerChange();
         if (oldCalc !== newCalc) {
             this.forceUpdate();
         }
+        this._throttledStage = 0;
     }
     onResizeDoUpdate() {
         super.onResizeDoUpdate();

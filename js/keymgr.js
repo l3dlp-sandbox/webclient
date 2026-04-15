@@ -8,6 +8,7 @@ lazy(mega, 'keyMgr', () => {
         },
         configurable: true
     });
+    let gUpdateConcurrency = 0;
     const logger = MegaLogger.getLogger('KeyMgr');
     const dump = logger.warn.bind(logger, 'Caught Promise Rejection');
     const deepShareScan = tryCatch(() => !!localStorage.deepss)() || mega.flags.dss === 7;
@@ -105,7 +106,7 @@ lazy(mega, 'keyMgr', () => {
             .then((result) => {
                 assert(typeof result === 'string' && result.length > 0, `KeyMgr: Bogus fetch-result, "${result}"`);
 
-                return keyMgr.importKeysContainer(result);
+                return keyMgr.importKeysContainer(result, -0x9f7e);
             })
             .then(() => {
                 if (d) {
@@ -347,7 +348,7 @@ lazy(mega, 'keyMgr', () => {
                 1, new Uint8Array([this.version]),
                 2, this.creationtime,
                 3, this.identity,
-                4, this.uint32u8(this.generation),
+                4, this.uint32u8(this.generation + 1),
                 5, this.obj2u8(this.attr),
                 16, this.prived25519,
                 17, this.privcu25519,
@@ -812,7 +813,17 @@ lazy(mega, 'keyMgr', () => {
                         return this.fetchKeyStore().dump('KeyMgr.staged.fetch');
                     }
                     logger.error('downgrade attack', lastKnown, this.generation);
-                    eventlog(99812, JSON.stringify([4, this.generation, lastKnown]));
+
+                    const {owner, actors} = mBroadcaster.crossTab;
+                    eventlog(99812, JSON.stringify([
+                        5,
+                        this.generation,
+                        lastKnown,
+                        !!owner | 0,
+                        Object(actors).length | 0,
+                        this.versionclash | 0,
+                        stage === -0x9f7e ? 1 : 0
+                    ]));
 
                     /**
                     msgDialog('warninga', l[135], `
@@ -983,24 +994,34 @@ lazy(mega, 'keyMgr', () => {
         }
 
         async updateKeysAttribute(cmds) {
-            // tentatively increment generation and store
-            const generation = ++this.generation;
+            const generation = this.generation + 1;
+
+            if (gUpdateConcurrency++ > 0) {
+                // @todo review weblock usage, we should hold it until any clash is resolved.
+                eventlog(501214, JSON.stringify([1, gUpdateConcurrency, generation, this.versionclash | 0]));
+            }
 
             return this.getKeysContainer()
                 .then((result) => {
                     this.prevkeys = result;
 
-                    return mega.attr.set2(cmds, 'keys', result, -2, true, true);
+                    return mega.attr.set2(cmds, 'keys', result, -2, true, {kv: generation});
                 })
                 .then((result) => {
-                    assert(generation === this.generation);
+                    if (generation === this.generation + 1) {
+                        this.generation++;
 
-                    if (d) {
-                        logger.log(`new generation ${generation}`, result);
+                        if (d) {
+                            logger.log(`new generation ${generation}`, result);
+                        }
+                        gUpdateConcurrency--;
+                        return this.setGeneration(generation).catch(dump).then(() => result);
                     }
-                    return this.setGeneration(generation).catch(dump).then(() => result);
+                    eventlog(501219, JSON.stringify([1, generation, this.generation]), true);
+                    throw EBLOCKED;
                 })
                 .catch(async(ex) => {
+                    gUpdateConcurrency--;
 
                     if (ex === EEXPIRED) {
 

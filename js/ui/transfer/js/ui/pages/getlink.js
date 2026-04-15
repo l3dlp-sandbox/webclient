@@ -73,6 +73,9 @@ lazy(T.ui, 'addFilesLayout', () => {
                 }
             };
 
+            // Clear link data
+            this.clearLinkData();
+
             // Render Add files section. Step 1 or Step for mega integrated page
             if (self.is_transferit) {
                 this.renderAddFiles();
@@ -1061,6 +1064,13 @@ lazy(T.ui, 'addFilesLayout', () => {
 
             input.focus();
             input.dispatchEvent(new Event('focus'));
+        },
+
+        clearLinkData() {
+            delete this.data.link;
+            delete this.data.name;
+            delete this.data.stashing;
+            delete this.data.xh;
         }
     });
 });

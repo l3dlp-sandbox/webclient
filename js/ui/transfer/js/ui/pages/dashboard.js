@@ -37,6 +37,39 @@ lazy(T.ui, 'dashboardLayout', () => {
         })
     });
 
+    const xhnm = Object.create(null);
+
+    const setRecipients = tryCatch((e, xrf) => {
+        e.textContent = xrf.length;
+        e.parentNode.classList.remove('loading');
+        e.parentNode.dataset.simpletip = mega.icu.format(l.transferit_sent_to_x, xrf.length);
+
+        const n = xhnm[e.dataset.xh];
+        n.xrf = xrf;
+        n.sched = xrf.length > 0;
+    });
+
+    let obs = (lst) => {
+        for (let i = lst.length; i--;) {
+            if (lst[i].isIntersecting) {
+                const e = lst[i].target;
+
+                console.assert(e.dataset.xh);
+                if (e.dataset.xh) {
+                    obs.unobserve(e);
+
+                    T.core.getTransferRecipients(e.dataset.xh)
+                        .then((xrf) => setRecipients(e, xrf))
+                        .catch(dump);
+                }
+            }
+        }
+    };
+    obs = new IntersectionObserver(obs, {
+        root: document.body,
+        threshold: 0.1
+    });
+
     return freeze({
         data: {
             type: 'list',
@@ -90,19 +123,27 @@ lazy(T.ui, 'dashboardLayout', () => {
         },
 
         showSubSection(cn) {
+            const {menu} = this.listSection;
+            if (menu && menu.classList.contains('visible')) {
+                menu.classList.remove('visible');
+            }
+
             const sn = this.data.cn.querySelectorAll('.it-box > .body > .content');
             for (const elm of sn) {
                 elm.classList.add('hidden');
             }
             cn.classList.remove('hidden');
+            this.data.details = this.detailsSection.cn === cn;
         },
 
         /*
          * Init Transfer list section.
         */
         initListContent() {
-            const cn = this.listSection.cn = this.data.cn.querySelector('.js-list-content');
-            this.listSection.menu = document.querySelector('.js-dashboard-menu');
+            let {cn} = this.data;
+
+            this.listSection.menu = cn.querySelector('.js-dashboard-menu');
+            cn = this.listSection.cn = cn.querySelector('.js-list-content');
 
             // Init tabs
             for (const tab of cn.querySelectorAll('.js-transfers-tabs button')) {
@@ -137,7 +178,7 @@ lazy(T.ui, 'dashboardLayout', () => {
             });
 
             // Bind context menu
-            this.bindActionBtnEvts(this.listSection.menu);
+            this.bindActionItemEvts();
         },
 
         getFilteredTransfers(flt) {
@@ -179,6 +220,22 @@ lazy(T.ui, 'dashboardLayout', () => {
             }
 
             return res;
+        },
+
+        formatSentDate(ts) {
+            const date = new Date(ts * 1e3 || 0);
+            const today = new Date();
+            const diff = Math.floor(today.setHours(0, 0, 0, 0) / 86400000) -
+                Math.floor(date.setHours(0, 0, 0, 0) / 86400000);
+
+            if (diff < 2) {
+                return mega.icu.format(
+                    diff ? l.notif_date_yesterday : l.notif_date_today,
+                    date.getHours()
+                ).replace('%1', time2date(ts, 21));
+            }
+
+            return time2date(ts, 8);
         },
 
         renderListContent(aSearchBy) {
@@ -243,6 +300,7 @@ lazy(T.ui, 'dashboardLayout', () => {
                 const s = document.querySelector(`.js-transfers-tabs button.it-tab.default`);
                 if (s) {
                     s.classList.add('active');
+                    pushHistoryState(`dashboard`);
                 }
             }
         },
@@ -291,6 +349,7 @@ lazy(T.ui, 'dashboardLayout', () => {
 
         renderListitem(n, cn) {
             const {ac, ct, ts, e, xh, xrf, size: [bytes, files]} = n;
+            const date = ct || ts;
 
             const item = ce('div', cn, {
                 id: xh,
@@ -303,15 +362,16 @@ lazy(T.ui, 'dashboardLayout', () => {
             let wrap = ce('div', col, { class: 'info-body' });
 
             // Item name
-            ce('div', wrap, {class: 'name js-name'})
+            ce('div', wrap, {class: 'name js-name', title: n.name})
                 .textContent = n.name;
 
             // Itme info
-            let node = ce('div', wrap, { class: 'info' });
+            let node = ce('div', wrap, {class: 'info'});
+
             ce('span', node).textContent = mega.icu.format(l.album_items_count, files);
             ce('span', node).textContent = bytesToSize(bytes);
-            ce('span', node, {title: new Date((ct || ts) * 1e3).toISOString()})
-                .textContent = l.transferit_sent_x.replace('%1', ago(ct || ts));
+            ce('span', node, {title: this.formatSentDate(date)}).textContent =
+                l.transferit_sent_x.replace('%1', ago(date));
 
             // Downloaded of not
             if (ac > 0) {
@@ -338,17 +398,19 @@ lazy(T.ui, 'dashboardLayout', () => {
             // Sent to
             col = ce('div', item, { class: 'col' });
             wrap = ce('div', col, {
-                class: 'num-label simpletip',
+                class: 'num-label simpletip loading',
                 'data-simpletipoffset': '10'
             });
             ce('i', wrap, { class: 'sprite-it-x16-mono icon-user-group' });
-            (async(xrf, e) => {
-                xrf = xrf || await T.core.getTransferRecipients(xh);
-                e.textContent = xrf.length;
-                e.parentNode.dataset.simpletip = mega.icu.format(l.transferit_sent_to_x, xrf.length);
-                n.xrf = xrf;
-                n.sched = xrf.length > 0;
-            })(xrf, ce('span', wrap));
+
+            col = ce('span', wrap, {'data-xh': xh});
+            if (xrf) {
+                setRecipients(col, xrf);
+            }
+            else {
+                xhnm[xh] = n;
+                obs.observe(col);
+            }
 
             // Total views
             col = ce('div', item, { class: 'col' });
@@ -378,16 +440,7 @@ lazy(T.ui, 'dashboardLayout', () => {
         },
 
         bindItemEvents(n, item) {
-            const { menu } = this.listSection;
             const btn = item.querySelector('.js-context');
-
-            const hide = (e) => {
-                if (e.key === 'Escape' || e.type !== 'keydown' && !e.target.closest('.js-context')) {
-                    menu.classList.remove('visible');
-                    document.removeEventListener('click', hide);
-                    document.removeEventListener('keydown', hide);
-                }
-            };
 
             // Show details
             item.addEventListener('click', (e) => {
@@ -399,49 +452,116 @@ lazy(T.ui, 'dashboardLayout', () => {
                 this.renderDetailsContent();
             });
 
-            btn.addEventListener('click', () => {
-                const {xrf} = this.data.selected = n;
+            this.bindMenuEvents({n, btn});
+        },
 
-                if (xrf && xrf.length) {
-                    menu.querySelector('.js-tr-change-schedule').classList.remove('hidden');
+        bindMenuEvents(opts) {
+            const { menu } = this.listSection;
+            const {
+                n,
+                btn,
+                my = 'right top+2',
+                at = 'right+4 bottom+2'
+            } = opts;
+
+            const prevZoom = (e) => {
+                if (e.ctrlKey) {
+                    e.preventDefault();
                 }
-                else {
-                    menu.querySelector('.js-tr-change-schedule').classList.add('hidden');
+            };
+
+            const hide = (e) => {
+                // Prevent zoom
+                if (e.type === 'keydown' && (e.ctrlKey || e.metaKey) &&
+                    (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                    e.preventDefault();
+                    return false;
                 }
+
+                // Hide menu
+                if (e.key === 'Escape' || e.type !== 'keydown' && !e.target.closest('.js-context')) {
+                    menu.classList.remove('visible');
+                    document.removeEventListener('click', hide);
+                    document.removeEventListener('keydown', hide);
+                    document.removeEventListener('wheel', prevZoom);
+                }
+            };
+
+            btn.addEventListener('click', () => {
+                if (n) {
+                    this.data.selected = n;
+                }
+                this.updateActionItems();
 
                 menu.classList.add('visible');
                 $(menu).position({
                     of: $(btn),
-                    my: 'right top',
-                    at: 'right bottom',
+                    my,
+                    at,
                     collision: 'flipfit',
                     within: $('body'),
-                    using(obj) {
-                        const { left, top } = obj;
-
-                        $(this).css({
-                            left: `${left + 36 }px`,
-                            top: `${top}px`
-                        });
-                    }
                 });
+
+                btn.blur();
+                setTimeout(() => menu.focus(), 100);
 
                 document.addEventListener('click', hide);
                 document.addEventListener('keydown', hide);
+                document.addEventListener('wheel', prevZoom);
             });
         },
 
-        bindActionBtnEvts(cn) {
-            cn.querySelector('.js-tr-open').addEventListener('click', () => {
+        updateActionItems() {
+            const {details, selected} = this.data;
+            const {xrf, pw, e} = selected;
+            const {menu} = this.listSection;
+            const shedItem = menu.querySelector('.js-tr-change-schedule');
+            const passItem = menu.querySelector('.js-tr-change-password');
+            const remPassItem = menu.querySelector('.js-tr-remove-password');
+            const expiryItem = menu.querySelector('.js-tr-change-exp-date');
+
+            const dynItems = [
+                'js-tr-details-section',
+                'js-tr-copy-link',
+                'js-tr-edit-link-title'
+            ];
+
+            expiryItem.querySelector('span').textContent =
+                e ? l.transferit_change_exp_date : l.transferit_add_exp_date;
+
+            if (xrf && xrf.length) {
+                shedItem.classList.remove('hidden');
+                shedItem.querySelector('span').textContent =
+                    xrf[0].s ? l.transferit_change_schedule : l.transferit_add_schedule;
+            }
+            else {
+                shedItem.classList.add('hidden');
+            }
+
+            if (pw) {
+                passItem.querySelector('span').textContent = l[23262];
+                remPassItem.classList.remove('hidden');
+            }
+            else {
+                passItem.querySelector('span').textContent =  l.transferit_add_pass;
+                remPassItem.classList.add('hidden');
+            }
+
+            for (const item of dynItems) {
+                menu.querySelector(`.${item}`).classList[details ? 'add' : 'remove']('hidden');
+            }
+        },
+
+        bindActionItemEvts() {
+            const {cn} = this.data;
+            const {menu} = this.listSection;
+
+            menu.querySelector('.js-tr-open').addEventListener('click', () => {
                 const {xh} = this.data.selected;
                 open(`${getBaseUrl()}/t/${xh}`, '_blank', 'noopener,noreferrer');
             });
 
-            cn.querySelector('.js-tr-copy-link').addEventListener('click', () => {
-                T.ui.copyLinkToClipboard(this.data.selected.xh);
-            });
-
-            cn.querySelector('.js-share-qr').addEventListener('click', () => {
+            menu.querySelector('.js-share-qr').addEventListener('click', () => {
                 const {xh, name} = this.data.selected;
                 T.ui.qrDialog.show({
                     fileName: name,
@@ -449,38 +569,36 @@ lazy(T.ui, 'dashboardLayout', () => {
                 });
             });
 
-            cn.querySelector('.js-tr-edit-link-title').addEventListener('click', () => {
-                const {xh, name} = this.data.selected;
-                const opt = {
-                    title: l.transferit_edit_title,
-                    buttons: [l[776], l.msg_dlg_cancel],
-                    placeholders: [l.transferit_enter_title, l.file_request_title_heading],
-                    inputValue: name
-                };
-                T.ui.prompt(l.transferit_enter_new_title, opt)
-                    .catch(echo)
-                    .then((title) => title && T.core.setTransferAttributes(xh, {title}))
-                    .then((s) => s === 0 && this.init(true))
-                    .catch(tell);
-            });
-
-            cn.querySelector('.js-tr-change-password').addEventListener('click', () => {
+            menu.querySelector('.js-tr-change-password').addEventListener('click', () => {
                 // todo: get password set
-                const {name, xh, p} = this.data.selected;
+                const {name, xh, pw} = this.data.selected;
                 const msg = l.transferit_lock_access_to_x.replace('%1', `<strong>${name}</strong>`);
                 const opt = {
-                    title: p ? l[23262] : l.transferit_add_pass,
+                    title: pw ? l[23262] : l.transferit_add_pass,
                     type: 'password',
                     buttons: [l[776], l.msg_dlg_cancel],
                     placeholders: [l[17454], l[909]],
                 };
                 T.ui.prompt(msg, opt)
-                    .then((pw) => pw && T.core.setTransferAttributes(xh, {pw}))
+                    .then((pw) => {
+                        loadingDialog.show();
+                        return pw && T.core.setTransferAttributes(xh, {pw});
+                    })
                     .then((s) => s === 0 && this.init(true))
-                    .catch(tell);
+                    .catch(tell)
+                    .finally(() => loadingDialog.hide());
             });
 
-            cn.querySelector('.js-tr-change-exp-date').addEventListener('click', () => {
+            menu.querySelector('.js-tr-remove-password').addEventListener('click', () => {
+                const {xh} = this.data.selected;
+                loadingDialog.show();
+                T.core.removePassword(xh)
+                    .then((s) => s === 0 && this.init(true))
+                    .catch(tell)
+                    .finally(() => loadingDialog.hide());
+            });
+
+            menu.querySelector('.js-tr-change-exp-date').addEventListener('click', () => {
                 const {xh} = this.data.selected;
                 const opt = {
                     buttons: [l[776], l.msg_dlg_cancel],
@@ -507,14 +625,16 @@ lazy(T.ui, 'dashboardLayout', () => {
                     .catch(tell);
             });
 
-            cn.querySelector('.js-tr-change-schedule').addEventListener('click', () => {
+            menu.querySelector('.js-tr-change-schedule').addEventListener('click', () => {
                 const {xh, xrf} = this.data.selected;
+                const value = xrf.length ? xrf[0].s : null;
                 const opt = {
-                    title: l.transferit_change_sched_hdr,
+                    title: value ? l.transferit_change_sched_hdr : l.transferit_add_schedule,
+                    msg: value ? l.transferit_change_sched_info : l.transferit_add_sched_info,
                     type: 'calendar',
                     buttons: [l[776], l.msg_dlg_cancel],
                     placeholders: [l.transferit_sending_date],
-                    value: xrf.length ? xrf[0].s : null
+                    value
                 };
                 T.ui.prompt(l.transferit_change_sched_info, opt)
                     .then((s) => {
@@ -530,18 +650,41 @@ lazy(T.ui, 'dashboardLayout', () => {
                     .catch(tell);
             });
 
-            cn.querySelector('.js-tr-delete-transfer').addEventListener('click', () => {
-                const {name, xh} = this.data.selected;
-                const msg = escapeHTML(l.transferit_delete_tr_info).replace('%1', `<strong>${name}</strong>`);
+            menu.querySelector('.js-tr-details').addEventListener('click', () => this.renderDetailsContent());
 
-                T.ui.confirm(msg, {title: 'Delete', buttons: [l[1730], l.msg_dlg_cancel]})
-                    .then((yes) => yes && T.core.delete(xh))
-                    .then(() => this.init(true))
-                    .catch(tell);
-            });
+            for (const elm of cn.querySelectorAll('.js-tr-copy-link')) {
+                elm.addEventListener('click', () => {
+                    T.ui.copyLinkToClipboard(this.data.selected.xh);
+                });
+            }
 
-            for (const elm of cn.querySelectorAll('.js-tr-details')) {
-                elm.addEventListener('click', () => this.renderDetailsContent());
+            for (const elm of cn.querySelectorAll('.js-tr-edit-link-title')) {
+                elm.addEventListener('click', () => {
+                    const {xh, name} = this.data.selected;
+                    const opt = {
+                        title: l.transferit_edit_title,
+                        buttons: [l[776], l.msg_dlg_cancel],
+                        placeholders: [l.transferit_enter_title, l.file_request_title_heading],
+                        inputValue: name
+                    };
+                    T.ui.prompt(l.transferit_enter_new_title, opt)
+                        .catch(echo)
+                        .then((title) => title && T.core.setTransferAttributes(xh, {title}))
+                        .then((s) => s === 0 && this.init(true))
+                        .catch(tell);
+                });
+            }
+
+            for (const elm of cn.querySelectorAll('.js-tr-delete-transfer')) {
+                elm.addEventListener('click', () => {
+                    const {name, xh} = this.data.selected;
+                    const msg = escapeHTML(l.transferit_delete_tr_info).replace('%1', `<strong>${name}</strong>`);
+
+                    T.ui.confirm(msg, {title: 'Delete', buttons: [l[1730], l.msg_dlg_cancel]})
+                        .then((yes) => yes && T.core.delete(xh))
+                        .then(() => this.init(true))
+                        .catch(tell);
+                });
             }
         },
 
@@ -558,8 +701,28 @@ lazy(T.ui, 'dashboardLayout', () => {
                 this.showSubSection(this.listSection.cn);
             });
 
-            // Bind action buttons
-            this.bindActionBtnEvts(cn);
+            // New transfer
+            cn.querySelector('.js-new-transfer-btn').addEventListener('click', () => {
+                T.ui.loadPage('start');
+            });
+
+            // Download
+            cn.querySelector('.js-download').addEventListener('click', () => {
+
+                T.core.getOpenSesameLink(this.data.selected.xh)
+                    .then((url) => {
+                        // eslint-disable-next-line local-rules/open -- opening ourselves
+                        window.open(url, '_self', 'noopener');
+                    })
+                    .catch(tell);
+            });
+
+            // Bind context menu
+            this.bindMenuEvents({
+                btn: cn.querySelector('.js-context'),
+                my: 'right top-2',
+                at: 'right+4 top-2'
+            });
         },
 
         renderDetailsContent() {
@@ -569,27 +732,24 @@ lazy(T.ui, 'dashboardLayout', () => {
 
             let { cn } = this.detailsSection;
             const {xh, name, ac, ct, ts, xrf = false, size: [bytes, files]} = this.data.selected;
+            const date = ct || ts;
+            const nameWrap = cn.querySelector('.js-name');
+            const info = cn.querySelector('.js-transfer-info');
 
             this.showSubSection(cn);
 
-            cn.querySelector('.js-name').textContent = name;
+            nameWrap.textContent = name;
+            nameWrap.title = name;
             cn.querySelector('.js-total-views').textContent =
                 l.transferit_total_accesses.replace('%1', ac);
             cn.querySelector('.js-recipients-num').textContent =
-                l.transferit_total_recipients.replace('%1', xrf.length);
+                l.transferit_total_recipients.replace('%1', xrf.length || 0);
 
-            const info = cn.querySelector('.js-transfer-info');
             info.textContent = '';
             ce('span', info).textContent = mega.icu.format(l.album_items_count, files);
             ce('span', info).textContent = bytesToSize(bytes);
-            ce('span', info).textContent = l.transferit_sent_x.replace('%1', ago(ct || ts));
-
-            if (xrf.length) {
-                cn.querySelector('.js-tr-change-schedule').classList.remove('hidden');
-            }
-            else {
-                cn.querySelector('.js-tr-change-schedule').classList.add('hidden');
-            }
+            ce('span', info, {title: this.formatSentDate(date)}).textContent =
+                l.transferit_sent_x.replace('%1', ago(date));
 
             // Render recipient items
             cn = cn.querySelector('.js-recipients-container');

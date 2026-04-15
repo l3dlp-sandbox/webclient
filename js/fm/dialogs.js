@@ -2170,6 +2170,7 @@
                 }
                 closeMsg();
                 handleOpenDialog(tab, dir, { key: 'copyToUpload', value: [files, emptyFolders] });
+                eventlog(501213);
                 return uiCheckboxes($dialog);
             });
         }

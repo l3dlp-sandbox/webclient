@@ -436,17 +436,28 @@ class MegaHeader extends MegaMobileHeader {
             return;
         }
 
-        const { al, pd } = dci;
-        const btn = new MegaButton({
-            parentNode: navActions,
-            text: l.discount_off.replace('%1', `${pd}%`).replace('%2', pro.getProPlanName(al)),
-            icon: 'sprite-fm-mono icon-label-thin-outline',
-            componentClassname: 'promo-button'
-        }).on('click.headerPromo', () => {
-            pro.propay.showDiscountOffer(dci, true);
-        });
+        const {al, pd, m} = dci;
+        pro.loadMembershipPlans().then(() => {
+            const matchedPlanObj = pro.getPlanObj(al, m);
+            if (!matchedPlanObj) {
+                return;
+            }
 
-        navActions.prepend(btn.domNode);
+            const percentageDiscount = pro.calculateSavings(
+                [pd, matchedPlanObj.hasYearlyDiscount ? pro.yearlyDiscountPercentage : 0]);
+
+            const btn = new MegaButton({
+                parentNode: navActions,
+                text: l.discount_off
+                    .replace('%1', formatPercentage(percentageDiscount)).replace('%2', pro.getProPlanName(al)),
+                icon: 'sprite-fm-mono icon-label-thin-outline',
+                componentClassname: 'promo-button'
+            }).on('click.headerPromo', () => {
+                pro.propay.showDiscountOffer(dci, true);
+            });
+
+            navActions.prepend(btn.domNode);
+        }).catch(dump);
     }
 
     handleMenu(type, close) {

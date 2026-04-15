@@ -800,14 +800,24 @@ class MegaFlyoutMenu extends MegaComponent {
             }
             let list = Object.values(M.u)
                 .filter(n => n.c === 1);
-            flyoutState.clearListeners();
-            flyoutState.attachChangeListener(M.u, () => {
-                delay('flyout-contacts-refresh', () => {
-                    if (this.name === 'contacts') {
-                        this.showContactsFlyout();
-                    }
+            const initListeners = () => {
+                flyoutState.clearListeners();
+                flyoutState.attachChangeListener(M.u, () => {
+                    delay('flyout-contacts-refresh', () => {
+                        if (this.name === 'contacts') {
+                            this.showContactsFlyout();
+                        }
+                    });
                 });
-            });
+                flyoutState.attachEventListener(this.flyoutMenu, 'onHidden.contacts', () => {
+                    flyoutState.clearListeners();
+                    delete this.showContactsFlyout.searchTerm;
+                });
+                flyoutState.attachEventListener(this.flyoutMenu, 'onFlyoutChange.contacts', () => {
+                    flyoutState.clearListeners();
+                    delete this.showContactsFlyout.searchTerm;
+                });
+            };
             if (list.length === 0) {
                 this.flyoutMenu.show({
                     name: 'contacts',
@@ -833,14 +843,7 @@ class MegaFlyoutMenu extends MegaComponent {
                         }
                     ]
                 });
-                flyoutState.attachEventListener(this.flyoutMenu, 'onHidden.contacts', () => {
-                    flyoutState.clearListeners();
-                    delete this.showContactsFlyout.searchTerm;
-                });
-                flyoutState.attachEventListener(this.flyoutMenu, 'onChange.contacts', () => {
-                    flyoutState.clearListeners();
-                    delete this.showContactsFlyout.searchTerm;
-                });
+                initListeners();
                 return;
             }
             this.emptyState({ name: 'contacts', hide: true });
@@ -875,14 +878,7 @@ class MegaFlyoutMenu extends MegaComponent {
                 targetPage: 'fm/chat/contacts',
                 targetLabel: l.open_contacts,
             });
-            flyoutState.attachEventListener(this.flyoutMenu, 'onHidden.contacts', () => {
-                flyoutState.clearListeners();
-                delete this.showContactFlyout.searchTerm;
-            });
-            flyoutState.attachEventListener(this.flyoutMenu, 'onFlyoutChange.contacts', () => {
-                flyoutState.clearListeners();
-                delete this.showContactFlyout.searchTerm;
-            });
+            initListeners();
             flyoutState.attachEventListener(this.flyoutMenu, 'search.contacts', ({ data }) => {
                 if (this.name !== 'contacts') {
                     return;
@@ -1103,7 +1099,6 @@ class MegaFlyoutMenu extends MegaComponent {
             if (!megaChatIsReady) {
                 return;
             }
-            flyoutState.clearListeners();
             this.flyoutMenu.show({
                 name: 'chat',
                 topSection: {
@@ -1113,6 +1108,7 @@ class MegaFlyoutMenu extends MegaComponent {
                 targetPage: 'fm/chat',
                 targetLabel: l.open_chat,
             });
+            flyoutState.clearListeners();
             const tabGroupWrap = document.createElement('div');
             tabGroupWrap.className = 'mega-component tab-group flyout-tabs';
             this.flyoutMenu.topBodyRow.appendChild(tabGroupWrap);
@@ -1518,13 +1514,13 @@ class MegaFlyoutMenu extends MegaComponent {
                     }
                 }
             }
-            flyoutState.clearListeners();
             this.flyoutMenu.show({
                 name,
                 topSection: {
                     label: l[6859],
                 },
             });
+            flyoutState.clearListeners();
             flyoutState.attachEventListener(this.flyoutMenu, 'onHidden.infopanel', () => {
                 infoPanelPromise = false;
                 mega.ui.mInfoPanel.cleanup();

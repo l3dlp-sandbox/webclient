@@ -584,7 +584,12 @@ if (!browserUpdate) try
         }, 4000);
     }
 
-    if (!is_livesite && !is_karma && !is_webcache && !self.is_transferit) {
+    if (self.is_transferit) {
+        if (!/transfer\.it$/.test(location.host)) {
+            d = dd = jj = 1;
+        }
+    }
+    else if (!is_livesite && !is_karma && !is_webcache) {
         d = d > 0 ? d : !localStorage.nfd;
         jj = d > 0 && !sessionStorage.dbgContentCheck;
         dd = 1;
@@ -2230,6 +2235,7 @@ else if (!browserUpdate) {
     jsl.push({f:'js/ui/slideshow/settings/order.js', n: 'slideshowOrderSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/speed.js', n: 'slideshowSpeedSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/repeat.js', n: 'slideshowRepeatSetting_js', j:1});
+    jsl.push({f:'js/ui/slideshow/settings/playVid.js', n: 'slideshowPlayVidSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/sub.js', n: 'slideshowSubSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/settingsManager.js', n: 'slideshowSettingsManager_js', j:1});
     jsl.push({f:'js/ui/imagesViewer.js', n: 'imagesViewer_js', j:1});
