@@ -152,6 +152,7 @@ var ulmanager = {
             if (aFileUpload !== null) {
                 eventlog(99699, true);
             }
+            eventlog(501215);
             return $dialog;
         });
     },
