@@ -10,6 +10,7 @@ lazy(self.T, 'core', () => {
     const xLinkInfo = Object.create(null);
     const parse = tryCatch((a) => JSON.parse(a));
     const stringify = tryCatch((a) => JSON.stringify(a));
+    const osp = `I5KpKNGLsjSGemu4f6h47G4dXf92LGGT-fUfzJnC8gE`;
     const getTime = (t, e = 174e10) => t ? parseInt(t, 16) + e : (Date.now() - e).toString(16);
 
     const encode = tryCatch((obj, raw = false) => {
@@ -247,6 +248,14 @@ lazy(self.T, 'core', () => {
         }
     };
 
+    queueMicrotask(() => {
+        T.core.getPersistentValue('opw')
+            .then((vault) => {
+                Object.assign(xPwStore, vault);
+            })
+            .catch(dump);
+    });
+
     return freeze({
         get apipath() {
             return 'https://bt7.api.mega.co.nz/';
@@ -328,7 +337,7 @@ lazy(self.T, 'core', () => {
             return result;
         },
 
-        async fetch(xh, close) {
+        async fetch(xh, close, noc) {
             if (close) {
                 await this.close(xh).catch(nop);
             }
@@ -337,11 +346,11 @@ lazy(self.T, 'core', () => {
             const xnc = await this.getExpiryValue(xh).catch(dump);
             if (xnc) {
                 payload.xnc = 1;
-                xPwStore[xh] = xnc[1];
+                xPwStore[xh] = xPwStore[xh] !== osp && xnc[1] || xPwStore[xh];
             }
             let {f} = await this.xreq(payload, xh);
 
-            if (!xnc) {
+            if (!xnc && !noc) {
                 this.setExpiryValue(xh, [1, xPwStore[xh]]).catch(dump);
             }
             f = await this.populate(f, xh).catch(dump) || f;
@@ -479,6 +488,23 @@ lazy(self.T, 'core', () => {
             return sendAPIRequest({a: 'if', n: [...sel]});
         },
 
+        async getDownloadNode(xh) {
+            const {z, pw, size: [, files]} = xLinkInfo[xh] || await this.getTransferInfo(xh);
+            let n = {h: z, xh, name: `${xh}${z}.zip`};
+            if (files === 1) {
+                let v = Object.values(M.d).filter(n => !n.t);
+                if (!v.length && pw) {
+                    await this.fetch(xh, false, true);
+                    v = Object.values(M.d).filter(n => !n.t);
+                }
+                console.assert(v.length === 1, 'invalid number of local nodes per xi(?)');
+                if (v.length === 1) {
+                    n = v[0];
+                }
+            }
+            return {...n, xh, z, pw};
+        },
+
         getDownloadLink(n, direct = true) {
             if (typeof n === 'string') {
                 n = M.getNodeByHandle(n);
@@ -511,6 +537,25 @@ lazy(self.T, 'core', () => {
             return M.l[h];
         },
 
+        async getOpenSesameLink(xh) {
+            if (!xPwStore[xh]) {
+                const {pw} = xLinkInfo[xh] || await this.getTransferInfo(xh);
+                if (pw) {
+                    xPwStore[xh] = osp;
+                }
+            }
+            const n = await this.getDownloadNode(xh);
+            if (!n.h) {
+                // zip not available?
+                if (xPwStore[xh]) {
+                    // persist, to be used upon opening the link
+                    this.setPersistentValue('opw', xPwStore).catch(dump);
+                }
+                return `${getBaseUrl()}/t/${xh}`;
+            }
+            return this.getDownloadLink(n);
+        },
+
         async getTransferInfo(xh) {
             const result = await sendAPIRequest({a: 'xi', xh});
             xLinkInfo[xh] = result;
@@ -518,27 +563,15 @@ lazy(self.T, 'core', () => {
         },
 
         async zipDownload(xh) {
-            const {z, pw, size: [, files]} = xLinkInfo[xh] || await this.getTransferInfo(xh);
-            let n = {h: z, xh, name: `${xh}${z}.zip`};
-            if (files === 1) {
-                let v = Object.values(M.d).filter(n => !n.t);
-                if (!v.length && pw) {
-                    await this.fetch(xh);
-                    v = Object.values(M.d).filter(n => !n.t);
-                }
-                console.assert(v.length === 1, 'invalid number of local nodes per xi..?');
-                if (v.length === 1) {
-                    n = v[0];
-                }
-            }
+            const n = await this.getDownloadNode(xh);
             if (!n.h) {
                 console.info(`no zip available for ${xh}`);
                 return false;
             }
             const url = this.getDownloadLink(n);
 
-            if (pw && !url.includes('pw=')) {
-                M.l[z] = null;
+            if (n.pw && !url.includes('pw=')) {
+                M.l[n.z] = null;
                 return this.askPassword(xh)
                     .then((pw) => pw && location.assign(`${url}&pw=${pw}`));
             }
@@ -600,6 +633,11 @@ lazy(self.T, 'core', () => {
             ulmanager.isUploading = true;
 
             return promise;
+        },
+
+        async removePassword(xh) {
+
+            return sendAPIRequest({a: 'xm', xh, pw: ''});
         },
 
         async setTransferAttributes(xh, {t, title, m, message, pw, password, e, expiry, se, sender, en, mc}) {

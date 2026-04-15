@@ -584,7 +584,12 @@ if (!browserUpdate) try
         }, 4000);
     }
 
-    if (!is_livesite && !is_karma && !is_webcache && !self.is_transferit) {
+    if (self.is_transferit) {
+        if (!/transfer\.it$/.test(location.host)) {
+            d = dd = jj = 1;
+        }
+    }
+    else if (!is_livesite && !is_karma && !is_webcache) {
         d = d > 0 ? d : !localStorage.nfd;
         jj = d > 0 && !sessionStorage.dbgContentCheck;
         dd = 1;
