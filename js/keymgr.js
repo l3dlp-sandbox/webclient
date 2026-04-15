@@ -347,7 +347,7 @@ lazy(mega, 'keyMgr', () => {
                 1, new Uint8Array([this.version]),
                 2, this.creationtime,
                 3, this.identity,
-                4, this.uint32u8(this.generation),
+                4, this.uint32u8(this.generation + 1),
                 5, this.obj2u8(this.attr),
                 16, this.prived25519,
                 17, this.privcu25519,
@@ -983,8 +983,7 @@ lazy(mega, 'keyMgr', () => {
         }
 
         async updateKeysAttribute(cmds) {
-            // tentatively increment generation and store
-            const generation = ++this.generation;
+            const generation = this.generation + 1;
 
             return this.getKeysContainer()
                 .then((result) => {
@@ -993,12 +992,16 @@ lazy(mega, 'keyMgr', () => {
                     return mega.attr.set2(cmds, 'keys', result, -2, true, true);
                 })
                 .then((result) => {
-                    assert(generation === this.generation);
+                    if (generation === this.generation + 1) {
+                        this.generation++;
 
-                    if (d) {
-                        logger.log(`new generation ${generation}`, result);
+                        if (d) {
+                            logger.log(`new generation ${generation}`, result);
+                        }
+                        return this.setGeneration(generation).catch(dump).then(() => result);
                     }
-                    return this.setGeneration(generation).catch(dump).then(() => result);
+                    eventlog(501219, JSON.stringify([1, generation, this.generation]), true);
+                    throw EBLOCKED;
                 })
                 .catch(async(ex) => {
 
