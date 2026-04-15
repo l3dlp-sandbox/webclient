@@ -66,6 +66,10 @@ class ChatRouting {
     if (handler) {
       handler.call(this, args.route).then(resolve).catch(reject);
       resolve = null;
+      if (section === 'contacts' && !location.startsWith('fm')) {
+        location = `fm/${location}`;
+        args.route.location = location;
+      }
     } else {
       let roomId = String(args[(section === 'c' || section === 'g' || section === 'p') | 0] || '');
       if (roomId.includes('#')) {
