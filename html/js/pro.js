@@ -1088,7 +1088,7 @@ var pro = {
                 lazy(thisPlan, 'saveUpToPrecise', () => {
                     if (thisPlan._saveUpToPrecise === null) {
                         let saveUpToPrecise = false;
-                        if (thisPlan.correlatedPlan) {
+                        if (thisPlan.correlatedPlan && thisPlan.yearlyDiscount > 0) {
                             const thisMonthlyPrice = thisPlan.priceEuro / thisPlan.months;
                             const corrMonthlyPrice = thisPlan.correlatedPlan.priceEuro / thisPlan.correlatedPlan.months;
                             saveUpToPrecise = percentageDiff(thisMonthlyPrice, corrMonthlyPrice, 1);

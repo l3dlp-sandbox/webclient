@@ -1394,6 +1394,8 @@ lazy(pro, 'proplan2', () => {
                 continue;
             }
 
+            const planObj = pro.getPlanObj(currentPlan);
+
             const planName = pro.getProPlanName(planNum);
 
             const $planCard = $fillCards.filter(`#pro${planNum}`);
@@ -1410,8 +1412,17 @@ lazy(pro, 'proplan2', () => {
                 }
             }
 
-            const yearlyDifference = pro.getPlanObj(currentPlan).saveUpToPrecise;
-            $('.pricing-plan-only', $planCard).text(l.pr_only).removeClass('line-through');
+            const yearlyDifference = planObj && planObj.saveUpToPrecise;
+
+            if (planObj.months === 12 && planObj.saveUpToPrecise && planObj.monthlyPlan) {
+                $('.pricing-plan-only', $planCard)
+                    .addClass('line-through')
+                    .text(planObj.monthlyPlan.getFormattedPrice('narrowSymbol', false, false, 1));
+            }
+            else {
+                $('.pricing-plan-only', $planCard).text(l.pr_only).removeClass('line-through');
+            }
+
 
             setCardClassTxt(currentPlan[pro.UTQA_RES_INDEX_ACCOUNTLEVEL], 'sale popular save spacer', false);
 
@@ -1534,7 +1545,6 @@ lazy(pro, 'proplan2', () => {
                 $('.meeting-participants span', $featuresBox).text(l.pr_unlimited_participants);
             }
 
-            const planObj = pro.getPlanObj(currentPlan);
             const usedSpaceGB = pro.proplan2.storageData && (pro.proplan2.storageData.used / 1073741824) || 0;
 
             if (pro.filter.simple.excPlans.has(planObj.level)) {
