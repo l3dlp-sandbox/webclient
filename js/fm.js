@@ -3161,14 +3161,12 @@ Object.defineProperty(FMResizablePane, 'refresh', {
     value() {
         'use strict';
 
-        const width = M.fmTabPages && M.fmTabPages['cloud-drive'][M.currentrootid] ? undefined : 400;
-        if (M.fmTabPages && FMResizablePane.last !== width) {
+        if (M.fmTabPages) {
             // @todo revamp if we ever use other than '.fm-left-panel' for these
             const cl = $('.fm-left-panel:visible, .mega-top-menu.ui-resizable:not(.hidden)').data('fmresizable');
 
             if (cl && !(cl.options.shrinkBelow && fmconfig.smallLhp)) {
-                FMResizablePane.last = width;
-                cl.setOption('maxWidth', width);
+                cl.setOption('maxWidth', M.fmTabPages['cloud-drive'][M.currentrootid] ? null : 400);
             }
             else if (cl) {
                 cl.refresh();
