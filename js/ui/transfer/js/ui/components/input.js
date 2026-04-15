@@ -134,12 +134,13 @@ lazy(T.ui, 'input', () => {
             if (!attrs.id) {
                 attrs.id = Math.random().toString(36).slice(-7);
             }
-            const item = ce('form', null, {class: 'it-input xl-size'});
+            const {formElem = 'form', ...inputAttrs} = attrs;
+            const item = ce(formElem, null, {class: 'it-input xl-size'});
 
             const box = ce('div', item, {class: 'input-box'});
             const node = ce('div', box, {class: 'input-field'});
 
-            const elm = ce('input', node, {type, name: attrs.id, value: '', ...attrs});
+            const elm = ce('input', node, {type, name: attrs.id, value: '', ...inputAttrs});
             elm.required = true;
 
             ce('label', node, {for: attrs.id});

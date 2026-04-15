@@ -386,16 +386,56 @@ mBroadcaster.once('boot_done', () => {
 
     ulmanager.ulSetup = (a0) => a0 && ulmanager.ulStart(a0);
 
-    // @todo
+    self.getCountryAndLocales = () => {
+        let country = 'ISO';
+        let locales = '';
+
+        // If user logged in and country data is set on Mega, using it.
+        if (u_attr && u_attr.country) {
+            country = u_attr.country;
+            locales = locale + '-' + country;
+        }
+        // Otherwise, try grab country data from browser's navigator.languages
+        else if (Array.isArray(navigator.languages)) {
+
+            locales = navigator.languages.filter(l => l !== locale && l.startsWith(locale))[0];
+
+            if (locales) {
+                country = locales.replace(`${locale}-`, '');
+            }
+        }
+
+        // cnl is exist and has same country as u_attr return cached version.
+        if ($.cnl && $.cnl.country === country) {
+            return $.cnl;
+        }
+
+        locales = mega.intl.test(locales) || mega.intl.test(locale) || 'ISO';
+
+        // If locale is Arabic and country is non-Arabic country or non set,
+        if (locale === 'ar' && !arabics.includes(country)) {
+            // To avoid Firefox bug, set UAE as default country.
+            locales = 'ar-AE';
+        }
+
+        $.cnl = {country, locales};
+
+        return $.cnl;
+    };
+
     self.time2date = (unixTime, format) => {
         const date = new Date(unixTime * 1e3 || 0);
-        if (format === 3) {
-            const months = [
-                l[408], l[409], l[410], l[411], l[412], l[413],
-                l[414], l[415], l[416], l[417], l[418], l[419]
-            ];
-            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        const opts = {
+            3: {year: 'numeric', month: 'long'},
+            8: {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'},
+            21: {hour: '2-digit', minute: '2-digit'}
+        };
+
+        if (opts[format]) {
+            const locales = getCountryAndLocales();
+            return new Intl.DateTimeFormat(locales, opts[format]).format(date);
         }
+
         return date.toDateString();
     };
 

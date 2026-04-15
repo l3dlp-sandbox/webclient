@@ -12,12 +12,19 @@ lazy(T.ui, 'msgDialog', () => {
         ev.preventDefault();
         ev.stopPropagation();
     };
+
+    content.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') {
+            confirmBtn.click();
+        }
+    });
+
     let pending = 0;
     const ce = (n, t, a) => mCreateElement(n, a, t);
 
     lazy(ce, 'type', () => {
         const res = Object.create(null);
-        const a = {id: 'msg-dialog-input'};
+        const a = {id: 'msg-dialog-input', formElem: 'div'};
 
         lazy(res, 'prompt', () => T.ui.input.create('text', a));
         lazy(res, 'password', () => T.ui.input.create('password', a));
@@ -75,6 +82,7 @@ lazy(T.ui, 'msgDialog', () => {
         for (const elm of content.querySelectorAll('form')) {
             elm.addEventListener('submit', stop);
         }
+
         T.ui.dialog.show(content);
     });
 
