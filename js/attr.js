@@ -428,6 +428,9 @@
                     payload.a = 'mcuga';
                     payload.ph = chathandle;
                 }
+                if (attribute === '^!keys') {
+                    payload.kv = mega.keyMgr.generation;
+                }
                 api.req(payload, ATTR_REQ_CHANNEL[attribute])
                     .then(({result}) => settleFunction(result))
                     .catch((ex) => {
@@ -555,6 +558,8 @@
         if (!error) {
             const {result} = res.batch ? res.batch.pop() : res;
 
+            assert(result !== undefined, `Unexpected API response handling for ${attribute}`);
+
             res = result;
             error = typeof result === 'number' && result < 0;
         }
@@ -603,6 +608,11 @@
 
             req[attribute] = version ? [savedValue, version] : [savedValue];
             req.a = 'upv';
+
+            if (attribute === '^!keys' && version) {
+
+                req[attribute][2] = useVersion.kv;
+            }
         }
 
         if (cmds && !Array.isArray(cmds)) {
