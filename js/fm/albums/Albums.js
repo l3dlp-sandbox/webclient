@@ -229,9 +229,10 @@ lazy(mega.gallery, 'albums', () => {
         }
 
         let imgCount = 0;
+        const filter = mega.slideshow.utils && mega.slideshow.utils.filterNodes(undefined, true) || M.isGalleryImage;
 
         for (let i = 0; i < nodes.length; i++) {
-            if (M.isGalleryImage(nodes[i])) {
+            if (filter(nodes[i])) {
                 imgCount++;
 
                 if (imgCount > 1) {

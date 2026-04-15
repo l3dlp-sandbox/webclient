@@ -2230,6 +2230,7 @@ else if (!browserUpdate) {
     jsl.push({f:'js/ui/slideshow/settings/order.js', n: 'slideshowOrderSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/speed.js', n: 'slideshowSpeedSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/repeat.js', n: 'slideshowRepeatSetting_js', j:1});
+    jsl.push({f:'js/ui/slideshow/settings/playVid.js', n: 'slideshowPlayVidSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/sub.js', n: 'slideshowSubSetting_js', j:1});
     jsl.push({f:'js/ui/slideshow/settings/settingsManager.js', n: 'slideshowSettingsManager_js', j:1});
     jsl.push({f:'js/ui/imagesViewer.js', n: 'imagesViewer_js', j:1});

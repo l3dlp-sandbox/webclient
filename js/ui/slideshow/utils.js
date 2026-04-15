@@ -44,7 +44,8 @@ lazy(mega.slideshow, 'utils', () => {
                 return () => true;
             }
             else if (isPlayMode) {
-                return (n) => n.s && (n.fa || !M.getNodeShare(n).down) && is_image3(n);
+                return (n) => n.s && (n.fa || !M.getNodeShare(n).down) &&
+                    (mega.slideshow.settings.playVid.getValue() && is_video(n) === 1 || is_image3(n));
             }
             else if (is_mobile) {
                 return (n) => (n.fa || !M.getNodeShare(n).down) && (is_video(n) || is_image3(n));

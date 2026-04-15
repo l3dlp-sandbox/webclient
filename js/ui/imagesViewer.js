@@ -23,6 +23,7 @@ var slideshowid;
     const broadcasts = [];
     const MOUSE_IDLE_TID = 'auto-hide-previewer-controls';
     let zoomPan = false;
+    let videoSlept = false;
 
     const onConfigChange = (name) => {
         if (name === 'speed') {
@@ -212,7 +213,10 @@ var slideshowid;
             }
         }
 
-        slideshow_timereset();
+        if (!videoSlept) {
+            slideshow_timereset();
+        }
+        videoSlept = false;
     }
 
     function slideshow_next(steps) {
@@ -562,11 +566,13 @@ var slideshowid;
         }
     }
 
-    function slideshow_timereset() {
+    function slideshow_timereset(sleepTime) {
         slideshow_aborttimer();
 
+        const sTime = sleepTime || mega.slideshow.settings.speed.getValue() / 1e3;
+
         if (slideshowplay && !slideshowpause) {
-            (slideshowTimer = tSleep(mega.slideshow.settings.speed.getValue() / 1e3))
+            (slideshowTimer = tSleep(sTime))
                 .then(() => {
                     if (slideshowplay) {
                         slideshowplay = -1;
@@ -1874,9 +1880,16 @@ var slideshowid;
         const $pendingBlock = $('.loader-grad', $content);
         var $video = $('video', $content);
         var $playVideoButton = $('.play-video-button', $content);
+        let hasRestTimer = false;
 
         if (previews[id].fma === undefined && !is_audio(n)) {
             previews[id].fma = MediaAttribute(n).data || false;
+        }
+
+        if (autoPlay && slideshowplay && previews[id].fma && previews[id].fma.playtime) {
+            videoSlept = true;
+            hasRestTimer = true;
+            slideshow_timereset(previews[id].fma.playtime);
         }
 
         $playVideoButton.rebind('click', function() {
@@ -1926,6 +1939,10 @@ var slideshowid;
                 // If video is playing
                 preqs[n.h].on('playing', function() {
                     var video = this.video;
+
+                    if (hasRestTimer) {
+                        slideshow_timereset(previews[id].fma.playtime);
+                    }
 
                     if (video && video.duration) {
 
