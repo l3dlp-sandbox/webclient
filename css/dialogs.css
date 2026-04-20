@@ -4741,40 +4741,6 @@ body.de .mega-dialog.contact-picker-widget {
 
 /* end bottom-pages-dialog */
 
-/* pro-login-dialog */
-
-    .mega-dialog.pro-login-dialog {
-        width: 490px;
-    }
-    .mega-dialog.pro-login-dialog header {
-        padding: 32px 48px 0;
-    }
-    .mega-dialog.pro-login-dialog header h1 {
-        text-align: center;
-    }
-    .mega-dialog.pro-login-dialog .login-page-forgot-bl {
-        padding: 0 0 24px;
-    }
-    .mega-dialog.pro-login-dialog footer .footer-container {
-        justify-content: space-between;
-    }
-    .mega-dialog.pro-login-dialog .footer-container .checkbox-block {
-        flex-grow: 1;
-        align-items: center;
-    }
-    .mega-dialog.pro-login-dialog aside {
-        color: var(--text-color-medium);
-        background: var(--surface-grey-3);
-        text-align: center;
-    }
-    .mega-dialog.pro-login-dialog aside p a {
-        color: var(--text-color-high);
-        font-family: var(--text-font-family);
-        font-weight: 600;
-    }
-
-/* end pro-login-dialog */
-
 /* collected-data-review-dialog */
 
     .mega-dialog.collected-data-review-dialog {
@@ -4921,52 +4887,6 @@ body.de .mega-dialog.contact-picker-widget {
     }
 
 /* end contact-info dialog */
-
-/* pro-register-dialog */
-
-    .mega-dialog.pro-register-dialog {
-        width: 728px;
-    }
-    .mega-dialog.pro-register-dialog header {
-        padding: 0;
-    }
-    .mega-dialog.pro-register-dialog header .graphic.wide {
-        height: 120px;
-        width: 400px;
-        --width: 400px;
-    }
-    .mega-dialog.pro-register-dialog header p {
-        padding: 0 48px;
-        text-align: center;
-    }
-    .mega-dialog.pro-register-dialog .dialog-register-form {
-        margin-top: 24px;
-    }
-    .mega-dialog.pro-register-dialog .account.input-tooltip, .pro-register-dialog .both-input-tooltip {
-        font-size: 13px;
-        min-width: 100%;
-        text-transform: none;
-    }
-    .mega-dialog.pro-register-dialog .password .account.input-tooltip {
-        min-width: 516px;
-    }
-    .mega-dialog.pro-register-dialog .account.checkbox-block {
-        width: 105%;
-        padding: 12px 0 0 0;
-        display: flex;
-    }
-    .mega-dialog.pro-register-dialog .account.input-wrapper {
-        margin: 0 0 37px 0;
-    }
-    .mega-dialog.pro-register-dialog .txt_dark {
-        font-family: 'LatoWeb_SemiBold', 'Arial', sans-serif;
-        font-weight: 700;
-    }
-    .mega-dialog.pro-register-dialog footer aside.no-padding {
-        padding: 0;
-    }
-
-/* end pro-register-dialog */
 
 /* credentials-warning-dialog */
 
@@ -7242,7 +7162,7 @@ body.de .mega-dialog.contact-picker-widget {
 
 /* end park-account-dialog */
 
-/* two-factor-dialog shared styles: setup-two-factor-verify, setup-two-factor-backup-key, two-factor-verify-action, verify-two-factor-login, setup-two-factor */
+/* two-factor-dialog shared styles: setup-two-factor-verify, setup-two-factor-backup-key, two-factor-verify-action, setup-two-factor */
 
     /* shared styles */
 
@@ -7375,25 +7295,10 @@ body.de .mega-dialog.contact-picker-widget {
             transform: rotate(180deg);
         }
 
-    /* verify-two-factor-login */
-
-        .mega-dialog.verify-two-factor-login {
-            width: 480px;
-        }
-        .mega-dialog.verify-two-factor-login .fm-account-input {
-            width: 302px;
-        }
-        .mega-dialog.verify-two-factor-login .fm-account-input input {
-            color: var(--text-color-high);
-            font-size: 20px;
-            line-height: 25px;
-            text-align: center;
-        }
-        .es .mega-dialog.verify-two-factor-login .fm-account-input input,
+        .es .mega-dialog.two-factor-verify-action .pin-input,
         .es .mega-dialog.setup-two-factor-verify .pin-input {
             font: var(--text-h3);
         }
-        .mega-dialog.verify-two-factor-login .warning-text-field,
         .mega-dialog.two-factor-verify-action .warning-text-field {
             background: var(--banner-background-error);
             border: 1px solid var(--banner-border-error);
@@ -7403,18 +7308,8 @@ body.de .mega-dialog.contact-picker-widget {
             font: var(--text-body1);
             margin: 0 auto;
             padding: 4px 0;
-            text-align: center;
+            text-align: start;
             width: 302px;
-        }
-        .mega-dialog.verify-two-factor-login .loading-image img {
-            width: 28px;
-            height: 28px;
-        }
-        .mega-dialog.verify-two-factor-login .lost-authenticator-button:hover {
-            text-decoration: underline;
-        }
-        .mega-dialog.verify-two-factor-login .lost-authenticator-button {
-            cursor: pointer;
         }
 
     /* two-factor-verify-action */
@@ -8482,39 +8377,6 @@ body.de .mega-dialog.contact-picker-widget {
     .mega-dialog.awaiting-confirmation .content-block {
         padding-bottom: 48px;
     }
-
-/* registration-page-success */
-
-    .mega-dialog.registration-page-success .reg-success-special,
-    .mega-dialog.registration-page-success.special .reg-success-normal,
-    .mega-dialog.registration-page-success .reg-success-special .reg-success-txt.chat-header,
-    .mega-dialog.registration-page-success .reg-success-special .chat-message,
-    .mega-dialog.registration-page-success.chatlink .reg-success-special .reg-success-txt {
-        display: none;
-    }
-    .mega-dialog.registration-page-success.special .reg-success-special {
-        display: block;
-    }
-    .mega-dialog.registration-page-success.chatlink .reg-success-special .reg-success-txt.chat-header {
-        display: block;
-        text-align: center;
-    }
-    .mega-dialog.registration-page-success.chatlink .reg-success-special .reg-success-txt.chat-message {
-        display: block;
-        padding: 16px 0 0 0;
-    }
-    .mega-dialog.registration-page-success .content-block {
-        padding-bottom: 48px;
-    }
-    .mega-dialog.registration-page-success .reg-resend-email-txt {
-        font: var(--text-h3);
-        max-width: 540px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-/* end registration-page-success */
 
 /* account-reset-confirmation */
 

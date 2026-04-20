@@ -43,6 +43,11 @@ lazy(mega.gallery, 'albums', () => {
         const { length } = M.v;
         rows = [[M.v[0]]];
         headNodes = Object.create(null);
+
+        if (length === 0) {
+            return;
+        }
+
         headNodes[M.v[0].h] = true;
 
         let lastMonthKey = getMonthKey(M.v[0]);

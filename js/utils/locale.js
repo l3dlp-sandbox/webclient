@@ -1260,10 +1260,7 @@ mBroadcaster.once('boot_done', function populate_l() {
     }
     l[20650] = escapeHTML(l[20650]).replace(/\[S]/g, '<span>').replace(/\[\/S]/g, '</span>')
         .replace('[A]', '<a href="/repay" class="clickurl">').replace('[/A]', '</a>');
-    l['20635.a'] = escapeHTML(l[20635])
-        .replace('[A]', '<a class="clickurl" href="/register" data-eventid="99797">')
-        .replace('[/A]', '</a>');
-    l[20635] = escapeHTML(l[20635]).replace('[A]', '<a>').replace('[/A]', '</a>');
+    l[20635] = escapeHTML(l[20635]).replace('[A]', '<a href="/register">').replace('[/A]', '</a>');
     l[20713] = escapeHTML(l[20713]).replace('[B]%1[/B]', '<b>%1</b>');
     l[20714] = escapeHTML(l[20714])
         .replace('[B1]%1[/B1]', '<b class="plan-time">%1</b>')
@@ -1298,7 +1295,6 @@ mBroadcaster.once('boot_done', function populate_l() {
         .replace(/\[S]/g, '<span>').replace(/\[\/S]/g, '</span>')
         .replace('[A]', '<a class="clickurl" href="/pro" data-eventid="500490">')
         .replace('[/A]', '</a>');
-    l[22900] = escapeHTML(l[22900]).replace('[A]', '<a class="reg-success-change-email-btn">').replace('[/A]', '</a>');
     l['23062.k'] = escapeHTML(l[23062]).replace('[%s]', l[7049]);
     l[23243] = escapeHTML(l[23243])
         .replace('[A]', '<a href="https://mega.io/terms" class="clickurl" target="_blank">')
@@ -1657,8 +1653,8 @@ mBroadcaster.once('boot_done', function populate_l() {
     l.blocked_rsn_terminated = escapeHTML(l.blocked_rsn_terminated)
         .replace('[A]', '<a href="https://mega.io/terms" target="_blank" rel="noopener noreferrer">')
         .replace('[/A]', '</a>')
-        .replace('[BR]', '<br><br>');
-    l.blocked_rsn_copyright = escapeHTML(l.blocked_rsn_copyright).replace('[BR]', '<br><br>');
+        .replace('[BR]', ' ');
+    l.blocked_rsn_copyright = escapeHTML(l.blocked_rsn_copyright).replace('[BR]', ' ');
 
     const faqLink = 'https://help.mega.io/plans-storage/space-storage/transfer-quota';
     const faqLinkAttr = 'target="_blank" class="clickurl" rel="noopener noreferrer"';
@@ -2082,6 +2078,12 @@ mBroadcaster.once('boot_done', function populate_l() {
         .replace('[/A]', '</a>')
         .replace('%1', '<a href = "mailto:%2" class="link clickurl">%2</a>')
         .replace(/%2/g, 'abuse@mega.io');
+    l.register_terms = escapeHTML(l.register_terms)
+        .replace('[A]', '<a href="https://mega.io/terms" class="clickurl" target="_blank">')
+        .replace('[/A]', '</a>');
+    l.register_dialog_title = escapeHTML(l.register_dialog_title)
+        .replace('[S]', '<span class="red">')
+        .replace('[/S]', '</span>');
 
     const common = [
         15536, 16119, 16120, 16313, 16316, 16360, 18228, 18268, 18282,

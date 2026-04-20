@@ -197,4 +197,3 @@ mobile.settings.account.changeEmail = Object.create(mobile.settingsHelper, {
         }
     }
 });
-

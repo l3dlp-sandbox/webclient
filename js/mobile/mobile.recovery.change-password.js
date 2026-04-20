@@ -199,7 +199,7 @@ mobile.recovery.changePassword = {
                 mobile.messageOverlay.show(l[1955], l[1981]).then(() => {
 
                     // Pre-fill the email on the login page
-                    mobile.signin.previousEmailUsed = recoveryEmail;
+                    login_email = recoveryEmail;
 
                     // Load the login page
                     loadSubPage('login');
@@ -234,7 +234,7 @@ mobile.recovery.changePassword = {
                 mobile.messageOverlay.show(l[1975], l[1976]).then(() => {
 
                     // Pre-fill the email on the login page
-                    mobile.signin.previousEmailUsed = recoveryEmail;
+                    login_email = recoveryEmail;
 
                     // Clear session storage variables.
                     sessionStorage.removeItem('recoveryEmail');

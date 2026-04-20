@@ -1566,7 +1566,6 @@ function openContactInfoLink(contactLink) {
                     openContactInfoLink(contactLink);
                 });
                 login_next = page;
-                login_txt = l[1298];
                 return loadSubPage('login');
             });
         }
@@ -1768,10 +1767,7 @@ function closeDialog(ev) {
         }
     }
 
-    if ($.dialog === 'terms' && $.registerDialog) {
-        $('.mega-dialog.bottom-pages-dialog').addClass('hidden');
-    }
-    else if ($.dialog === 'createfolder' && ($.copyDialog || $.moveDialog || $.selectFolderDialog || $.saveAsDialog)) {
+    if ($.dialog === 'createfolder' && ($.copyDialog || $.moveDialog || $.selectFolderDialog || $.saveAsDialog)) {
         $('.mega-dialog.create-folder-dialog, .mega-dialog.s4-create-bucket-dialog').addClass('hidden');
         $('.mega-dialog.create-folder-dialog .create-folder-size-icon').removeClass('hidden');
     }
@@ -1841,6 +1837,13 @@ function closeDialog(ev) {
         $('.share-dialog').removeClass('arrange-to-back hidden');
 
         delete $.shareWithUnverifiedDialog;
+    }
+    else if (($.dialog === 'pro-login-dialog' || $.dialog === 'pro-register-dialog' ||
+        $.dialog === 'confirm-account-dialog') && mega.ui.auth && mega.ui.auth.dialogComponent) {
+
+        // Avoid recursive closeDialog() call from MegaSheet.hide() safeShow branch.
+        mega.ui.auth.dialogComponent.safeShow = false;
+        mega.ui.auth.dialogComponent.hide($.dialog);
     }
     else {
         if ($.dialog === 'properties') {
@@ -1954,11 +1957,6 @@ function closeDialog(ev) {
 
     delete $.dialog;
     treesearch = false;
-
-    if ($.registerDialog) {
-        // if the terms dialog was closed from the register dialog
-        $.dialog = $.registerDialog;
-    }
 
     if ($.propertiesDialog) {
         // if the dialog was close from the properties dialog

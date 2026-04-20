@@ -289,8 +289,6 @@ mobile.settings.account.twofactorSettings = Object.create(mobile.settingsHelper,
                 return false;
             }
 
-            loadingDialog.show();
-
             // Run Multi-Factor Auth Setup (mfas) request
             api.send({a: 'mfas', mfa: twoFactorPin})
                 .then(() => {
@@ -320,9 +318,6 @@ mobile.settings.account.twofactorSettings = Object.create(mobile.settingsHelper,
                     else {
                         tell(ex);
                     }
-                })
-                .finally(() => {
-                    loadingDialog.hide();
                 });
         }
     },
@@ -348,8 +343,6 @@ mobile.settings.account.twofactorSettings = Object.create(mobile.settingsHelper,
 
                 return false;
             }
-
-            loadingDialog.show();
 
             // Run Multi-Factor Auth Setup (mfas) request
             api.send({a: 'mfad', mfa: twoFactorPin})
@@ -383,9 +376,6 @@ mobile.settings.account.twofactorSettings = Object.create(mobile.settingsHelper,
                     else {
                         tell(ex);
                     }
-                })
-                .finally(() => {
-                    loadingDialog.hide();
                 });
         }
     },

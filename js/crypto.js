@@ -309,6 +309,7 @@ function api_reqfailed(channel, error) {
                     reasonText = l.blocked_rsn_terminated;
                 }
                 else if (reasonCode === 400) {
+                    dialogTitle = l.expired_account_state; // Deactivated account
                     reasonText = l[19748];// Your account is disabled by administrator
                 }
                 else if (reasonCode === 401) {
@@ -343,12 +344,10 @@ function api_reqfailed(channel, error) {
                 // Log the user out for all scenarios except SMS required (500)
                 u_logout(true);
 
-                // Notify UI to reset login loading state (EBLOCKED bypasses normal login flow)
-                mBroadcaster.sendMessage('login:reset-loading');
-
                 // if fm-overlay click handler was initialized, we remove the handler to prevent dialog skip
                 $('.fm-dialog-overlay').off('click.fm');
-                msgDialog('warninga', dialogTitle, reasonText);
+
+                msgDialog('>error', false, dialogTitle, reasonText);
             }
         });
     }

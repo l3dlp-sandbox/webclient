@@ -72,6 +72,9 @@ Implemented styles:
 .nav-elem.slim {
     height: 36px;
 }
+.nav-elem.fat {
+    height: 48px;
+}
 .nav-elem.no-px {
     padding-left: 0;
     padding-right: 0;
@@ -80,6 +83,9 @@ Implemented styles:
 .nav-elem.normal.block {
     width: 100%;
     max-width: var(--mobile-elem-max-width);
+}
+.nav-elem.normal.block.no-max {
+    max-width: none;
 }
 
 .nav-elem.normal.block .primary-text {
@@ -317,7 +323,8 @@ button.nav-elem.no-active:active,
 }
 
 .nav-elem.action-link.login-button,
-.nav-elem.action-link.create-account-button {
+.nav-elem.action-link.create-account-button,
+.nav-elem.action-link.register-button {
     color: var(--mobile-text-primary);
     text-decoration: underline;
 }
@@ -342,15 +349,12 @@ button.nav-elem.no-active:active,
 .nav-elem span {
     color: inherit;
     text-decoration: inherit;
+}
+.nav-elem.button span {
+    font: var(--mobile-font-link-large-semibold);
+}
+.nav-elem.link span {
     font: var(--mobile-font-link-large-regular);
-}
-
-.nav-elem.slim span {
-    font: var(--mobile-font-link-small-regular);
-}
-
-.nav-elem.slim.font-bold span {
-    font: var(--mobile-font-link-small-semibold);
 }
 
 /* underlined text */

@@ -6,11 +6,6 @@ class MegaHeader extends MegaMobileHeader {
 
         super(options);
 
-        // Parse login dropdown
-        if (!options.parentNode.querySelector('.dropdown.top-login-popup')) {
-            options.parentNode.append(parseHTML(getTemplate('top-login')));
-        }
-
         /* Top block */
 
         const navNavigation = this.domNode.querySelector('.top-block .nav-navigation');
@@ -223,22 +218,21 @@ class MegaHeader extends MegaMobileHeader {
                 mLogout();
             }
             else {
-                var c = $('.dropdown.top-login-popup', options.parentNode).attr('class');
-                if (c && c.includes('hidden')) {
-                    if (page === 'register') {
-                        delay('registerloginevlog', () => eventlog(99818));
-                    }
-                    tooltiplogin.init();
-                    return false;
+                if (page === 'register') {
+                    delay('registerloginevlog', () => eventlog(99818));
                 }
-
-                tooltiplogin.init(1);
-
+                mega.ui.login.openDialog();
             }
         });
 
         if (u_type === 0) {
             this.loginBtn.text = l.log_out;
+        }
+
+        // Mobile register button made by super, should be removed.
+        const mobBtn = navActions.componentSelector('.register-button');
+        if (mobBtn) {
+            mobBtn.destroy();
         }
 
         this.signupBtn = new MegaLink({
@@ -260,7 +254,12 @@ class MegaHeader extends MegaMobileHeader {
                 if (page === 'login') {
                     delay('loginregisterevlog', () => eventlog(99798));
                 }
-                loadSubPage('register');
+                if (localStorage.awaitingConfirmationAccount) {
+                    loadSubPage('register');
+                }
+                else {
+                    mega.ui.signup.showDialog({showLogin: true});
+                }
             }
         });
 
@@ -679,8 +678,6 @@ class MegaHeader extends MegaMobileHeader {
         }
 
         this.renderLoggedIn();
-
-        tooltiplogin.init(1);
         if (mega.ui.flyout) {
             mega.ui.flyout.closeIfNeeded();
         }

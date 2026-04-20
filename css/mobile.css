@@ -890,7 +890,6 @@ ul, li {
 }
 .mobile.fm-block,
 .mobile.signin-register-block,
-.mobile.registration-confirm-email,
 .mobile.bus-pw-confirm-block {
     width: 100%;
     height: 100%;
@@ -899,16 +898,6 @@ ul, li {
 .mobile.signin-register-block .mobile.fm-block,
 .mobile.bus-pw-confirm-block .mobile.fm-block {
     background-color: var(--stroke-grey-1);
-}
-.mobile.registration-confirm-email {
-    background-color: var(--stroke-grey-1);
-    position: fixed;
-    top: 0;
-    z-index: 95;
-}
-.mobile.registration-confirm-email .mobile.fm-block {
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--stroke-grey-2);
 }
 .mobile.full-page-scrollable {
     overflow: scroll;
@@ -932,8 +921,7 @@ ul, li {
     overflow: hidden;
     background-color: #fff;
 }
-.signin-register-block .mobile.sign-header,
-.registration-confirm-email .mobile.sign-header {
+.signin-register-block .mobile.sign-header {
     border-bottom: 1px solid var(--stroke-main);
     background-color: var(--stroke-main);
 }
@@ -941,7 +929,7 @@ ul, li {
     position: fixed;
     width: 100%;
 }
-.mobile.full-page-scrollable:not(.registration-confirm-email):not(.registration-generating-keys) .mobile.fm-header .mobile.fm-header-txt {
+.mobile.full-page-scrollable:not(.registration-generating-keys) .mobile.fm-header .mobile.fm-header-txt {
     margin: 0 20px 0;
 }
 .mobile.fm-header.pfid-style .open-title-menu {
@@ -952,8 +940,7 @@ ul, li {
     z-index: 101;
 }
 .theme-dark .signin-register-block .mobile.sign-header.fm-hr,
-.theme-dark .forgot-password-page .mobile.fm-header,
-.theme-dark .registration-confirm-email .mobile.sign-header.fm-hr {
+.theme-dark .forgot-password-page .mobile.fm-header {
     box-shadow: 0 2px 18px 0 rgba(0,0,0,0.6);
 }
 .mobile.fm-header.folder-link {
@@ -1536,8 +1523,7 @@ ul, li {
     margin: 0 60px 0;
 }
 .mobile.fm-header-txt.sign-in,
-.mobile.fm-header-txt.register,
-.registration-confirm-email .mobile.fm-header-txt {
+.mobile.fm-header-txt.register {
     color: var(--text-color-high);
 }
 .mobile.fm-folder-size {
@@ -2524,7 +2510,7 @@ input[type='checkbox'] {
 .mobile.confirm-terms .text a {
     color: var(--text-color-error);
 }
-.mobile.signin-button, .mobile.register-button, .mobile.resend-button, .mobile.create-account-botton {
+.mobile.signin-button, .mobile.register-button, .mobile.create-account-botton {
     background-image: linear-gradient(-180deg, #07BEB1 0%, #00BFA5 100%);
     border: 1px solid #00A58F;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11), inset 0 2px 1px 0 rgba(255,255,255,0.20);
@@ -2541,24 +2527,7 @@ input[type='checkbox'] {
     transition: all 200ms ease-in-out;
     opacity: 0.3;
 }
-.mobile.register-cancel-button {
-    background-image: linear-gradient(-179deg, #FF3333 0%, #FF4444 100%);
-    border: 1px solid #D82928;
-    border-radius: 3px;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11), inset 0 2px 1px 0 rgba(255,255,255,0.20);
-    color: #fff;
-    font-size: 16px;
-    height: 48px;
-    line-height: 48px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: 8px;
-    padding: 0;
-    position: relative;
-    text-align: center;
-    transition: all 200ms ease-in-out;
-}
-.mobile.signin-button.active, .mobile.register-button.active, .mobile.resend-button.active, .mobile.create-account-botton.active {
+.mobile.signin-button.active, .mobile.register-button.active, .mobile.create-account-botton.active {
     background: #00bfa5;
     border: 1px solid #00A58F;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11), inset 0 2px 1px 0 rgba(255,255,255,0.20);
@@ -2742,30 +2711,6 @@ div.checkboxOn {
     padding-bottom: 16px;
     border-bottom:1px solid var(--stroke-grey-2);
 }
-.mobile.registration-confirm-email .email-icon {
-    width: 200px;
-    height: 114px;
-    background-image: url(../images/mega/register-big-sprite.png);
-    background-position: center -1021px;
-    background-repeat: no-repeat;
-    margin: 46px auto 0 auto;
-}
-.mobile.registration-confirm-email .confirm-message {
-    color: var(--text-color-high);
-    font-size: 15px;
-    text-align: center;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: 26px;
-}
-.mobile.registration-confirm-email .change-email {
-    background-color: var(--stroke-grey-1);
-    margin-top: 30px;
-    padding: 14px 0;
-    text-align: center;
-    margin: 24px 16px;
-    border: 1px solid var(--stroke-grey-2);
-}
 .recover-account-email-block .account.input-wrapper {
     margin: 0 auto;
 }
@@ -2774,26 +2719,6 @@ div.checkboxOn {
 }
 .recover-account-email-block .mega-input.active {
     border-color: var(--input-text-underline-hover);
-}
-.mobile.registration-confirm-email .change-email input {
-    background-color: var(--stroke-grey-1);
-    border: 0;
-    color: var(--text-color-medium);
-    display: block;
-    font-size: 14px;
-    margin: 0;
-    padding: 0 20px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    font-family: 'source_sans_proregular', sans-serif;
-}
-.mobile.registration-confirm-email .instruction-message {
-    opacity: 0.6;
-    font-size: 13px;
-    text-align: center;
-    color: var(--text-color-medium);
-    margin: 16px 10px 20px 10px;
 }
 .mobile.registration-generating-keys .information-message {
     font-size: 15px;
@@ -4701,6 +4626,7 @@ div.checkboxOn {
 /* Cloud drive context menu */
 body.mobile {
     background-color: var(--mobile-page-background);
+    min-height: 300px;
 }
 .main-layout.fm-overlay,
 .mega-overlay.active.arrange-to-back,
@@ -9338,8 +9264,7 @@ Thank You dialog
         margin-left: 24px;
         margin-right: 24px;
     }
-    .mobile.signin-button, .mobile.register-button,
-    .mobile.resend-button, .mobile.register-cancel-button, .mobile.create-account-button {
+    .mobile.signin-button, .mobile.register-button, .mobile.create-account-button {
         height: 48px;
         line-height: 47px;
         margin-left: 24px;
@@ -9354,14 +9279,6 @@ Thank You dialog
     .two-factor-verify-seed-wrapper .mobile.signin-input {
         margin-left: 0;
         margin-right: 0;
-    }
-    .mobile.registration-confirm-email .email-icon {
-        margin-top: 72px;
-    }
-    .mobile.registration-confirm-email .change-email {
-        padding: 17px 0;
-        margin-left: 24px;
-        margin-right: 24px;
     }
 }
 
@@ -10633,10 +10550,6 @@ code, c {
     .mobile.empty-icon {
         background-image: url("../images/mobile/mobile-sprite@2x.png");
         background-size: 280px auto;
-    }
-    .mobile.registration-confirm-email .email-icon {
-        background-image: url(../images/mega/register-big-sprite@2x.png);
-        background-size: 200px auto;
     }
     .mobile .improved-recovery-steps .login-register-input, .mobile .improved-recovery-steps .checkboxOn::after, .mobile .improved-recovery-steps .checkboxOff::after {
         background-image: url(../images/mega/top-login-sprite@2x.png);

@@ -77,7 +77,7 @@ mBroadcaster.addListener('fm:initialized', () => {
                     flag: OBV4_FLAGS.CLOUD_DRIVE_INIT,
                     get prerequisiteCondition() {
                         // Just confirmed in this tab
-                        return !!(confirmok || mega.ui.onboardBusSub);
+                        return !!(confirmok === 0 || mega.ui.onboardBusSub);
                     },
                     actions: [
                         {

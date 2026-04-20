@@ -30,7 +30,6 @@ var subdirid = false;
 var subsubdirid = false;
 var unread;
 var account = false;
-var register_txt = false;
 var login_next = false;
 var loggedout = false;
 var flhashchange = false;
@@ -798,21 +797,13 @@ function init_page() {
             delete localStorage.awaitingConfirmationAccount;
         }
         else {
-            parsepage(pages.placeholder);
+            parsepage(pages.login);
 
-            // Show signup link dialog for mobile
             if (is_mobile) {
-                mobile.register.showConfirmEmailScreen(acc);
-                return false;
+                MegaMobileHeader.init(true);
             }
-            else {
-                // Insert placeholder page while waiting for user input
-                return mega.ui.sendSignupLinkDialog(acc, function () {
-                    // The user clicked 'close', abort and start over...
-                    delete localStorage.awaitingConfirmationAccount;
-                    init_page();
-                });
-            }
+
+            return mega.ui.signup.showLinkDialog(acc);
         }
     }
 
@@ -936,28 +927,20 @@ function init_page() {
     else if (page === 'confirm') {
 
         loadingDialog.show();
+
+        delete sessionStorage.importSignupRedirect;
+
         security.register.verifyEmailConfirmCode(confirmcode)
             .then(({email}) => {
-
                 page = 'login';
                 confirmok = true;
                 parsepage(pages.login);
-                onIdle(topmenuUI);
                 accountConfirmed = true;
 
                 if (is_mobile) {
-                    mobile.register.showConfirmAccountScreen(email);
+                    MegaMobileHeader.init(true);
                 }
-                else {
-                    login_txt = l[378];
-                    init_login();
-
-                    if (email) {
-                        $('#login-name2').val(email).blur();
-                        $('.register-st2-button').addClass('active');
-                        $('#login-name2').prop('readonly', true);
-                    }
-                }
+                init_login(email);
             })
             .catch((ex) => {
                 if (ex === EROLLEDBACK) {
@@ -968,14 +951,12 @@ function init_page() {
                 parsepage(pages.login);
 
                 if (is_mobile) {
-                    mobile.register.showConfirmAccountFailure(ex);
+                    MegaMobileHeader.init(true);
                 }
-                else {
-                    login_txt = ex === ENOENT ? l[19788] : String(ex).includes(l[703]) && l[703] || `${l[705]} ${ex}`;
 
-                    init_login();
-                    topmenuUI();
-                }
+                login_txt = ex === ENOENT ? l.confirm_link_invalid_text :
+                    String(ex).includes(l[703]) && l[703] || `${l[705]} ${ex}`;
+                init_login();
             })
             .finally(() => {
                 loadingDialog.hide();
@@ -996,19 +977,19 @@ function init_page() {
             loadSubPage('fm');
             return false;
         }
+
         if (window.nextPage) {
             login_next = window.nextPage;
-            login_txt =  login_next === 'support' ? l.support_redirect_login : l[24766];
+            login_txt = login_next === 'support' ? l.support_redirect_login : l[24766];
             delete window.nextPage;
         }
         parsepage(pages.login);
+
         if (is_mobile) {
             MegaMobileHeader.init(true);
-            mobile.signin.show();
         }
-        else {
-            init_login();
-        }
+
+        init_login();
     }
     else if (is_mobile && u_type && (page === 'fm/dashboard' || page === 'start')) {
         loadSubPage('fm');
@@ -1046,18 +1027,35 @@ function init_page() {
             return false;
         }
 
-        parsepage(pages.register);
+        if (sessionStorage.importSignupRedirect && !localStorage.awaitingConfirmationAccount) {
+            loadSubPage(sessionStorage.importSignupRedirect);
+            delete sessionStorage.importSignupRedirect;
+            return false;
+        }
+
+        parsepage(pages.login);
 
         if (is_mobile) {
             if (window.pickedPlan) {
                 sessionStorage.proPageContinuePlanNum = window.pickedPlan;
                 delete window.pickedPlan;
             }
-            mobile.register.show();
+            MegaMobileHeader.init(true);
         }
-        else {
-            init_register();
-        }
+
+        mega.ui.signup.showDialog({
+            showLogin: true,
+            onAccountCreated(gotLoggedIn, accountData) {
+                if (gotLoggedIn) {
+                    completeLogin(u_type);
+                }
+                else {
+                    security.register.cacheRegistrationData(accountData);
+                    mega.ui.signup.showLinkDialog(accountData, false, true);
+                }
+            }
+        });
+
         eventlog(500272);
     }
     else if ((page.substr(0, 9) === 'registerb')) { // business register
@@ -1125,7 +1123,6 @@ function init_page() {
     }
     else if (page === 'keybackup' && !u_type) {
         login_next = page;
-        login_txt = l[1298];
         return loadSubPage('login');
     }
     else if (page === 'keybackup') {
@@ -1175,7 +1172,7 @@ function init_page() {
                 });
             }
             else {
-                mega.ui.showLoginRequiredDialog({
+                mega.ui.login.showRequiredDialog({
                     title: l[6186],
                     textContent: l[5841]
                 })
@@ -1214,7 +1211,7 @@ function init_page() {
 
                 }
                 else {
-                    mega.ui.showLoginRequiredDialog({
+                    mega.ui.login.showRequiredDialog({
                         minUserType: 3,
                         skipInitialDialog: 1
                     })
@@ -1476,7 +1473,6 @@ function init_page() {
         }
         else {
             login_next = page;
-            login_txt = l[1298];
             loadSubPage('login', 'override');
         }
     }
@@ -1578,7 +1574,6 @@ function init_page() {
                     loadSubPage('login');
                 }
                 else {
-                    register_txt = l[7712];
                     loadSubPage('register');
                 }
                 return false;
@@ -1844,7 +1839,6 @@ function init_page() {
             return false;
         }
         login_next = page;
-        login_txt = l[1298];
         loadSubPage('login', 'override');
     }
     else if (page === 'hashtransfer') {
@@ -2255,7 +2249,6 @@ function topmenuUI() {
         }
 
         $loginButton.addClass('hidden');
-        $('.dropdown.top-login-popup', $topHeader).addClass('hidden');
         $('.membership-status', $topHeader).removeClass('hidden');
         $('.top-change-language', $topHeader).addClass('hidden');
         $headerRegisterBotton.addClass('hidden');
@@ -2438,16 +2431,7 @@ function topmenuUI() {
                 mLogout();
             }
             else {
-                var c = $('.dropdown.top-login-popup', 'body').attr('class');
-                if (c && c.indexOf('hidden') > -1) {
-                    if (page === 'register') {
-                        delay('registerloginevlog', () => eventlog(99818));
-                    }
-                    tooltiplogin.init();
-                }
-                else {
-                    tooltiplogin.init(1);
-                }
+                mega.ui.login.openDialog();
             }
         });
 
@@ -2519,11 +2503,6 @@ function topmenuUI() {
         if (!e || !e.target.closest('.top-menu-popup') &&
             (!c || !c.includes('activity-status') && !c.includes('loading'))) {
             $headerActivityBlock.removeClass('active');
-        }
-
-        if (!e || !e.target.closest('.top-login-popup') &&
-            (!c || !c.includes('top-login-popup') && !c.includes('top-login-button'))) {
-            $('.dropdown.top-login-popup', 'body').addClass('hidden');
         }
 
         if (!e || !e.target.closest('.create-new-folder')) {
@@ -2872,14 +2851,6 @@ function topmenuUI() {
             eventlog(500353);
         }
     });
-
-    /**
-     * this is closing the EFQ email confirm dialog, if needed for something else ask before re-enabling [dc]
-    if (!$('.mega-dialog.registration-page-success').hasClass('hidden')) {
-        $('.mega-dialog.registration-page-success').addClass('hidden');
-        $('.fm-dialog-overlay').addClass('hidden');
-        document.body.classList.remove('overlayed');
-    }*/
 
     /**
      * why was this needed here?

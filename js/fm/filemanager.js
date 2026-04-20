@@ -2250,7 +2250,8 @@ FileManager.prototype.initUIKeyEvents = function() {
     "use strict";
 
     $(window).rebind('keydown.uikeyevents', function(e) {
-        if ((M.chat && !$.dialog) || M.isAlbumsPage() || M.currentrootid === 'pwm') {
+        if ((M.chat && !$.dialog) || M.isAlbumsPage() || M.currentrootid === 'pwm' ||
+            $.dialog === 'pro-register-dialog' || $.dialog === 'pro-login-dialog') {
             return true;
         }
 
@@ -4283,7 +4284,10 @@ FileManager.prototype.cameraUploadUI = function() {
         properties: ['links', 'rename', 'copyrights', 'copy', 'move', 'share', 'saveAs'],
         copy: ['createfolder', 'start-group-chat'],
         move: ['createfolder'],
-        register: ['terms'],
+        'pro-register-dialog': ['languages'],
+        'pro-login-dialog': ['languages'],
+        'signup-link-overlay': ['languages'],
+        'confirm-account-dialog': ['languages'],
         selectFolder: ['createfolder'],
         saveAs: ['createfolder'],
         share: [

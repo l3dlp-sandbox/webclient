@@ -5,6 +5,7 @@ class MegaInputComponent extends MegaComponent {
 
         this.input = document.createElement(options.type || 'input');
         this.input.className = options.className || 'form-element pmText no-title-top clearButton';
+        this.input.title = options.title || '';
 
         if (options.icon) {
             this.icon = `${options.icon} left-icon`;

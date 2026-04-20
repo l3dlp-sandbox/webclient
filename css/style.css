@@ -316,7 +316,7 @@ a, a:link, a:visited, a:hover, a:active, a:focus img, a:focus img {
     background-image: none;
     padding: 0;
 }
-.register1 .register-st2-button, .new-registration-checkbox .register-st2-button {
+.new-registration-checkbox .register-st2-button {
     margin-bottom: 33px;
 }
 .new-registration-checkbox .register-st2-button-arrow {
@@ -328,10 +328,6 @@ a, a:link, a:visited, a:hover, a:active, a:focus img, a:focus img {
     float: right;
     font-size: 14px;
     padding: 35px 0 0 0;
-}
-.main-mid-pad.big-pad {
-    padding-top: 67px;
-    padding-bottom: 40px;
 }
 .login-page-create-new span {
     cursor: pointer;
@@ -3932,14 +3928,6 @@ span.orange {
     background-repeat: no-repeat;
     margin-left: -13px;
 }
-.top-login-forgot-pass {
-    font: var(--text-body1);
-    color: var(--text-color-low) !important;
-    text-decoration: underline;
-}
-.top-login-forgot-pass:hover {
-    text-decoration: none;
-}
 .password-tooltip-arrow {
     width: 13px;
     height: 5px;
@@ -4012,7 +4000,6 @@ span.orange {
     background-color: var(--secondary-orange);
     box-sizing: border-box;
     position: relative;
-    top: 67px;
     border-radius: 8px;
     width: calc(100% - 24px);
     left: 12px;
@@ -4030,56 +4017,8 @@ span.orange {
     color: white;
     font-size: 14px;
 }
-.main-mid-pad {
-    max-width: 1020px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 0 15px 0 15px;
-}
-.bottom-page.sign .main-mid-pad {
-    max-width: 1020px;
-}
-.main-mid-pad.improved-recovery-steps, .main-mid-pad.backup-recover.withkey, .main-mid-pad.bus-repay {
-    max-width: 100%;
-    padding: 0 0;
-    background-color: #F5F7F9;
-}
-.main-mid-pad.improved-recovery-steps {
-    background-color: var(--stroke-grey-1);
-}
-.main-mid-pad.bus-repay {
-    background: var(--surface-grey-1);
-}
-.main-mid-pad.plans {
-    padding-bottom: 2px;
-}
-.key .main-mid-pad.plans {
-    max-width: 1280px;
-    min-width: 980px;
-    width: auto;
-}
-.key3.main-mid-pad {
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-}
-.main-left-block {
-    width: 420px;
-    float: left;
-    padding: 42px 0;
-}
 .email-change .main-left-block {
     padding: 73px 0;
-}
-.main-right-block {
-    margin-left: 520px;
-}
-.sign .main-right-block {
-    padding-top: 155px;
-    margin-left: 560px;
-}
-.sign .login .main-right-block {
-    padding-top: 68px;
 }
 h3.main-italic-header {
     font-size: 19px;
@@ -4104,6 +4043,9 @@ h5.main-italic-header {
 }
 .main-italic-header .red {
     color: #F0373B;
+}
+.main-mid-pad.improved-recovery-steps {
+    background-color: var(--stroke-grey-1);
 }
 .login-register-input {
     height: 40px;
@@ -4285,63 +4227,6 @@ button.loading span i {
 }
 .password-warning-txt {
     color: #FFBA00;
-}
-.mega-dialog.registration-success.registration-page-success.chatlink .fm-dialog-close {
-    display: none;
-}
-.reg-resend-email {
-    display: table;
-    width: 100%;
-}
-.special .reg-resend-email {
-    margin-top: 30px;
-}
-.reg-resend-input-bl {
-    display: table-cell;
-    padding: 0 12px 0 0;
-    vertical-align: top;
-}
-.reg-resend-input-bl input {
-    background-color: rgba(0,0,0,0.02);
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: var(--text-color-high);
-    display: block;
-    width: 100%;
-    min-height: 36px;
-    max-height: 36px;
-    font-family: 'LatoWeb', sans-serif;
-    font-size: 14px;
-    line-height: 32px;
-    padding: 0 15px;
-}
-.reg-resend-button-bl {
-    display: table-cell;
-    width: 92px;
-    vertical-align: top;
-}
-.resend-email-button {
-    background-color: #00bfa5;
-    border: 1px solid #00ac94;
-    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.15);
-    color: #fff;
-    font-family: 'LatoWeb', sans-serif;
-    font-size: 14px;
-    height: 36px;
-    line-height: 36px;
-    padding: 0 16px 0 35px;
-    margin: 0;
-    box-sizing: border-box;
-    border-radius: 4px;
-    transition: all 200ms ease-in-out;
-    white-space: nowrap;
-    cursor: pointer;
-    background-image: url(../images/mega/register-big-sprite.png);
-    background-position: 12px 7px;
-}
-.resend-email-button:hover {
-    background-color: #00ac94;
 }
 .fm-dialog-top-text {
     padding: 0;
@@ -6391,8 +6276,7 @@ ul.token-input-list-mega {
     border-color: var(--stroke-info);
 }
 .multiple-input-warning,
-.duplicated-input-warning,
-.reg-resend-email-meg {
+.duplicated-input-warning {
     min-height: 24px;
     position: relative;
     background-color: var(--banner-background-error);
@@ -6433,8 +6317,7 @@ ul.token-input-list-mega {
 }
 .error .multiple-input-warning,
 .duplicate .duplicated-input-warning,
-.whitespaces .whitespaces-input-warning,
-.error .reg-resend-email-meg {
+.whitespaces .whitespaces-input-warning {
     display: block;
 }
 ul.token-input-list-mega li input,

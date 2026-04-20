@@ -1,0 +1,139 @@
+/* login page redesign */
+
+    .content-holder .login-page {
+        min-width: 600px;
+        min-height: 660px;
+    }
+    .bottom-page.sign .megalite-badge {
+        background-color: var(--mobile-indicator-indigo);
+        border-radius: 4px;
+        color: var(--text-color-white-higher);
+        font: var(--mobile-font-caption-large-regular);
+        margin: 24px;
+        padding: 4px 8px;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .rtl .bottom-page.sign .megalite-badge {
+        left: 0;
+        right: auto;
+    }
+    .login-page-shell {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 24px 40px 16px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .login-page-shell::before {
+        content: "";
+        position: absolute;
+        top: -5%;
+        left: -5%;
+        width: 110%;
+        height: 110%;
+        background-image: linear-gradient(var(--surface-login-cover), var(--surface-login-cover)), url("../../images/onboarding/cloud_ob_2.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        filter: var(--filter-login-cover);
+    }
+    .login-page-shell a:focus,
+    .login-page-shell button:focus {
+        outline: initial;
+        outline: -webkit-focus-ring-color auto 1px;
+    }
+    .login-page-header {
+        font: var(--mobile-font-label-underline);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
+    }
+    .login-page-brand {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+        overflow: visible;
+    }
+    .login-page-logo {
+        --width: 96px;
+        --height: 32px;
+        display: block;
+    }
+    .login-page-logo.logo-dark,
+    .theme-dark .login-page-logo.logo-light {
+        display: none;
+    }
+    .theme-dark .login-page-logo.logo-dark {
+        display: inline-block;
+    }
+    .login-page-header a.login-page-header-link {
+        font-size: var(--mobile-font-link-small-semibold);
+        color: var(--text-color-high);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+    .login-page-body {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .login-page-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font: var(--mobile-font-caption-small-regular);
+        color: var(--text-color-medium);
+        position: relative;
+        z-index: 1;
+        padding-bottom: 4px;
+        margin-top: auto;
+    }
+    .login-overlay.overlay-wrap .login-page-footer {
+        padding: 0 40px;
+        flex-direction: row;
+    }
+    body.mobile .login-overlay.overlay-wrap .login-page-footer {
+        padding: 0 16px;
+    }
+    .login-page-footer > * + * {
+        margin-inline-start: 24px;
+        margin-inline-end: 16px;
+    }
+    .login-page-footer .login-page-client-version {
+        margin-inline-end: auto;
+        white-space: nowrap;
+    }
+    footer.login-page-footer .mega-component.login-page-lang {
+        color: var(--text-color-medium);
+        --icon-size: 16px;
+    }
+    .login-page-footer .mega-component.login-page-lang span {
+        font: var(--mobile-font-link-small-semibold);
+        line-height: 24px;
+    }
+    .login-page-footer-links {
+        display: flex;
+        margin: 0;
+    }
+    body.web-desktop .login-page-footer-links > * + * {
+        margin-inline-start: 32px;
+    }
+    .login-page-footer > .login-page-footer-links > a {
+        color: var(--text-color-medium);
+        text-decoration: none;
+        line-height: 24px;
+        white-space: nowrap;
+        padding: 0;
+    }
+    .login-page-footer > .login-page-footer-links > a span {
+        font: var(--mobile-font-caption-small-regular);
+    }
+
+/* end login page redesign */

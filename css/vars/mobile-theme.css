@@ -76,8 +76,8 @@ body,
         /* font */
 
             --mobile-font-heading-h1: var(--mobile-font-weight-bold) var(--mobile-font-size-6)/var(--mobile-font-line-height-heading) var(--mobile-font-family-heading);
-            --mobile-font-heading-h2: var(--mobile-font-weight-bold) var(--mobile-font-size-5)/var(--mobile-font-line-height-heading) var(--mobile-font-family-main);
-            --mobile-font-heading-h3: var(--mobile-font-weight-semibold) var(--mobile-font-size-5)/var(--mobile-font-line-height-heading) var(--mobile-font-family-main);
+            --mobile-font-heading-h2: var(--mobile-font-weight-bold) var(--mobile-font-size-5)/var(--mobile-font-line-height-heading) var(--mobile-font-family-heading);
+            --mobile-font-heading-h3: var(--mobile-font-weight-semibold) var(--mobile-font-size-5)/var(--mobile-font-line-height-heading) var(--mobile-font-family-heading);
 
             --mobile-font-copy-regular: var(--mobile-font-weight-regular) var(--mobile-font-size-4)/var(--mobile-font-line-height-text) var(--mobile-font-family-main);
             --mobile-font-copy-semibold: var(--mobile-font-weight-semibold) var(--mobile-font-size-4)/var(--mobile-font-line-height-text) var(--mobile-font-family-main);

@@ -1,0 +1,406 @@
+/* pro-register-dialog */
+
+    .pro-register-dialog-overlay.page-bound.overlay-wrap.active {
+        background: none;
+        z-index: 0;
+        transition: none;
+    }
+    body.mobile .pro-register-dialog-overlay.page-bound.overlay-wrap.active {
+        padding-bottom: 16px;
+    }
+    .pro-register-dialog-overlay.overlay-wrap .header .close {
+        top: 16px;
+        z-index: 1;
+    }
+    body.web-desktop .overlay-wrap.pro-register-dialog-overlay {
+        min-height: 630px;
+        position: absolute;
+        pointer-events: none;
+    }
+    body.web-desktop .overlay-wrap.pro-register-dialog-overlay .sheet {
+        max-width: 1040px;
+        width: auto;
+        padding: 0;
+        min-height: 520px;
+        pointer-events: all;
+    }
+    body.web-desktop .overlay-wrap.pro-register-dialog-overlay .sheet .main {
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+    }
+
+    body.web-desktop .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog {
+        width: auto;
+        position: relative;
+        display: grid;
+        grid-template-columns: 560px 390px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header {
+        padding: 32px 40px 8px;
+        text-align: start;
+        grid-column: 1 / 2;
+    }
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header {
+        padding: 0 24px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-header-row {
+        display: flex;
+        align-items: center;
+    }
+    body.web-desktop .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-header-row > * + * {
+        margin-inline-start: 8px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-back-button {
+        padding: 0;
+        border: 0;
+        border-radius: var(--mobile-border-radius-medium);
+        background: transparent;
+        color: var(--text-color-high);
+        cursor: pointer;
+    }
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-back-button,
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .with-condition {
+        display: none;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-back-button i {
+        --icon-size: 24px;
+        padding: 6px;
+        box-sizing: content-box;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header h2 {
+        font: var(--mobile-font-heading-h2);
+        margin: 0;
+        text-align: start;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header p {
+        margin: 8px 0 0;
+        padding-inline-start: 40px;
+        color: var(--text-color-medium);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header aside {
+        margin: 8px 0 0;
+        color: var(--text-color-medium);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header aside.no-padding {
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header aside .login-text {
+        font: var(--mobile-font-caption-large-regular);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog header aside .login-text a {
+        font: var(--mobile-font-link-small-semibold);
+        color: var(--mobile-text-primary);
+        text-decoration: underline;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .content-block {
+        padding: 8px 40px 28px;
+        background-color: var(--mobile-page-background);
+    }
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .content-block {
+        padding-inline-start: 24px;
+        padding-inline-end: 24px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-layout {
+        display: flex;
+        align-items: stretch;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-form-column {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline-end: 8px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-column {
+        flex: 0 0 380px;
+        border-inline-start: 1px solid var(--mobile-border-strong);
+        padding: 40px 32px 40px 40px;
+        color: var(--text-color-medium);
+        grid-column: 2 / 3;
+        grid-row: 1 / 4;
+        text-align: start;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-title {
+        font: var(--mobile-font-copy-bold);
+        color: var(--text-color-high);
+        margin: 0 0 20px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-list > li + li {
+        margin-top: 18px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-list li {
+        display: flex;
+        align-items: center;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-list li > * + * {
+        margin-inline-start: 16px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-list i {
+        --icon-size: 24px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .benefit-heading {
+        font: var(--mobile-font-caption-large-semibold);
+        color: var(--text-color-high);
+        margin: 0 0 2px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .benefit-text {
+        font: var(--mobile-font-caption-small-regular);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .dialog-register-form {
+        margin: 8px 0 0;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-side-pane.content {
+        display: flex;
+        flex-direction: column;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-side-pane.content .terms {
+        margin-top: 12px;
+        font: var(--mobile-font-caption-small-regular);
+        text-align: start;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-side-pane .clear {
+        display: none;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-side-pane.content .terms a {
+        text-decoration: underline;
+        color: var(--mobile-link-primary);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper {
+        text-align: start;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper .password-info {
+        color: var(--text-color-secondary);
+        margin-top: 12px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper .pass-incr-strength {
+        display: none;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper span.pass-incr-strength {
+        margin-bottom: 12px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper ul.pass-incr-strength {
+        padding-inline-start: 18px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper ul.pass-incr-strength li {
+        margin-bottom: 10px;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper.strengthen .pass-incr-strength {
+        display: flex;
+        flex-direction: column;
+        list-style: disc;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper.strengthen .pass-incr-strength > li {
+        list-style-type: disc;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper .password-info {
+        margin-bottom: 12px;
+        font: var(--mobile-font-caption-large-regular);
+        display: inline-block;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-wrapper .password-info .bold {
+        font: var(--mobile-font-caption-large-bold);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength {
+        color: var(--mobile-text-error);
+        --mask-color: var(--mobile-text-error);
+        display: flex;
+        align-items: center;
+        font: var(--mobile-font-caption-large-regular);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength.good2,
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength.good3 {
+        color: var(--mobile-text-warning);
+        --mask-color: var(--mobile-text-warning);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength.good4,
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength.good5,
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength.good6 {
+        color: var(--mobile-text-success);
+        --mask-color: var(--mobile-text-success);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .password-strength i {
+        margin-inline-end: 8px;
+        align-self: flex-start;
+        padding: 3px 0;
+        box-sizing: content-box;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .mega-input.pm.box-style {
+        margin: 24px 0 16px;
+        width: 100%;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .mega-input .message-container i {
+        margin-inline-end: 8px;
+        --icon-size: 16px;
+        align-self: flex-start;
+        box-sizing: content-box;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .mega-input.error .message-container i {
+        --mask-color: var(--mobile-text-error);
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog footer {
+        grid-column: 1 / 2;
+    }
+    .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog footer .footer-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        padding: 0 40px 40px;
+        box-sizing: border-box;
+    }
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog footer .footer-container {
+        padding: 0 24px;
+    }
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-column {
+        margin: 24px;
+        padding: 16px;
+        border: 1px solid var(--mobile-border-strong);
+        border-radius: var(--mobile-border-radius-medium);
+    }
+
+    body.mobile .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog footer .footer-container .button {
+        width: 100%;
+    }
+
+    .overlay-wrap.signup-link-dialog-overlay.active {
+        background: none;
+    }
+
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .overlay {
+        padding: 24px;
+        box-sizing: border-box;
+    }
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .overlay .header .close {
+        right: 0;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .sheet {
+        max-width: 660px;
+    }
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .main .image {
+        padding: 24px 0 0;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content {
+        width: 100%;
+        max-width: 560px;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .main .content .signup-link-overlay-content a {
+        text-decoration: underline;
+        padding: 0;
+        font: inherit;
+        color: var(--mobile-text-primary);
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content a span.primary-text {
+        font: inherit;
+        color: var(--mobile-link-primary);
+        text-decoration: underline;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content p {
+        margin: 0 0 16px;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-resend {
+        margin-top: 8px;
+        border: 1px solid var(--mobile-border-strong);
+        border-radius: var(--mobile-border-radius-medium);
+        padding: 16px;
+        color: var(--text-color-medium);
+        font: var(--mobile-font-caption-large-regular);
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-resend a {
+        font: var(--mobile-font-caption-large-regular);
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-resend a,
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-footer a {
+        color: var(--mobile-link-primary);
+        text-decoration: underline;
+        padding: 0;
+        height: auto;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-resend .resend-email-wait {
+        color: var(--text-color-high);
+        font: var(--mobile-font-caption-large-semibold);
+        white-space: nowrap;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-action {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-action .resend-email {
+        width: auto;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-action .resend-email-wait {
+        color: var(--text-color-high);
+        font: var(--mobile-font-caption-large-semibold);
+        white-space: nowrap;
+    }
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-action {
+        align-items: stretch;
+    }
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-action .resend-email {
+        width: 100%;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .signup-link-footer {
+        display: inline;
+        align-items: center;
+        text-align: center;
+        border-top: 1px solid var(--mobile-border-strong);
+        color: var(--text-color-medium);
+        font: var(--mobile-font-caption-small-regular);
+        padding: 16px;
+    }
+    body.mobile .overlay-wrap.signup-link-dialog-overlay .signup-link-footer {
+        border-top: none;
+        padding: 0;
+        text-align: center;
+        width: 100%;
+        display: inline-block;
+        margin-top: 48px;
+    }
+    .overlay-wrap.signup-link-dialog-overlay .overlay-footer.signup-link-footer a {
+        display: inline-block;
+        height: auto;
+        width: auto;
+        padding: 0;
+        color: var(--mobile-link-primary);
+    }
+    .overlay-wrap.signup-link-dialog-overlay .overlay-footer.signup-link-footer a span {
+        color: inherit;
+    }
+    body .overlay-wrap.signup-link-dialog-overlay .content .signup-link-overlay-content .signup-link-resend a span,
+    .overlay-wrap.signup-link-dialog-overlay .overlay-footer.signup-link-footer a span {
+        font: inherit;
+    }
+    body.web-desktop .pro-register-dialog-overlay.business-sub-account .sheet {
+        min-height: auto;
+    }
+    body.web-desktop .pro-register-dialog-overlay.business-sub-account .pro-register-dialog {
+        display: block;
+        min-width: 560px;
+    }
+    body.web-desktop .pro-register-dialog-overlay.business-sub-account .pro-register-dialog .register-benefits-column {
+        display: none;
+    }
+    .pro-register-dialog-overlay.business-sub-account .pro-register-dialog .register-form-column {
+        padding-inline-end: 0;
+    }
+        
+    @media (max-width: 1080px) {
+        body.web-desktop .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog {
+            display: block;
+            width: 560px;
+        }
+        body.web-desktop .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-benefits-column {
+            display: none;
+        }
+        .overlay-wrap.pro-register-dialog-overlay .pro-register-dialog .register-form-column {
+            padding-inline-end: 0;
+        }
+    }
+
+/* end pro-register-dialog */

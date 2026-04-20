@@ -2814,7 +2814,8 @@ Chat.prototype.loginOrRegisterBeforeJoining = function(
     forceRegister,
     forceLogin,
     notJoinReq,
-    onLoginSuccessCb
+    onLoginSuccessCb,
+    fromLogin
 ) {
     if (!chatHandle && page !== 'securechat' && (page === 'chat' || page.indexOf('chat') > -1)) {
         chatHandle = getSitePath().split("chat/")[1].split("#")[0];
@@ -2834,7 +2835,7 @@ Chat.prototype.loginOrRegisterBeforeJoining = function(
         return stay;
     };
     var doShowLoginDialog = function() {
-        mega.ui.showLoginRequiredDialog({
+        mega.ui.login.showRequiredDialog({
             minUserType: 3,
             skipInitialDialog: 1,
             onLoginSuccessCb: onLoginSuccessCb
@@ -2847,29 +2848,17 @@ Chat.prototype.loginOrRegisterBeforeJoining = function(
     };
 
     var doShowRegisterDialog = function() {
-        mega.ui.showRegisterDialog({
-            title: l[5840],
+        mega.ui.signup.showDialog({
             onCreatingAccount: function() {},
-            onLoginAttemptFailed: function() {
-                msgDialog('warninga:' + l[171], l[1578], l[218], null, function(e) {
-                    if (e) {
-                        $('.pro-register-dialog').addClass('hidden');
-                        if (signupPromptDialog) {
-                            signupPromptDialog.hide();
-                        }
-                        doShowLoginDialog();
-                    }
-                });
-            },
-
             onAccountCreated: function(gotLoggedIn, registerData) {
                 if (finish(!gotLoggedIn)) {
                     security.register.cacheRegistrationData(registerData);
-                    mega.ui.sendSignupLinkDialog(registerData);
+                    mega.ui.signup.showLinkDialog(registerData);
                     megaChat.destroy();
                 }
             },
-            onLoginSuccessCb: onLoginSuccessCb
+            onLoginSuccessCb,
+            fromLogin
         });
     };
 

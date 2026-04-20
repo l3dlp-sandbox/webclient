@@ -2,34 +2,178 @@
     'use strict';
     var options = {};
 
+    function getRegisterDialogContent() {
+        const {signup} = mega.ui;
+
+        if (signup.dialogContent) {
+            return signup.dialogContent;
+        }
+
+        const dialog = signup.dialogContent = mCreateElement('div', {
+            class: 'pro-register-dialog',
+            role: 'dialog',
+            'aria-labelledby': 'pro-register-dialog-title',
+            'aria-modal': 'true'
+        });
+
+        const header = mCreateElement('header', {}, dialog);
+        const row = mCreateElement('div', {class: 'register-header-row'}, header);
+        const backBtn = mCreateElement('button', {
+            class: 'register-back-button js-register-back',
+            type: 'button',
+            'aria-label': l[23706]
+        }, row);
+        mCreateElement('i', {class: 'sprite-fm-mono icon-arrow-left-regular-outline rtl-rot-180'}, backBtn);
+        mCreateElement('h2', {id: 'pro-register-dialog-title'},[parseHTML(l.register_dialog_title)], row);
+
+        const headerAside = mCreateElement('aside', {class: 'with-condition'}, header);
+        const loginText = mCreateElement('div', {class: 'login-text'}, headerAside);
+        loginText.textContent = `${l[5585]} `;
+        const loginLink = mCreateElement('a', {href: '/login'}, loginText);
+        loginLink.textContent = l[171];
+
+        const section = mCreateElement('section', {class: 'content'}, dialog);
+        const contentBlock = mCreateElement('div', {class: 'content-block'}, section);
+        mCreateElement('div', {class: 'fm-dialog-body hidden'}, contentBlock);
+        const layout = mCreateElement('div', {class: 'register-layout'}, contentBlock);
+        const formCol = mCreateElement('div', {class: 'register-form-column'}, layout);
+        const form = mCreateElement('form', {class: 'account dialog-register-form'}, formCol);
+        const pane = mCreateElement('div', {class: 'register-side-pane content'}, form);
+
+        const firstNameWrap = mCreateElement('div', {class: 'account'}, pane);
+        mCreateElement('input', {
+            class: 'pmText f-name clearButton',
+            type: 'text',
+            name: 'register-name',
+            id: 'register-firstname',
+            title: l[7342],
+            maxlength: 40
+        }, firstNameWrap);
+
+        const emailWrap = mCreateElement('div', {class: 'account'}, pane);
+        mCreateElement('input', {
+            class: 'pmText email clearButton',
+            type: 'text',
+            name: 'register-email',
+            id: 'register-email',
+            title: l[95],
+            maxlength: 190
+        }, emailWrap);
+
+        mCreateElement('div', {class: 'clear'}, pane);
+
+        const passwordWrap = mCreateElement('div', {class: 'account full-sized-error password-wrapper'}, pane);
+        mCreateElement('input', {
+            class: 'pmText pass clearButton',
+            type: 'password',
+            name: 'register-password',
+            id: 'register-password',
+            title: l[909],
+            autocomplete: 'new-password'
+        }, passwordWrap);
+
+        const strength = mCreateElement('div', {class: 'password-strength hidden'}, passwordWrap);
+        mCreateElement('i', {class: 'sprite-fm-mono icon-size-18'}, strength);
+        mCreateElement('span', {class: 'password-strength-text'}, strength);
+
+        const passInfo = mCreateElement('div', {class: 'password-info'}, passwordWrap);
+        const passStrong = mCreateElement('span', {class: 'pass-incr-strength bold'}, passInfo);
+        passStrong.textContent = l.stronger_pass_have;
+        const passList = mCreateElement('ul', {class: 'pass-incr-strength'}, passInfo);
+        const li1 = mCreateElement('li', {}, passList);
+        li1.textContent = l.upper_and_lower_letters;
+        const li2 = mCreateElement('li', {}, passList);
+        li2.textContent = l.number_or_special;
+        const passStore = mCreateElement('span', {class: 'password-not-stored hidden'}, passInfo);
+        passStore.append(parseHTML(l.we_dont_store_password));
+
+        mCreateElement('div', {class: 'clear'}, pane);
+        const terms = mCreateElement('div', {class: 'account terms'}, pane);
+        terms.append(parseHTML(l.register_terms));
+        terms.dataset.defaultHtml = l.register_terms;
+
+        const privacyWrap = mCreateElement('div', {
+            class: 'account checkbox-block register privacy-checkbox-block hidden'
+        }, pane);
+        const privacyCheck = mCreateElement('div', {class: 'privacy-check checkboxOff checkbox'}, privacyWrap);
+        mCreateElement('input', {class: 'checkboxOff', type: 'checkbox', checked: ''}, privacyCheck);
+        const privacyLabel = mCreateElement('label', {class: 'radio-txt privacy-label'}, privacyWrap);
+        privacyLabel.textContent = l.accept_privacy_policy;
+        mCreateElement('div', {class: 'clear'}, privacyWrap);
+
+        const footer = mCreateElement('footer', {}, dialog);
+        mCreateElement('div', {class: 'footer-container'}, footer);
+
+        const benefits = mCreateElement('aside', {class: 'register-benefits-column'}, dialog);
+        const benefitsTitle = mCreateElement('div', {class: 'register-benefits-title'}, benefits);
+        benefitsTitle.textContent = l.register_benefits_title;
+        const benefitsList = mCreateElement('ul', {class: 'register-benefits-list'}, benefits);
+
+        const _makeBenefit = (cls, icon, heading, text) => {
+            const li = mCreateElement('li', {class: cls}, benefitsList);
+            mCreateElement('i', {class: `glass-icon ${icon}`}, li);
+            const copy = mCreateElement('div', {class: 'benefit-copy'}, li);
+            const h = mCreateElement('div', {class: 'benefit-heading'}, copy);
+            h.textContent = heading;
+            const t = mCreateElement('div', {class: 'benefit-text'}, copy);
+            t.textContent = text;
+        };
+
+        _makeBenefit('free-storage', 'glass-cloud-circle',
+                     l.register_benefit_free_storage_heading.replace('%1', bytesToSize(mega.bstrg, 0)),
+                     l.register_benefit_free_storage_text);
+        _makeBenefit('e2ee-storage', 'glass-lock', l.register_benefit_e2ee_heading, l.register_benefit_e2ee_text);
+        _makeBenefit('sync-backup', 'glass-folder-sync', l.register_benefit_sync_heading, l.register_benefit_sync_text);
+        _makeBenefit('upgrade-features', 'glass-rocket', l.register_benefit_upgrade_heading,
+                     l.register_benefit_upgrade_text);
+
+        return dialog;
+    }
+
+    function getBusinessSubAccountInfo() {
+
+        if (!localStorage.businessSubAc) {
+            return;
+        }
+
+        const source = JSON.parse(localStorage.businessSubAc);
+
+        if (!source || typeof source !== 'object') {
+            return;
+        }
+
+        const email = source.e.trim();
+        const signupCode = source.signupcode.trim();
+
+        if (!email || !signupCode) {
+            return;
+        }
+
+        const firstName = from8(base64urldecode(source.firstname));
+        const lastName = from8(base64urldecode(source.lastname));
+
+        options.businessSubAccountInfo = {email, signupCode, firstName, lastName};
+    }
+
     /*jshint -W074*/
     // ^ zxcvbn stuff..
 
     function closeRegisterDialog($dialog, isUserTriggered) {
-        console.assert(options.closeDialog || $.dialog === 'register', 'Invalid state...');
 
-        if (options.closeDialog) {
-            options.closeDialog();
-        }
-        else if ($.dialog === 'register') {
-            delete $.registerDialog;
-            closeDialog();
+        const component = mega.ui.auth.getDialogComponent(page === 'register');
+        const _reset = () => {
 
-            $(window).off('resize.proregdialog');
-            $('.fm-dialog-overlay').off('click.registerDialog');
-            $('button.js-close', $dialog).off('click.registerDialog');
             $('input', $dialog).val('');
-            $('.understand-check', $dialog).removeClass('checkboxOn').addClass('checkboxOff');
-            $('.register-check', $dialog).removeClass('checkboxOn').addClass('checkboxOff');
-
-            // Restore changes after S4 feature
-            $('.terms-check', $dialog).safeHTML(l['208.g']);
-            $('.privacy-checkbox-block').addClass('hidden');
+            $('.privacy-checkbox-block', $dialog).addClass('hidden');
             $('.privacy-check', $dialog).removeClass('checkboxOn').addClass('checkboxOff');
+        };
 
-            if (isUserTriggered && options.onDialogClosed) {
-                options.onDialogClosed($dialog);
-            }
+        component.hide(component.name);
+
+        _reset();
+
+        if (isUserTriggered && options.onDialogClosed) {
+            options.onDialogClosed($dialog);
         }
 
         options = {};
@@ -37,22 +181,16 @@
 
     function doProRegister($dialog, aPromise) {
         const rv = {};
-        const hideOverlay = () => {
-            loadingDialog.hide();
-            $dialog.removeClass('arrange-to-back');
-        };
+        const registerBtn = $dialog[0].componentSelector('.mega-button:not(.js-close)');
+        registerBtn.loading = true;
 
-        const $button = $('button:not(.js-close)', $dialog).addClass('disabled');
         if (options.onCreatingAccount) {
             options.onCreatingAccount($dialog);
         }
-        loadingDialog.show();
-        $dialog.addClass('arrange-to-back');
 
         if (u_type > 0) {
-            hideOverlay();
+            registerBtn.loading = false;
             msgDialog('warninga', l[135], l[5843]);
-            $button.removeClass('disabled');
             return false;
         }
 
@@ -60,9 +198,12 @@
 
             const onAccountCreated = options.onAccountCreated && options.onAccountCreated.bind(options);
 
-            hideOverlay();
+            if (aPromise) {
+                aPromise.resolve();
+            }
+
+            registerBtn.loading = false;
             closeRegisterDialog($dialog);
-            $('.mega-dialog.registration-page-success').off('click');
 
             if (login) {
                 Soon(() => {
@@ -72,69 +213,63 @@
             }
             onIdle(topmenuUI);
 
-            if (typeof onAccountCreated === 'function') {
+            if (login) {
+                loadSubPage('fm');
+            }
+            else if (typeof onAccountCreated === 'function') {
                 onAccountCreated(login, rv);
             }
             else {
-                // $('.mega-dialog.registration-page-success').removeClass('hidden');
-                // fm_showoverlay();
-                // ^ legacy confirmation dialog, with no email change option
-                sendSignupLinkDialog(rv);
+                security.register.cacheRegistrationData(rv);
+                sendSignupLinkDialog(rv, null, true);
             }
+        };
 
-            if (aPromise) {
-                aPromise.resolve();
-            }
+        const showExistingAccountError = () => {
+            registerBtn.loading = false;
+            options.$dialog.find('input.email').megaInputsShowError(l[7869]);
+        };
+
+        const attemptExistingAccountLogin = () => {
+            registerBtn.loading = true;
+            M.require('register_js').then(() => {
+                loginFromEphemeral.init(rv, {registrationDone, showExistingAccountError});
+            }).catch(ex => {
+
+                if (d) {
+                    console.error('Existing account login bootstrap failed', ex);
+                }
+
+                if (typeof loginFromEphemeral !== 'undefined') {
+                    loginFromEphemeral.context = null;
+                }
+
+                u_logout();
+                showExistingAccountError();
+            });
         };
 
         /**
          * Continue the old method Pro registration
          * @param {Number} result The result of the 'uc' API request
-         * @param {Boolean} oldMethod Using old registration method.
          */
-        const continueProRegistration = (result, oldMethod) => {
-            $button.removeClass('disabled');
+        const continueProRegistration = result => {
+            registerBtn.loading = false;
             if (result === 0) {
-                if (oldMethod) {
-                    var ops = {
-                        a: 'up',
-                        terms: 'Mq',
-                        name2: base64urlencode(to8(rv.name)),
-                        lastname: base64urlencode(to8(rv.last)),
-                        firstname: base64urlencode(to8(rv.first))
-                    };
-                    u_attr.terms = 1;
-
-                    api_req(ops);
-                }
                 registrationDone();
+            }
+            else if (result === EACCESS || result === EEXIST) {
+                attemptExistingAccountLogin();
             }
             else {
                 u_logout();
-                hideOverlay();
-                // closeRegisterDialog($dialog, true);
                 $('.mega-dialog:visible').addClass('arrange-to-back');
-                if (result === EEXIST) {
-                    fm_hideoverlay();
-                    msgDialog('warninga', l[1578], l[7869]);
-                    options.$dialog.find('input.email').megaInputsShowError(l[1297]);
-                }
-                else {
-                    msgDialog('warninga', l[1578], l[200], api_strerror(result), () => {
-                        if ($('.mega-dialog:visible').removeClass('arrange-to-back').length) {
-                            fm_showoverlay();
-                        }
-                    });
-                }
+                msgDialog('warninga', l[1578], l[200], api_strerror(result), () => {
+                    if ($('.mega-dialog:visible').removeClass('arrange-to-back').length) {
+                        fm_showoverlay();
+                    }
+                });
             }
-        };
-
-        /**
-         * Continue the new method registration
-         * @param {Number} result The result of the 'uc2' API request
-         */
-        const continueNewProRegistration = (result) => {
-            continueProRegistration(result, false);
         };
 
         /**
@@ -143,108 +278,96 @@
         const registeraccount = function() {
 
             rv.password = $('input.pass', $dialog).val();
-            rv.first = $.trim($('input.f-name', $dialog).val());
-            rv.last = $.trim($('input.l-name', $dialog).val());
+            rv.name = rv.first = $.trim($('input.f-name', $dialog).val());
+            rv.last = ''; // no longer collect last name
             rv.email = $.trim($('input.email', $dialog).val());
-            rv.name = rv.first + ' ' + rv.last;
 
             // Set a flag that the registration came from the Pro page
             const fromProPage = sessionStorage.getItem('proPageContinuePlanNum') !== null;
 
-            // Set the signup function to start the new secure registration process
-            security.register.startRegistration(
-                rv.first,
-                rv.last,
-                rv.email,
-                rv.password,
-                fromProPage,
-                continueNewProRegistration);
+            const signup = () => {
+                // Set the signup function to start the new secure registration process
+                security.register.startRegistration(
+                    rv.first,
+                    rv.last,
+                    rv.email,
+                    rv.password,
+                    fromProPage,
+                    continueProRegistration,
+                    true
+                );
+            };
+
+            if (u_type === 0) {
+                const names = Object.create(null);
+                names[M.RootID] = 'ephemeral-account';
+
+                M.getCopyNodes([M.RootID], null, names)
+                    .then((nodes) => {
+                        if (Array.isArray(nodes) && nodes.length) {
+                            $.ephNodes = nodes;
+                            $.ephNodes[0].t = 1;
+                        }
+
+                        signup();
+                    });
+                return;
+            }
+
+            signup();
         };
 
         let err = false;
+        const errReasons = [];
         const $formWrapper = $('form', $dialog);
         const $firstName = $('input.f-name', $formWrapper);
-        const $lastName = $('input.l-name', $formWrapper);
         const $email = $('input.email', $formWrapper);
         const $password = $('input.pass', $formWrapper);
-        const $confirmPassword = $('input.confirm-pass', $formWrapper);
 
         const firstName = $.trim($firstName.val());
-        const lastName = $.trim($lastName.val());
         const email = $.trim($email.val());
         const password = $password.val();
-        const confirmPassword = $confirmPassword.val();
 
         // Check if the entered passwords are valid or strong enough
-        const passwordValidationResult = security.isValidPassword(password, confirmPassword);
+        const passwordValidationResult = security.isValidPassword(password, password);
+        const warningIcon = '<i class="sprite-fm-mono icon-alert-triangle-thin-outline"></i>';
 
         // If bad result
         if (passwordValidationResult !== true) {
+            if (!password) {
+                errReasons.push('mp');
+            }
 
-            // Show error for password field, clear the value and refocus it
-            $password.val('').trigger('input');
             $password.focus();
-            $password.megaInputsShowError(l[1102] + ' ' + passwordValidationResult);
-
-            // Show error for confirm password field and clear the value
-            $confirmPassword.val('');
-            $confirmPassword.blur();
-            $confirmPassword.megaInputsShowError();
-
-            // Make These two error disappear together
-            $password.rebind('input.hideError', () => {
-                $confirmPassword.megaInputsHideError();
-                $password.off('input.hideError');
-                $confirmPassword.off('input.hideError');
-            });
-
-            $confirmPassword.rebind('input.hideError', () => {
-                $password.megaInputsHideError();
-                $password.off('input.hideError');
-                $confirmPassword.off('input.hideError');
-            });
+            $password.megaInputsShowError(`${warningIcon} ${passwordValidationResult}`);
+            $('.password-strength', $formWrapper).addClass('hidden'); // Hide this for avoid double error message
 
             err = 1;
         }
 
         if (email === '' || !isValidEmail(email)) {
-            $email.megaInputsShowError(l[1100] + ' ' + l[1101]);
+            errReasons.push(email === '' ? 'me' : 'ie');
+            $email.megaInputsShowError(`${warningIcon} ${l[1101]}`);
             $email.focus();
             err = 1;
         }
 
-        if (firstName === '' || lastName === '') {
-            $firstName.megaInputsShowError(l[1098] + ' ' + l[1099]);
-            $lastName.megaInputsShowError();
+        if (firstName === '') {
+            errReasons.push('mf');
+            $firstName.megaInputsShowError(`${warningIcon} ${l.enter_name_err}`);
             $firstName.focus();
 
-            // Make These two error disappear together
             $firstName.rebind('input.hideError', () => {
-                $lastName.megaInputsHideError();
-                $firstName.off('input.hideError');
-                $lastName.off('input.hideError');
-            });
-
-            $lastName.rebind('input.hideError', () => {
                 $firstName.megaInputsHideError();
                 $firstName.off('input.hideError');
-                $lastName.off('input.hideError');
             });
 
             err = 1;
         }
 
         if (!err) {
-            if ($('.understand-check', $dialog).hasClass('checkboxOff')) {
-                hideOverlay();
-                msgDialog('warninga', l[1117], l[21957]);
-            }
-            else if ($('.register-check', $dialog).hasClass('checkboxOff')) {
-                hideOverlay();
-                msgDialog('warninga', l[1117], l[1118]);
-            }
-            else if (options.s4Flag && $('.privacy-check', $dialog).hasClass('checkboxOff')) {
-                hideOverlay();
+            if (options.s4Flag && $('.privacy-check', $dialog).hasClass('checkboxOff')) {
+                registerBtn.loading = false;
                 msgDialog('warninga', l[1117], l.accept_privacy_policy_warning);
             }
             else {
@@ -253,15 +376,60 @@
                     eventlog(500592);
                 }
 
-                if (u_type === false) {
-                    hideOverlay();
-                    u_storage = init_storage(localStorage);
+                if (options.businessSubAccountInfo) {
+
+                    rv.first = options.businessSubAccountInfo.firstName;
+                    rv.last = options.businessSubAccountInfo.lastName;
+                    rv.email = options.businessSubAccountInfo.email.toLowerCase();
+                    rv.name = `${rv.first} ${rv.last}`.trim();
+
+                    window.businessSubAc = JSON.parse(localStorage.businessSubAc);
+
                     u_checklogin({
-                        checkloginresult: function(u_ctx, r) {
+                        checkloginresult(u_ctx, r) {
+                            if (typeof r[0] === 'number' && r[0] < 0) {
+                                registerBtn.loading = false;
+                                msgDialog('warningb', l[135], l[200]);
+                                return;
+                            }
+
                             u_type = r;
-                            registeraccount();
+
+                            security.login.checkLoginMethod(rv.email, $password.val(), null, false,
+                                                            signin.old.startLogin, signin.new.startLogin);
+
+                            if (!is_mobile) {
+                                mega.ui.onboardBusSub = 1;
+                            }
+                            delete localStorage.businessSubAc;
+                        },
+                        businessUser: $password.val()
+                    }, true, null, options.businessSubAccountInfo.signupCode, rv.name);
+
+                    return;
+                }
+                else if (u_type === false) {
+
+                    api.req({a: 'ere', m: email, v: 2}).then(() => {
+
+                        rv.email = email;
+                        rv.password = password;
+
+                        attemptExistingAccountLogin();
+                    }).catch(ex => {
+                        if (ex === -9) {
+                            u_storage = init_storage(localStorage);
+                            u_checklogin({
+                                checkloginresult(u_ctx, r) {
+                                    u_type = r;
+                                    registeraccount();
+                                }
+                            }, true);
                         }
-                    }, true);
+                        else {
+                            console.error('Unexpected return value from API');
+                        }
+                    });
                 }
                 else if (u_type === 0) {
                     registeraccount();
@@ -269,316 +437,692 @@
             }
         }
         if (err) {
-            hideOverlay();
-            $button.removeClass('disabled');
+            eventlog(501133, errReasons.join(','), true);
+            registerBtn.loading = false;
         }
     }
 
     function showRegisterDialog(opts, aPromise) {
+        const {login, signup} = mega.ui;
+
         if ($.len(options)) {
             closeRegisterDialog(options.$dialog, true);
         }
         options = Object(opts);
-        var $dialog = options.$wrapper || $('.mega-dialog.pro-register-dialog');
-        var $inputs = $('input', $dialog);
-        var $button = $('button:not(.js-close)', $dialog);
-        var $password = $('input[type="password"]', $dialog);
+        getBusinessSubAccountInfo();
 
-        // Controls events, close button etc
-        if (options.controls) {
-            options.controls();
+        // Force no login for ephemeral users or if it's a business sub account registration form
+        if (u_type === 0 || options.businessSubAccountInfo) {
+            options.showLogin = false;
         }
-        else {
-            // controls
-            $('button.js-close', $dialog).rebind('click.registerDialog', function() {
-                if (aPromise) {
-                    aPromise.reject();
-                }
+
+        const dialog = getRegisterDialogContent();
+        const $dialog = options.$dialog = $(dialog);
+        var $inputs = $('input', $dialog);
+        const pageBound = page === 'register';
+        const component = mega.ui.auth.getDialogComponent(pageBound);
+
+        if (!component) {
+            return;
+        }
+
+        if (pageBound) {
+            $('.fm-dialog-overlay').addClass('hidden');
+            component.addClass('page-bound');
+        }
+
+        const showOptions = {
+            name: 'pro-register-dialog',
+            classList: ['pro-register-dialog-overlay'],
+            showClose: !pageBound,
+            actionOnBottom: false,
+            contents: [dialog],
+            preventBgClosing: pageBound || options.preventBgClosing !== false,
+            onClose: () => {
+
                 closeRegisterDialog($dialog, true);
 
-                if (page.startsWith('propay_')) {
-                    return loadSubPage('pro');
+                if (pageBound) {
+                    component.removeClass('page-bound');
                 }
-
-                return false;
-            });
-
-            // close dialog by click on overlay
-            $('.fm-dialog-overlay').rebind('click.registerDialog', function() {
                 if (aPromise) {
                     aPromise.reject();
                 }
-                if ($.registerDialog === $.dialog) {
-                    closeRegisterDialog($dialog, true);
-                }
-                else {
-                    closeDialog();
-                }
-                return false;
-            });
-        }
-        console.assert(options.showDialog || $.dialog !== 'register', 'Invalid state...');
-        options.$dialog = $dialog;
+            },
+            noBlurBackground: pageBound
+        };
 
-        // Show dialog function
-        if (options.showDialog) {
-            options.showDialog();
+        if (!is_mobile) {
+
+            showOptions.type = 'modal';
+            showOptions.sheetHeight = 'auto';
+            showOptions.sheetWidth = 'auto';
         }
-        else {
-            M.safeShowDialog('register', function() {
-                $.registerDialog = 'register';
-                return $dialog;
-            });
-        }
+
+        component.show(showOptions);
+        component.toggleClass('business-sub-account', !!options.businessSubAccountInfo);
+
+        placeLangBtnToLogin(is_mobile ? component : undefined);
+
+        onIdle(() => {
+            // Init inputs events
+            accountinputs.init($dialog);
+        });
 
         // S4 new ToS And Privacy checkboxes
         if (options.s4Flag) {
-            $('.terms-check', $dialog).safeHTML(l.accept_tos_and_s4_tos);
             $('.privacy-checkbox-block').removeClass('hidden');
         }
 
-        // Init inputs events
-        accountinputs.init($dialog);
+        const $withCondition = $('header .with-condition', $dialog);
+        const $loginText = $('header .login-text', $dialog);
+        const $loginLink = $('header .login-text a', $dialog);
 
-        if (M.chat) {
-            $('aside .login-text', $dialog).removeClass('hidden');
-            $('aside .login-text a, .register-side-pane.header a', $dialog)
-                .rebind('click.doSignup', function() {
-                    closeRegisterDialog($dialog, true);
-                    megaChat.loginOrRegisterBeforeJoining(
-                        undefined,
-                        false,
-                        true,
-                        undefined,
-                        opts.onLoginSuccessCb
-                    );
-                });
-        }
-        else if (options.showLogin) {
-            $('aside', $dialog).removeClass('no-padding');
-            $('aside .login-text', $dialog).removeClass('hidden');
-            $('aside .login-text a, .register-side-pane.header a', $dialog)
-                .rebind('click.doSignup', function() {
-                    var onAccountCreated = options.onAccountCreated && options.onAccountCreated.bind(options);
+        $withCondition.removeClass('hidden');
+        $loginText.addClass('hidden');
 
-                    closeRegisterDialog($dialog, true);
-                    mega.ui.showLoginRequiredDialog({minUserType: 3, skipInitialDialog: 1})
-                        .then(function() {
-                            if (typeof onAccountCreated === 'function') {
-                                onAccountCreated(2, false);
-                            }
-                            else if (d) {
-                                console.warn('Completed login, but have no way to notify the caller...');
-                            }
-                        }).catch(console.debug.bind(console));
-                });
-        }
-        else {
-            $('aside .login-text', $dialog).addClass('hidden');
-            $('aside', $dialog).addClass('no-padding');
-        }
+        const submitWrap = $dialog[0].querySelector('.footer-container');
 
-        $inputs.val('');
-        $password.parent().find('.password-status').removeClass('checked');
-
-        $('header h2', $dialog).text(options.title || l[20755]);
-        if (options.body) {
-            $('header p', $dialog).safeHTML(options.body);
-        }
-        else {
-            $('header p', $dialog)
-                .safeHTML(`${l.free_storage_info__register.replace('%s', bytesToSize(mega.bstrg, 0))}`);
-
-            // Hide the "Create an account and get x GB of free storage on MEGA"
-            // text if coming from the discount promotion page
-            if (sessionStorage.getItem('discountPromoContinuePlanNum')) {
-                $('header p', $dialog).addClass('hidden');
+        if (!submitWrap) {
+            if (d) {
+                console.error('Submit button wrapper not found in the dialog');
             }
+            return;
         }
 
-        $inputs.rebind('keydown.proRegister', function(e) {
-            if (e.keyCode === 13) {
-                doProRegister($dialog, aPromise);
-            }
-        });
+        let submitButton = submitWrap.componentSelector('.register-button');
 
-        $button.rebind('click.proRegister', function() {
-            var $this = $(this);
-            if ($this.hasClass('disabled')) {
-                return false;
+        if (!submitButton) {
+            submitButton = new MegaButton({
+                parentNode: submitWrap,
+                componentClassname: 'mega-button register-button primary',
+                text: l[1108],
+                typeAttr: 'button'
+            });
+        }
+
+        const initPasswordStrength = () => {
+
+            const $passwordInput = $('input.pass', $dialog);
+
+            if (!$passwordInput.length || typeof signup.updatePasswordStrength !== 'function') {
+                return;
             }
-            doProRegister($dialog, aPromise);
+
+            const validatePasswordStrength = password => {
+
+                const isValid = security.isValidPassword(password, password, true);
+
+                if (isValid === true && typeof zxcvbn === 'function') {
+                    return classifyPassword(password);
+                }
+
+                return isValid;
+            };
+
+            $passwordInput.rebind('input.passwordStrength', ev => {
+                signup.updatePasswordStrength(validatePasswordStrength(ev.target.value), $dialog);
+            });
+
+            // For input cleared case
+            $passwordInput.rebind('keyup.passwordStrength', ev => {
+
+                if (ev.keyCode === 9) {
+                    return;
+                }
+
+                if (ev.target.value.length === 0) {
+                    $passwordInput.data('MegaInputs').hideError();
+                    signup.updatePasswordStrength(validatePasswordStrength(ev.target.value), $dialog);
+                }
+            });
+        };
+
+        M.require('zxcvbn_js').then(initPasswordStrength);
+
+        $('.js-register-back', $dialog).rebind('click.registerBack', () => {
+
+            const {fromLogin, onBack} = options;
+
+            closeRegisterDialog($dialog, true);
+
+            if (pageBound) {
+                loadSubPage('login');
+            }
+
+            if (fromLogin) {
+                login.openDialog();
+            }
+
+            if (typeof onBack === 'function') {
+                onBack();
+            }
+
             return false;
         });
 
-        $button.rebind('keydown.proRegister', function (e) {
-            if (e.keyCode === 13  && !$(this).hasClass('disabled')) {
-                doProRegister($dialog, aPromise);
+        if (M.chat) {
+            $loginText.removeClass('hidden');
+            $loginLink.rebind('click.doSignup', () => {
+                closeRegisterDialog($dialog, true);
+                megaChat.loginOrRegisterBeforeJoining(
+                    undefined,
+                    false,
+                    true,
+                    undefined,
+                    opts.onLoginSuccessCb
+                );
+
                 return false;
+            });
+        }
+        else if (options.showLogin) {
+            $loginText.removeClass('hidden');
+            $loginLink.rebind('click.doSignup', () => {
+                if (pageBound) {
+                    closeRegisterDialog($dialog, true);
+                    loadSubPage('login');
+                    return false;
+                }
+
+                var onAccountCreated = options.onAccountCreated && options.onAccountCreated.bind(options);
+
+                closeRegisterDialog($dialog, true);
+                login.showRequiredDialog({minUserType: 3, skipInitialDialog: 1})
+                    .then(() => {
+                        if (typeof onAccountCreated === 'function') {
+                            onAccountCreated(2, false);
+                        }
+                        else if (d) {
+                            console.warn('Completed login, but have no way to notify the caller...');
+                        }
+                    }).catch(console.debug.bind(console));
+
+                return false;
+            });
+        }
+
+        $inputs.val('');
+        $('.password-wrapper .password-strength', $dialog).addClass('hidden');
+
+        // Hide the "Create an account and get x GB of free storage on MEGA"
+        // text if coming from the discount promotion page
+        $('.register-benefits-list .free-storage', $dialog)
+            .toggleClass('hidden', !!sessionStorage.getItem('discountPromoContinuePlanNum'));
+
+        const $firstName = $('input.f-name', $dialog);
+        const $email = $('input.email', $dialog);
+        const $terms = $('.account.terms', $dialog);
+        const termsNode = $terms[0];
+        const $title = $('#pro-register-dialog-title', $dialog);
+        const $benefits = $('.register-benefits-column', $dialog);
+
+        $firstName.closest('.account').removeClass('hidden');
+        $email.closest('.account').removeClass('hidden');
+        $benefits.removeClass('hidden');
+
+        if ($title.length) {
+            $title.safeHTML(l.register_dialog_title);
+        }
+
+        if (termsNode && termsNode.dataset.defaultHtml) {
+            $terms.safeHTML(termsNode.dataset.defaultHtml);
+        }
+
+        if (options.businessSubAccountInfo) {
+            $firstName.val(options.businessSubAccountInfo.firstName);
+            $email.val(options.businessSubAccountInfo.email);
+            $firstName.closest('.account').addClass('hidden');
+            $email.closest('.account').addClass('hidden');
+            $benefits.addClass('hidden');
+
+            if ($title.length) {
+                $title.text(l[19517]);
             }
+        }
+
+        submitButton.rebind('click.proRegister', () => {
+            if (!submitButton.loading && !submitButton.disabled) {
+                eventlog(pageBound ? 99809 : 501043);
+                doProRegister($dialog, aPromise);
+            }
+            return false;
+        });
+
+        const _keysubmit = e => {
+            if (e.keyCode === 13) {
+                submitButton.trigger('click.proRegister');
+            }
+        };
+
+        $inputs.rebind('keydown.proRegister', _keysubmit);
+        submitButton.rebind('keydown.proRegister', _keysubmit);
+
+        $inputs.rebind('keyup.registerforminteraction', () => {
+            eventlog(501132, true);
+            $inputs.off('keyup.registerforminteraction');
         });
     }
+
+    let _cachePendingSignUp = null;
 
     /**
      * Send Signup link dialog
      * @param {Object} accountData The data entered by the user at registration
      * @param {Function} onCloseCallback Optional callback to invoke on close
+     * @param {Boolean} startTimerOnOpen Whether to start resend timer immediately on first render
      */
-    function sendSignupLinkDialog(accountData, onCloseCallback) {
-        const $dialog = $('.mega-dialog.registration-page-success').removeClass('hidden');
-        const $changeEmailLink = $('.reg-success-change-email-btn', $dialog);
-        const $resendEmailButton = $('.resend-email-button', $dialog);
+    function sendSignupLinkDialog(accountData, onCloseCallback, startTimerOnOpen) {
 
-        mega.onCloseDialogDispatcher = () => {
-            fm_hideoverlay();
-            $dialog.addClass('hidden').removeClass('special');
-            delete mega.onCloseDialogDispatcher;
+        // Make this dialog only available on register page for header consistency.
+        if (page !== 'register') {
+
+            // cache current data for redirection to register page and showing the dialog there
+            _cachePendingSignUp = {accountData, onCloseCallback, startTimerOnOpen};
+            loadSubPage('register');
+            return;
+        }
+
+        if (_cachePendingSignUp) {
+            accountData = _cachePendingSignUp.accountData;
+            onCloseCallback = _cachePendingSignUp.onCloseCallback;
+            startTimerOnOpen = _cachePendingSignUp.startTimerOnOpen;
+            _cachePendingSignUp = null;
+        }
+
+        const data = Object(accountData);
+        const user = {
+            first: data.first || '',
+            last: data.last || '',
+            email: data.email || ''
         };
 
-        if (page && page.indexOf("chat/") > -1  || page === "chat") {
-            $dialog.addClass('chatlink');
-            $('.reg-success-icon-chat', $dialog).removeClass('hidden');
-            $('.reg-success-icon', $dialog).addClass('hidden');
-        }
-        else {
-            $dialog.removeClass('chatlink');
-            $('.reg-success-icon-chat', $dialog).addClass('hidden');
-            $('.reg-success-icon', $dialog).removeClass('hidden');
-        }
-
-        const $resendEmailTxt = $('.reg-resend-email-txt', $dialog);
-        $resendEmailTxt.text(accountData.email).attr('data-simpletip', accountData.email);
-
-        $changeEmailLink.rebind('click', (event) => {
-            event.preventDefault();
-            $('.reg-resend-email-txt', $dialog).addClass('hidden');
-            $('footer', $dialog).addClass('hidden');
-            $('.content-block', $dialog).addClass('dialog-bottom');
-            if ($dialog.hasClass('chatlink')) {
-                $('.reg-success-special .chat-header', $dialog).text(l[22901]);
-            }
-            else {
-                $(".reg-success-special div[class='reg-success-txt']", $dialog).text(l[22901]);
-            }
-            $('.reg-resend-email input', $dialog).val(accountData.email);
-            $('.reg-resend-email', $dialog).removeClass('hidden');
+        let resendTimer;
+        const changeEmailInput = new MegaInputComponent({
+            parentNode: document.createDocumentFragment(),
+            className: 'pmText signup-email-input',
+            title: l[95]
+        });
+        changeEmailInput.input.type = 'email';
+        changeEmailInput.on('input.signupLink', () => {
+            changeEmailInput.error = null;
         });
 
-        $resendEmailButton.rebind('click', function _click() {
-            const ctx = {
-                callback: function(res) {
-                    loadingDialog.hide();
+        const contents = {
+            default: {
+                title: l[735],
+                get msg() {
+                    return l.email_confirmation_sent.replace('%1', `<strong>${escapeHTML(user.email)}</strong>`);
+                },
+                subMsg:
+                    `<p>${l[217]}</p>
+                    <p>${l.account_delete_email_confirmation_no_receive}</p>
+                    <p>${l.contact_support_email}</p>`
+            },
+            change: {
+                title: l[7743],
+                msg: l.register_change_email_prompt,
+                subMsg: changeEmailInput.domNode
+            }
+        };
 
-                    if (res === -5) {
-                        alert(l[7717]);
+        const _clearTimer = () => {
+            if (resendTimer) {
+                clearInterval(resendTimer);
+                resendTimer = null;
+            }
+        };
+        const dialogComponent = mega.ui.auth.getDialogComponent(true);
+
+        if (!dialogComponent) {
+            if (d) {
+                console.error('No dialog component available to show signup link dialog');
+            }
+            return;
+        }
+
+        dialogComponent.rebind('hide.signupLinkDialogTimer', _clearTimer);
+
+        const _handleResend = (mode) => {
+            const email = mode === 'change' ? $.trim(changeEmailInput.value || '') : user.email;
+            const resendTarget = dialogComponent.contentNode.componentSelector(
+                mode === 'change' ? '.resend-email' : '.resend-email-link'
+            );
+
+            if (resendTarget && (resendTarget.disabled || resendTarget.loading)) {
+                return;
+            }
+
+            if (mode === 'change' && !isValidEmail(email)) {
+                changeEmailInput.error = l.enter_valid_email;
+                return;
+            }
+
+            if (resendTarget) {
+                resendTarget.loading = true;
+            }
+
+            _resendEmail(email, mode, resendTarget);
+        };
+
+        const _formatResendWait = tick => l.register_resend_wait
+            .replace('%1', String(Math.floor(tick / 60)).padStart(2, '0'))
+            .replace('%2', String(tick % 60).padStart(2, '0'));
+
+        const _renderDialogContent = (mode, msg, subMsg) => {
+            const content = mCreateElement('div', {class: 'signup-link-overlay-content'});
+            const msgNode = mCreateElement('p', {}, content);
+
+            if (mode === 'change') {
+                msgNode.textContent = msg;
+                if (subMsg) {
+                    content.append(subMsg);
+                }
+
+                const resendBlock = mCreateElement('div', {class: 'signup-link-action'}, content);
+                const resendButton = new MegaButton({
+                    parentNode: resendBlock,
+                    type: 'normal',
+                    componentClassname: 'resend-email',
+                    text: l.register_update_email_button
+                });
+                resendButton.on('click', () => _handleResend(mode));
+                mCreateElement('span', {class: 'resend-email-wait hidden'}, resendBlock)
+                    .textContent = _formatResendWait(300);
+
+                return content;
+            }
+
+            msgNode.append(parseHTML(msg));
+            const subMsgNode = mCreateElement('div', {}, content);
+            subMsgNode.append(parseHTML(subMsg));
+
+            const resendBlock = mCreateElement('div', {class: 'signup-link-resend'}, content);
+            mCreateElement('span', {}, resendBlock).textContent = l.register_resend_question;
+            resendBlock.append(' ');
+
+            MegaLink.factory({
+                parentNode: resendBlock,
+                type: 'text',
+                componentClassname: 'resend-email-link',
+                text: l.register_resend_link
+            }).on('click', () => _handleResend(mode));
+            mCreateElement('span', {class: 'resend-email-wait hidden'}, resendBlock)
+                .textContent = _formatResendWait(300);
+
+            if (is_mobile) {
+
+                const wrap = mCreateElement(
+                    'div',
+                    {class: 'signup-link-footer'},
+                    [document.createTextNode(`${l.register_wrong_email_prompt} `)],
+                    content
+                );
+
+                MegaLink.factory({
+                    parentNode: wrap,
+                    type: 'text',
+                    text: l[7743]
+                }).on('click', () => _showDialog('change'));
+            }
+
+            return content;
+        };
+
+        const _renderSignupLinkFooter = (mode) => {
+
+            if (mode !== 'default' || is_mobile) {
+                return null;
+            }
+
+            const footer = document.createDocumentFragment();
+            MegaLink.factory({
+                parentNode: footer,
+                type: 'text',
+                text: l[7743]
+            }).on('click', () => _showDialog('change'));
+
+            footer.prepend(document.createTextNode(`${l.register_wrong_email_prompt} `));
+
+            return {
+                slot: [footer],
+                classList: ['signup-link-footer']
+            };
+        };
+
+        const _handleSignupLinkDialogClose = () => {
+
+            _clearTimer();
+
+            const type = `>*-signupCancel:!^${l.register_cancel_signup_confirm}!${l.register_cancel_signup_dismiss}`;
+
+            onIdle(() => msgDialog(type, false, l.register_cancel_signup_title, l.register_cancel_signup_text, ev => {
+                if (!ev) {
+                    return;
+                }
+
+                eventlog(501159);
+
+                const promise = api.req({a: 'ucr'}).catch(dump);
+
+                const _ = () => {
+
+                    if (typeof onCloseCallback === 'function') {
+
+                        onCloseCallback();
                         return;
                     }
-                    if (res === EEXIST) {
-                        $('.reg-resend-email-meg', $dialog).text(l[19562]);
-                        $('input', $dialog).parent().addClass('error');
-                        $('input', $dialog).focus();
-                        return false;
-                    }
-                    if (res !== 0) {
-                        console.error('sendsignuplink failed', res);
 
-                        $resendEmailButton.addClass('disabled');
-                        $resendEmailButton.off('click');
+                    delete localStorage.awaitingConfirmationAccount;
 
-                        let tick = 26;
-                        var timer = setInterval(() => {
-                            if (--tick === 0) {
-                                clearInterval(timer);
-                                $resendEmailButton.text(l[8744]);
-                                $resendEmailButton.removeClass('disabled');
-                                $resendEmailButton.rebind('click', _click);
-                            }
-                            else {
-                                $resendEmailButton.text('\u23F1 ' + tick + '...');
-                            }
-                        }, 1000);
+                    loadSubPage('login');
+                };
 
-                        alert(l[200]);
-                    }
-                    else {
-                        closeDialog();
-                        fm_showoverlay();
+                // For mobile web register ephemeral is not allowed
+                if (is_mobile) {
 
-                        $dialog.removeClass('hidden');
-                    }
+                    promise.then(() => u_logout(1)).then(() => {
+
+                        _();
+                        window.location.reload();
+                    });
                 }
-            };
-            loadingDialog.show();
+                else {
+                    _();
+                }
+            }));
+        };
 
-            const newEmail = $.trim($('input', $dialog).val());
+        function _showDialog(mode, opts = {}) {
 
-            // Verify the new email address is in valid format
-            if (!isValidEmail(newEmail)) {
-                // Hide the loading spinner
-                loadingDialog.hide();
+            changeEmailInput.value = opts.email || user.email;
+            changeEmailInput.error = opts.error || '';
 
-                $('.reg-resend-email-meg', $dialog).text(l[1100]);
-                $('input', $dialog).parent().addClass('error');
-                $('input', $dialog).focus();
-                return false;
+            let {title, msg, subMsg} = contents[mode];
+
+            if (opts.customTitle) {
+                title = opts.customTitle;
             }
 
-            security.register.repeatSendSignupLink(accountData.first, accountData.last, newEmail, ctx.callback);
-        });
+            const opt = {
+                name: 'signup-link-overlay',
+                classList: ['signup-link-dialog-overlay'],
+                type: is_mobile ? 'modal' : 'modalLeft',
+                preventBgClosing: true,
+                contents: [_renderDialogContent(mode, msg, subMsg)],
+                footer: _renderSignupLinkFooter(mode),
+                onShow: () => {
 
-        if (typeof onCloseCallback === 'function') {
-            // Show dialog close button
-            $('button.js-close', $dialog).removeClass('hidden');
+                    placeLangBtnToLogin(is_mobile ? dialogComponent : null);
 
-            $('button.js-close', $dialog).rebind('click', () => {
+                    if (opts.startTimerTick > 0) {
 
-                msgDialog('confirmation', l[1334], l[5710], false, (ev) => {
-
-                    // Confirm abort registration
-                    if (ev) {
-
-                        // Run 'user cancel registration' API command to cleanup the registration API side
-                        api_req({ a: 'ucr' });
-                        onCloseCallback();
+                        _startTimer(opts.startTimerTick);
                     }
-                    else {
-                        // Restore the background overlay which was closed by the msgDialog function
-                        fm_showoverlay();
+                },
+                confirmClose: _handleSignupLinkDialogClose,
+                noBlurBackground: true
+            };
+
+            if (mode === 'change') {
+
+                opt.onBack = () => _showDialog('default');
+                opt[is_mobile ? 'title' : 'header'] = title;
+                opt.showClose = false;
+            }
+            else {
+                opt.showClose = true;
+                opt.icon = 'png-icon email-sent';
+                opt.title = title;
+            }
+
+            dialogComponent.show(opt);
+            dialogComponent.titleNode.classList.remove('mob-px-6');
+
+            if (is_mobile) {
+                mega.ui.header.update();
+            }
+        }
+
+        function _startTimer(tick = 301) {
+
+            const primaryBtn = dialogComponent.contentNode.componentSelector('.resend-email');
+            const resendLink = dialogComponent.contentNode.componentSelector('.resend-email-link');
+            const resendWait = dialogComponent.contentNode.querySelector('.resend-email-wait');
+            const target = primaryBtn || resendLink;
+
+            _clearTimer();
+
+            if (!target) {
+                return;
+            }
+
+            target.hide();
+            if (resendWait) {
+                resendWait.classList.remove('hidden');
+            }
+
+            resendTimer = setInterval(() => {
+                if (--tick <= 0) {
+                    _clearTimer();
+                    target.show();
+                    if (resendWait) {
+                        resendWait.classList.add('hidden');
                     }
-                });
-            });
+                    return;
+                }
+                if (resendWait) {
+                    resendWait.textContent = _formatResendWait(tick);
+                }
+            }, 1000);
+        }
+
+        function _resendEmail(email, fallbackMode, resendTarget) {
+            security.register.repeatSendSignupLink(
+                user.first,
+                user.last,
+                email,
+                res => {
+                    if (resendTarget) {
+                        resendTarget.loading = false;
+                    }
+
+                    if (res === -5) {
+                        showToast('warning', l[7717]);
+                        _showDialog(fallbackMode, {email});
+                        return;
+                    }
+
+                    if (res === EEXIST) {
+                        _showDialog('change', {email, error: l.register_resend_email_exists_error});
+                        return;
+                    }
+
+                    if (res === ETOOMANY) {
+                        showToast('warning', l.register_resend_limit_toast);
+                        _showDialog('default', {email, startTimerTick: 301});
+                        return;
+                    }
+
+                    if (res !== 0) {
+                        console.error('sendsignuplink failed', res);
+                        showToast('warning', l[200]);
+                        _startTimer(26);
+                        return;
+                    }
+
+                    let msg = l.register_resend_success_toast;
+
+                    if (user.email !== email) {
+
+                        const aca = JSON.parse(localStorage.awaitingConfirmationAccount);
+
+                        msg = l.register_email_update_success;
+                        aca.email = user.email = email;
+                        localStorage.awaitingConfirmationAccount = JSON.stringify(aca);
+                    }
+                    _showDialog('default', {startTimerTick: 301, customTitle: l.register_update_email_title});
+                    showToast('success', msg);
+                }
+            );
+        }
+
+        _showDialog('default', startTimerOnOpen ? {startTimerTick: 301} : undefined);
+
+    }
+
+    function updatePasswordStrength(strength, $context) {
+
+        const {className} = strength;
+        const $passwordWrapper = $('.password-wrapper', $context).removeClass('strengthen error');
+        const $passwordStrength = $('.password-strength', $passwordWrapper).addClass('hidden');
+        const $passwordStrengthIcon = $('i', $passwordStrength);
+        const $passwordStrengthText = $('.password-strength-text', $passwordStrength);
+        const $passwordNotStored = $('.password-not-stored', $passwordWrapper);
+
+        $passwordNotStored.addClass('hidden');
+
+        $passwordStrengthIcon.attr('class', 'sprite-fm-mono icon-size-18');
+        $passwordStrength.attr('class', 'password-strength');
+
+        if (className && className.startsWith('good')) {
+            $passwordStrength.addClass(className);
+
+            if (className === 'good1') {
+                $passwordWrapper.addClass('strengthen');
+                $passwordStrengthIcon.addClass('icon-alert-triangle-thin-outline');
+                $passwordStrengthText.text(l.weak_pass_try_stronger);
+            }
+            else if (className === 'good2' || className === 'good3') {
+                $passwordWrapper.addClass('strengthen');
+                $passwordStrengthIcon.addClass('icon-alert-circle-thin-outline');
+                $passwordStrengthText.safeHTML(l[1121]);
+                $passwordNotStored.removeClass('hidden');
+            }
+            else {
+                $passwordStrengthIcon.addClass('icon-check-circle-thin-outline');
+                $passwordStrengthText.safeHTML(l.this_is_strong_password);
+                $passwordNotStored.removeClass('hidden');
+            }
+        }
+        else if (typeof strength === 'string') {
+            $passwordStrengthIcon.addClass('icon-alert-triangle-thin-outline');
+            $passwordStrengthText.text(strength);
+
         }
         else {
-            // Hide dialog close button
-            $('button.js-close', $dialog).addClass('hidden');
-        }
-
-        if (onCloseCallback === true) {
-            // we just want the close button to be show and to not trigger anything closing it.
-            $('button.js-close', $dialog).removeClass('hidden');
-            $('button.js-close', $dialog).rebind('click', () => {
-                // TODO: Move this to safeShowDialog();
-                $dialog.addClass('hidden');
-                fm_hideoverlay();
-                return false;
-            });
-        }
-
-        fm_showoverlay();
-        $('.content-block', $dialog).removeClass('dialog-bottom');
-        $('footer', $dialog).removeClass('hidden');
-        $dialog.addClass('special').show();
-
-        if ($resendEmailTxt[0].scrollWidth > $resendEmailTxt[0].offsetWidth) {
-            $resendEmailTxt.addClass('simpletip').attr("data-simpletip-class", "no-max-width");
-        }
-        else {
-            $resendEmailTxt.removeClass('simpletip').removeAttr('data-simpletip-class');
+            $passwordStrengthIcon.addClass('icon-alert-triangle-thin-outline');
+            $passwordStrengthText.text(l.err_no_pass);
+            $passwordNotStored.removeClass('hidden');
         }
     }
 
     // export
-    scope.mega.ui.showRegisterDialog = showRegisterDialog;
-    scope.mega.ui.sendSignupLinkDialog = sendSignupLinkDialog;
+    mega.ui.auth = mega.ui.auth || {};
+    mega.ui.login = mega.ui.login || {};
+    mega.ui.signup = mega.ui.signup || {};
+    mega.ui.signup.showDialog = showRegisterDialog;
+    mega.ui.signup.showLinkDialog = sendSignupLinkDialog;
+    mega.ui.signup.updatePasswordStrength = updatePasswordStrength;
 
 })(this);

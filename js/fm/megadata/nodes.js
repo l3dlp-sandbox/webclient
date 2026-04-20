@@ -5068,7 +5068,7 @@ MegaData.prototype.importFolderLinkNodes = function importFolderLinkNodes(nodes)
                 const ack = () => {
                     pending = false;
                     loadingDialog.hide();
-                    return mega.ui.showLoginRequiredDialog({
+                    return mega.ui.login.showRequiredDialog({
                         title: l.login_signup_dlg_title,
                         textContent: l.login_signup_dlg_msg,
                         showRegister: true

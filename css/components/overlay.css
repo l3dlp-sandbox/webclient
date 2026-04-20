@@ -240,6 +240,12 @@ body.mobile .overlay-wrap .image i.password {
     width: 100%;
 }
 
+.overlay-wrap .header-title h2 {
+    font: var(--mobile-font-heading-h2);
+    color: var(--mobile-text-primary);
+    margin: 0;
+}
+
 .overlay-wrap .header-title h3 {
     color: var(--mobile-text-primary);
     font: var(--mobile-font-heading-h3);
@@ -263,7 +269,7 @@ body.mobile .overlay-wrap .image i.password {
 }
 
 @media only screen and (orientation: landscape) and (max-height: 359px) {
-    .overlay-wrap i.icon {
+    .overlay-wrap *:not(.mega-input) > i.icon {
        display: none;
     }
 }

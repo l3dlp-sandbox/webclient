@@ -176,7 +176,8 @@ var alarm = {
 
                 // Hide the dialog and go to register page
                 $button.removeClass('show');
-                loadSubPage('register');
+
+                mega.ui.signup.showDialog();
             });
         }
     },

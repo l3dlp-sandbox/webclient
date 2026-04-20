@@ -1,27 +1,16 @@
-.sign .main-pad-block {
-    background-color: var(--surface-grey-1);
-}
-.bottom-page.sign .megalite-badge {
-    background-color: var(--mobile-indicator-indigo);
-    border-radius: 4px;
-    color: var(--text-color-white-higher);
-    font: var(--mobile-font-caption-large-regular);
-    margin: 24px;
-    padding: 4px 8px;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.rtl .bottom-page.sign .megalite-badge {
-    left: 0;
-    right: auto;
-}
+
 .bottom-page.sign .register-st2-txt-block {
     padding-top: 94px;
 }
 .bottom-page.sign .main-left-block {
     width: 486px;
-    padding: 64px 0;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.bottom-page.sign .main-mid-pad {
+    height: 100%;
 }
 .account.form-body {
     width: 100%;
@@ -35,133 +24,7 @@
     overflow: hidden;
     position: relative;
 }
-.account.form-body .form-content {
-    padding: 0 48px;
-}
-.account.register-form .pw-strength-wrap {
-    margin-top: -15px;
-    margin-bottom: 20px;
-    text-align: left;
-}
-.account.register-form .checkbox-block {
-    align-items: flex-start;
-    display: flex;
-    padding: 24px 0 0 0;
-    text-align: initial;
-}
-.account.register-form .checkbox-block + .checkbox-block {
-    padding-top: 8px;
-}
-.account.register-form .checkbox {
-    margin: 2px 0;
-    margin-inline-end: 14px;
-}
-.account.register-form .radio-txt {
-    color: var(--text-color-medium);
-    font: var(--text-body1);
-    font-size: 13px;
-}
-.account.register-form .content-txt.pw-strength-note {
-    margin-top: 8px;
-    margin-left: 4px;
-    color: #aaa;
-}
-.account.form-body .dialog-dark-bottom {
-    align-items: center;
-    color: var(--text-color-medium);
-    background: var(--surface-grey-2);
-    box-sizing: border-box;
-    display: flex;
-    font: var(--text-body1);
-    justify-content: center;
-    min-height: 48px;
-    padding: 12px 48px;
-    width: 100%;
-}
-.main-left-block.confirm .account.login-form .dialog-dark-bottom.register,
-.main-left-block.businessSubAc .account.register-form .dialog-dark-bottom.login  {
-    display: none;
-}
-.account.form-body .dialog-dark-bottom a {
-    font-size: 15px;
-    color: var(--text-color-medium);
-    font-family: var(--text-font-family);
-    font-weight: 600;
-    margin-left: 4px;
-    text-decoration: underline;
-}
 
-@media (hover: hover) {
-    .account.register-form .dialog-dark-bottom.login a:hover,
-    .account.login-form .dialog-dark-bottom.register a:hover {
-        text-decoration: none;
-    }
-}
-
-.account.top-header {
-    font-family: var(--text-font-family-second-regular);
-    font-size: 28px;
-    line-height: 44px;
-    color: var(--text-color-high);
-    padding: 48px 0 40px 0;
-}
-.mega-dialog header .account.top-header {
-    padding: 40px 0px 10px 40px;
-    color: #333;
-}
-.mega-dialog header .account.top-header.small {
-    padding: 40px 0px 0px 40px;
-    font-size: 26px;
-}
-.account.top-header span {
-    color: #F0373B;
-}
-.account.top-header.wide {
-    width: 112%;
-}
-.account.text-header {
-    font-family: var(--text-font-family-second-regular);
-    font-size: 18px;
-    line-height: 30px;
-    color: black;
-    padding: 35px 0 44px 0;
-}
-.account.small-header-txt {
-    float: right;
-    font-size: 14px;
-    line-height: 24px;
-    color: #666666;
-    padding: 64px 0 0 0;
-}
-.account.small-header-txt a {
-    color: #F0373B;
-    cursor: pointer;
-}
-.account.small-header-txt a:hover {
-    text-decoration: underline;
-}
-.account.half-sized-block.full-sized-error .message-container {
-    width: calc(200% + 24px);
-}
-.account.input-wrapper {
-    border-bottom: 1px solid var(--stroke-grey-2);
-    padding: 14px 0 5px 0;
-    padding-inline-end: 8px;
-    padding-inline-start: 38px;
-    margin: 0 0 24px 0;
-    position: relative;
-    font-size: 0;
-    line-height: 0;
-    white-space: nowrap;
-    transition: border-color 200ms ease-in-out;
-}
-.account.input-wrapper.small {
-    margin: 0;
-    margin-inline-start: 8px;
-}
-.account.input-wrapper.top-placeholder {
-    margin: 0 0 24px 0;
-}
 .account.input-wrapper.top-placeholder label {
     display: none;
     position: absolute;
@@ -368,9 +231,6 @@ body.ar .sms-verification-number-input {
     margin: 48px 0;
     white-space: nowrap;
 }
-button.login-button {
-    margin-top: 2px;
-}
 .business button.register-button {
     margin-top: 30px;
 }
@@ -382,7 +242,6 @@ button.login-button {
 }
 .sign .main-pad-block button {
     display: flex;
-    margin: 48px 0;
 }
 button span {
     display: inline-block;
@@ -403,23 +262,6 @@ button.loading .loader {
 .business .business-block {
     display: block;
 }
-.account.input-hint {
-    font-size: 12px;
-    line-height: 24px;
-    font-family: 'LatoWeb', 'source_sans_proregular', Arial;
-    color: #999999;
-    position: absolute;
-    left: 38px;
-    top: -18px;
-    letter-spacing: 0.86px;
-}
-.account.radio-buttons.register-pad {
-    padding: 0 0 29px 0;
-    margin: -2px 0 0 0;
-}
-.register-pad div.right {
-    float: right;
-}
 .radio-txt.medium {
     font-size: 16px;
     color: #333333;
@@ -431,113 +273,6 @@ button.loading .loader {
 }
 .account.radio-buttons .provider-icon {
     margin: 0 0 0 8px;
-}
-.account.checkbox-block.terms {
-    padding-bottom: 3px;
-}
-.account.checkbox-block.small {
-    padding: 0 0 14px 1px;
-    display: flex;
-}
-.register-side-pane .account.checkbox-block.small {
-    padding: 0 0 16px 8px;
-}
-.account.checkbox-block.small .radio-txt {
-    font-size: 13px;
-}
-.account.checkbox-block.small .checkboxOn, .account.checkbox-block.small .checkboxOff  {
-    margin-top: 5px;
-}
-.account.checkbox-block.small .radio-txt  {
-        padding: 4px 0 0 0
-}
-.account.business-plan {
-    width: 360px;
-    background-color: white;
-    float: right;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 0 20px 0 rgba(0,0,0,0.05);
-    -moz-box-shadow: 0 0 20px 0 rgba(0,0,0,0.05);
-    box-shadow: 0 0 20px 0 rgba(0,0,0,0.05);
-    position: relative;
-    margin: 198px 0 0 0;
-}
-.account.business-plan * {
-    position: relative;
-}
-.account.business-plan::before, .account.business-plan::after {
-    position: absolute;
-    display: block;
-    content: "";
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    -webkit-box-shadow: 0 2px 5px 0 rgba(102,102,102,0.1);
-    -moz-box-shadow: 0 2px 5px 0 rgba(102,102,102,0.1);
-    box-shadow: 0 2px 5px 0 rgba(102,102,102,0.1);
-}
-.account.business-plan::after {
-    -webkit-box-shadow: 0 0 1px 0 #E6E6E6;
-    -moz-box-shadow: 0 0 1px 0 #E6E6E6;
-    box-shadow: 0 0 1px 0 #E6E6E6;
-}
-.account.business-plan-icon {
-    height: 68px;
-    width: 68px;
-    margin: 35px auto 2px auto;
-    background-image: url(../images/mega/business.png);
-    background-position: -255px -1255px;
-}
-.account.business-plan-title {
-    font-size: 20px;
-    line-height: 26px;
-    color: #666666;
-    text-align: center;
-    font-family: 'LatoWeb', 'source_sans_proregular', Arial;
-    padding: 0 0 40px 0;
-}
-.account.business-plan-price {
-    height: 72px;
-    background-color: #00BFA5;
-    border-radius: 2px;
-    color: white;
-    padding: 15px 0 0 0;
-    margin: 0 16px 16px 16px;
-    font-size: 16px;
-    line-height: 40px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    text-align: center;
-}
-.account.business-plan-price .big {
-    font-size: 40px;
-    padding-right: 12px;
-}
-.account.business-plan-info, .account.business-plan-total {
-    height: 54px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: 16px;
-    line-height: 20px;
-    color: #333333;
-    padding: 17px 16px 0 16px;
-    margin: 0 16px;
-    font-family: 'LatoWeb', 'source_sans_proregular', Arial;
-}
-.account.business-plan-info.grey {
-    background-color: rgba(0,0,0,0.03);
-}
-.account.business-plan-total {
-    border-top: 1px solid rgba(0,0,0,0.1);
-    font-size: 24px;
-    line-height: 30px;
-    height: 67px;
-}
-.account.icons-blocks {
-    font-size: 0;
 }
 .sign .bottom-page.small-txt {
     font-size: 14px;
@@ -562,11 +297,6 @@ button.loading .loader {
 .bottom-page.big-icon.business.https {
     background-position: 1px -1520px;
 }
-.main-left-block.confirm {
-    float: none;
-    margin: 36px auto 0 auto;
-    text-align: center;
-}
 .dropdown.body.popup.top-login-popup {
     width: 400px;
     border-radius: 24px;
@@ -589,123 +319,3 @@ button.loading .loader {
 }
 
 /* New register page */
-.big-illustration {
-    width: 400px;
-    height: 142px;
-    display: inline-block;
-    background-image: url(../images/mega/register-sprite.png);
-    background-repeat: no-repeat;
-}
-.big-illustration.register.shield {
-    background-position: -17px -833px;
-}
-.big-illustration.register.pw-lock {
-    background-position: -17px -994px;
-}
-.big-illustration.register.safe-key, .big-illustration.login.safe-key {
-    background-position: -19px -1172px;
-}
-.register-slide {
-    width: 456px;
-    position: relative;
-}
-.register-slide-block, .login-slide-block {
-    text-align: center;
-    width: 456px;
-    overflow: hidden;
-    position: relative;
-    margin-top: 60px;
-}
-.login-slide-block {
-    margin-top: 48px;
-}
-.trusted-users-section {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    color: var(--text-color-higher);
-    font-family: var(--text-font-family-second-regular);
-    font-size: 30px;
-    line-height: 36px;
-    margin: 120px auto 0;
-}
-.trusted-users-section .users-value {
-    color: rgba(255, 51, 58, 1);
-    font-family: var(--text-font-family-second-bold);
-    font-size: 54px;
-    line-height: 65px;
-}
-.register-slide-block h2, .login-slide-block h2 {
-    display: flex;
-    flex-direction: column;
-    font-weight: 300;
-    font-family: 'LatoWebLight','source_sans_proregular', Arial;
-    margin: 32px 0 20px 0;
-    white-space: normal;
-}
-.register-slide-block h2 b, .login-slide-block h2 b  {
-    font-family: 'LatoWebBold','source_sans_proregular', Arial;
-}
-.register-slide-block a, .login-slide-block a {
-    color: var(--text-color-error);
-    font-size: 14px;
-    line-height: 20px;
-    text-decoration: underline;
-    white-space: normal;
-}
-.register-slide-wrapper {
-    white-space: nowrap;
-    position: relative;
-    top: 0;
-    width: 456px;
-    transition: left 700ms ease-in-out;
-}
-.register-slide-wrapper[data-slide="1"] {
-    left: 0;
-}
-.register-slide-wrapper[data-slide="2"] {
-    left: -457px;
-}
-.register-slide-wrapper[data-slide="3"] {
-    left: -913px;
-}
-.register-slide-wrapper[data-slide="4"] {
-    left: -1370px;
-}
-.register-slide .slider-ctrl-button {
-    position: absolute;
-    top: 60%;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    margin: 0;
-    opacity: 0.4;
-    -webkit-transition: all 250ms ease-in-out;
-    -moz-transition: all 250ms ease-in-out;
-    -o-transition: all 250ms ease-in-out;
-    -ms-transition: all 250ms ease-in-out;
-    transition: all 250ms ease-in-out;
-}
-.register-slide:hover .slider-ctrl-button {
-    opacity: 1;
-}
-.register-slide .slider-ctrl-button:hover {
-    opacity: 1;
-    background-color: rgba(255,255,255,0.8);
-    border-radius: 100%;
-}
-.register-slide .slider-ctrl-button.prev {
-    left: -32px;
-}
-.register-slide .slider-ctrl-button.next {
-    right: -32px;
-}
-.register-slide .slider-ctrl-button:before {
-    display: none;
-}
-.register-slide-page {
-    display: inline-block;
-    width: 100%;
-    vertical-align: top;
-    white-space: normal;
-}

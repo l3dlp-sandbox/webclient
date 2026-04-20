@@ -70,7 +70,7 @@
                     start_anoupload();
                 }
                 else {
-                    tooltiplogin.init();
+                    mega.ui.login.openDialog();
                     $.awaitingLoginToUpload = true;
 
                     mBroadcaster.once('fm:initialized', function() {
@@ -258,7 +258,8 @@
         var currentDir = M.currentCustomView ? M.currentCustomView.nodeID : M.currentdirid;
 
         if ($.awaitingLoginToUpload) {
-            return tooltiplogin.init();
+            mega.ui.login.openDialog();
+            return false;
         }
 
         if (

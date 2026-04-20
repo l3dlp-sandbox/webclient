@@ -627,9 +627,6 @@ sms.verifyCode = {
                             // Reset flag
                             sms.isSuspended = false;
 
-                            // Set the message and phone number to show on the login page
-                            login_txt = successMessage + ' ' + l[20392];
-
                             // Log out the partially logged in account and reload page
                             u_logout().then(() => location.reload());
                         });

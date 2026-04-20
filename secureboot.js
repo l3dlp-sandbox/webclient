@@ -2129,6 +2129,8 @@ else if (!browserUpdate) {
     jsl.push({f:'css/jquery-ui.extra.css', n: 'jquery_ui_extra_css', j:2,w:5});
     jsl.push({f:'html/cookiepolicy.html', n: 'cookiepolicy', j:0});
     jsl.push({f:'css/cookiepolicy.css', n: 'cookiepolicy_css', j:2,w:5});
+    jsl.push({f:'js/ui/loginRequiredDialog.js', n: 'loginrequireddialog_js', j:1,w:1});
+    jsl.push({f:'js/ui/registerDialog.js', n: 'registerdialog_js', j:1,w:1});
 
     if (!is_mobile) {
         jsl.push({f:'js/jquery.tokeninput.js', n: 'jquerytokeninput_js', j:1});
@@ -2140,15 +2142,12 @@ else if (!browserUpdate) {
         jsl.push({f:'js/ui/dialog.js', n: 'dialogui_js', j:1,w:1});
         jsl.push({f:'js/ui/components/meganz/MComponent.js', n: 'm_component_js', j:1});
         jsl.push({f:'js/ui/credentialsWarningDialog.js', n: 'creddialogui_js', j:1,w:1});
-        jsl.push({f:'js/ui/loginRequiredDialog.js', n: 'loginrequireddialog_js', j:1,w:1});
-        jsl.push({f:'js/ui/registerDialog.js', n: 'registerdialog_js', j:1,w:1});
         jsl.push({f:'js/ui/keySignatureWarningDialog.js', n: 'mega_js', j:1,w:7});
         jsl.push({f:'js/ui/feedbackDialog.js', n: 'feedbackdialogui_js', j:1,w:1});
         jsl.push({f:'js/ui/forcedUpgradeProDialog.js', n: 'forcedupgradeprodialog_js', j:1,w:1});
         jsl.push({f:'js/ui/dcAppPromoDialog.js', n: 'dcAppPromoDialog_js', j:1,w:1});
         jsl.push({f:'js/ui/alarm.js', n: 'alarm_js', j:1,w:1});
         jsl.push({f:'js/ui/toast.js', n: 'toast_js', j:1,w:1});
-        jsl.push({f:'js/ui/top-tooltip-login.js', n: 'top-tooltip-login', j:1});
         jsl.push({f:'js/fm/transfer-progress-widget.js', n: 'tpw_js', j:1});
 
         // S4 activation page in FM
@@ -2318,8 +2317,13 @@ else if (!browserUpdate) {
     jsl.push({f:'js/mobile/mobile.header.js', n: 'mobile_header_js', j: 1, w: 1});
     jsl.push({f:'js/mobile/mobile.top.menu.js', n: 'mobile_top_menu_js', j: 1, w: 1});
 
+    jsl.push({f:'html/login.html', n: 'login', j:0});
+    jsl.push({f:'css/login-page.css', n: 'login_page_css', j:2,w:5});
     jsl.push({f:'css/mobile/mobile.header.css', n: 'mobile_header_css', j: 2, w: 5});
     jsl.push({f:'css/mobile/mobile.top.menu.css', n: 'mobile_top_menu_css', j: 2, w: 5});
+    jsl.push({f:'css/login-dialog.css', n: 'login_dialog_css', j:2,w:5});
+    jsl.push({f:'css/confirm-account-dialog.css', n: 'confirm_account_dialog_css', j:2,w:5});
+    jsl.push({f:'css/register-dialog.css', n: 'register_dialog_css', j:2,w:5});
 
     if (!is_mobile) {
 
@@ -2438,7 +2442,6 @@ else if (!browserUpdate) {
         jsl.push({f:'css/chat-bundle.css', n: 'meetings_css', j:2, w:30});
 
         jsl.push({f:'html/key.html', n: 'key', j:0});
-        jsl.push({f:'html/login.html', n: 'login', j:0});
         jsl.push({f:'html/fm.html', n: 'fm', j:0, w:3});
         jsl.push({f:'html/top-login.html', n: 'top-login', j:0});
         jsl.push({f:'html/dialogs.html', n: 'dialogs', j:0,w:2});
@@ -2595,7 +2598,6 @@ else if (!browserUpdate) {
         jsl.push({f:'js/mobile/mobile.recovery.enter-key.js', n: 'mobile_rec_enter_key_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.recovery.change-password.js', n: 'mobile_rec_change_password_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.register.js', n: 'mobile_register_js', j: 1, w: 1});
-        jsl.push({f:'js/mobile/mobile.signin.js', n: 'mobile_signin_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.support.js', n: 'mobile_support_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.upload-overlay.js', n: 'mobile_upload_overlay_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.contact-link.js', n: 'mobile_contactlink_js', j: 1, w: 1});
@@ -2880,7 +2882,6 @@ else if (!browserUpdate) {
         'dcrawjs': {f:'js/vendor/dcraw.js', n: 'dcraw_js', j: 1},
         'datepicker_js': {f:'js/vendor/datepicker.js', n: 'datepicker_js', j:1},
         'sourcecode': {f:'html/sourcecode.html', n: 'sourcecode', j:0},
-        'register': {f:'html/register.html', n: 'register', j:0},
         'register_js': {f:'html/js/register.js', n: 'register_js', j:1},
         'download': {f:'html/download.html', n: 'download', j:0},
         'download_js': {f:'html/js/download.js', n: 'download_js', j:1},
@@ -3154,8 +3155,8 @@ else if (!browserUpdate) {
         'reset': ['reset', 'reset_js'],
         'verify': ['change_email', 'change_email_js'],
         'cancel': ['cancel', 'cancel_js'],
-        'register': ['register', 'register_js', 'zxcvbn_js'],
-        'newsignup': ['register', 'register_js', 'zxcvbn_js'],
+        'register': ['register_js', 'zxcvbn_js'],
+        'newsignup': ['register_js', 'zxcvbn_js'],
         'emailverify': ['zxcvbn_js'],
         '!': ['download', 'download_js', 'downloadUI_js', 'linkAccess_js', 'reportabuse_js'],
         'file': ['download', 'download_js', 'downloadUI_js', 'linkAccess_js', 'reportabuse_js'],

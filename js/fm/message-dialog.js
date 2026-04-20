@@ -19,6 +19,19 @@ function msgDialog(type, title, msg, subMsg, callback, checkboxCallback) {
     var buttonsArray = is_mobile ? [] : [l.ok_button];
     var icon;
 
+    // Mobile shift to support legacy msgDialog usage
+    if (dialogType[0] === '>') {
+
+        dialogType = dialogType.slice(1);
+
+        if (is_mobile) {
+
+            title = msg;
+            msg = subMsg;
+            subMsg = false;
+        }
+    }
+
     // Legacy support for old msgDialog custom types
     if (dialogType.startsWith('*')) {
         dialogType = dialogType.slice(1);
@@ -89,6 +102,7 @@ function msgDialog(type, title, msg, subMsg, callback, checkboxCallback) {
             {
                 icon,
                 buttons: buttonsArray,
+                confirmButtonClass: isDestructive ? 'destructive' : undefined,
                 image
             },
             safeShow,
