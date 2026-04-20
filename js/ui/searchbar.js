@@ -817,7 +817,7 @@ lazy(mega.ui, 'searchbar', () => {
             $locLink.text(dir);
             $dir.safeAppend($locLink.prop('outerHTML'));
 
-            if (node.u && node.u !== u_handle) {
+            if (!folderlink && node.u && node.u !== u_handle) {
                 $ownerAvatar.safeAppend(useravatar.contact(node.u));
                 $ownerName.text(M.getNameByHandle(node.u));
                 $owner.removeClass('hidden');
