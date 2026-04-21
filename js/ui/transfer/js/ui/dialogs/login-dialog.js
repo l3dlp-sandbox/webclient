@@ -187,15 +187,8 @@ lazy(T.ui, 'loginDialog', () => {
 
                     // Check for incomplete registration
                     else if (ex === EINCOMPLETE) {
-                        msgDialog(
-                            '*info',
-                            'regsiteration incomplete',
-                            l.login_incomplete_registration_title,
-                            l.login_incomplete_registration_text + '<br><br>' +
-                            l.login_incomplete_registration_detail
-                                .replace('[A]', '<a href="mailto:support@transfer.it" class="primary-link">')
-                                .replace('[/A]', '</a>')
-                        );
+                        // This account has not completed the registration
+                        msgDialog('warningb', l[882], l[9082]);
                         return true;
                     }
 

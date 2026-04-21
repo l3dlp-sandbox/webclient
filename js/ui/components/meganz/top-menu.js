@@ -4,6 +4,10 @@ class MegaTopMenu extends MegaMobileTopMenu {
 
         super(options);
 
+        if (!this.domNode) {
+            return;
+        }
+
         this.megaLink.interactableType = 'normal';
         this.megaLink.icon = 'sprite-fm-uni icon-mega-logo';
 
@@ -492,4 +496,3 @@ class MegaTopMenu extends MegaMobileTopMenu {
     }));
 
 })(window.mega);
-

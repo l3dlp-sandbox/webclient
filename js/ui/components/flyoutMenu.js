@@ -388,7 +388,10 @@ class MegaFlyoutMenu extends MegaComponent {
         }
 
         this.domNode.parentNode.classList.add('flyout-shown');
-        document.getElementById(is_chatlink ? 'startholder' : 'pmlayout').classList.add('flyout-expanded');
+        const parent = document.getElementById(is_chatlink ? 'startholder' : 'pmlayout');
+        if (parent) {
+            parent.classList.add('flyout-expanded');
+        }
 
         if (!is_chatlink) {
             mega.ui.header.topBlockBottomBorder = true;

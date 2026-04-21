@@ -85,18 +85,24 @@ mobile.overBandwidthQuota = {
                     }
                 },
                 onClose: () => {
-                    this.closeSheet();
+                    this.clearTimer();
                 }
             });
         });
     },
 
-    closeSheet() {
+    clearTimer() {
         'use strict';
 
         if (dlmanager._overQuotaTimeLeftTick) {
             clearInterval(dlmanager._overQuotaTimeLeftTick);
         }
+    },
+
+    closeSheet() {
+        'use strict';
+
+        this.clearTimer();
 
         mega.ui.sheet.hide();
     },

@@ -485,6 +485,12 @@
         });
 
         const component = getLoginDialogComponent(pageBound);
+
+        if (!component) {
+            console.error('Failed to initiate dialog as getting the component failed');
+            return aPromise.reject(EINTERNAL);
+        }
+
         const loginDialogTitle = localStorage.megaLiteMode ? l.login_to_mega_lite : l[1768];
         const showOptions = {
             name: 'pro-login-dialog',
@@ -606,6 +612,12 @@
         if (!loginBtn.loading) {
             return false;
         }
+
+        mBroadcaster.once('msgdialog-closed', () => {
+            if ($.msgDialog === '>error') {
+                loginBtn.loading = false;
+            }
+        });
 
         // Checks if they have an old or new registration type, after this the flow will continue to login
         security.login.checkLoginMethod(email, password, twoFactorPin, rememberMe, startOldLogin, startNewLogin);

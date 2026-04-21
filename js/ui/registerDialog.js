@@ -1059,7 +1059,7 @@
 
                         msg = l.register_email_update_success;
                         aca.email = user.email = email;
-                        localStorage.awaitingConfirmationAccount = JSON.stringify(aca);
+                        security.register.cacheRegistrationData(aca);
                     }
                     _showDialog('default', {startTimerTick: 301, customTitle: l.register_update_email_title});
                     showToast('success', msg);

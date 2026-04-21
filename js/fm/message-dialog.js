@@ -354,8 +354,8 @@ function closeMsg(value) {
         $('.mega-dialog-container.common-container').removeClass('arrange-to-back');
     }
 
-    delete $.msgDialog;
     mBroadcaster.sendMessage('msgdialog-closed');
+    delete $.msgDialog;
 
     if (mega.ui.sheet.visible) {
         mega.ui.sheet.hide();
