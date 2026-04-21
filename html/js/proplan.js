@@ -1153,6 +1153,63 @@ pro.proplan = {
     },
 
     /**
+     * Processes a return URL from the payment provider in form of /payment-{providername}-{status} e.g.
+     * /payment-ecp-success
+     * /payment-ecp-failure
+     * /payment-sabadell-success
+     * /payment-sabadell-failure
+     * /payment-astropay-pending
+     * /payment-paysafecard-saleidXXX
+     * @param {String} page The requested page from index.js e.g. payment-ecp-success etc
+     * @return {Boolean} True on successful return URL parsing
+     */
+    processReturnUrlFromProvider: function(page) {
+
+        // Get the provider we are returning from and the status
+        var pageParts = page.split('-');
+        var provider = pageParts[1];
+        var status = pageParts[2];
+
+        var successPayText = l[19514];
+        var $pendingOverlay = $('.payment-result.pending.alternate');
+
+
+        // manipulate the texts if business account
+        if (status === 'success' && pageParts && pageParts[3] === 'b') {
+            successPayText = l[19809].replace('{0}', '1');
+        }
+
+        $pendingOverlay.find('.payment-result-txt').safeHTML(successPayText);
+
+        // If returning from an paysafecard payment, do a verification on the sale ID
+        if (provider === 'paysafecard') {
+            paysafecard.verify(status);
+        }
+
+        // If returning from an AstroPay payment, show a pending payment dialog
+        else if (provider === 'astropay') {
+            astroPayDialog.showPendingPayment();
+        }
+
+        // If returning from an Ecomprocessing payment, show a success or failure dialog
+        else if (provider === 'ecp') {
+            addressDialog.showPaymentResult(status);
+        }
+
+        // Sabadell needs to also show success or failure
+        else if (provider === 'sabadell') {
+            sabadell.showPaymentResult(status);
+        }
+
+        // Invalid or unexpected return URL
+        else {
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
      * Processes current and next plan data from api response, and place tag(s) for it.
      *
      * @param {Object} data Api response data

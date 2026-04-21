@@ -1347,12 +1347,15 @@ function init_page() {
         }
     }
     else if (page.substr(0, 7) === 'payment') {
-        // If its a business page, redirect to .io/business
-        if (page.includes('-b')) {
-            mega.redirect('mega.io', 'business', false, false);
-        }
-        else {
-            loadSubPage('pro');
+        // Process the return URL from the payment provider and show a success/failure dialog.
+        if (!pro.proplan.processReturnUrlFromProvider(page)) {
+            // Or redirect if return URL is invalid
+            if (page.includes('-b')) {
+                mega.redirect('mega.io', 'business', false, false);
+            }
+            else {
+                loadSubPage('pro');
+            }
         }
     }
     else if (page === 'thanks') {
