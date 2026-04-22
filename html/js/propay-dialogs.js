@@ -2290,10 +2290,11 @@ var addressDialog = {
             }
             else if (addressDialog.mostRecentValidInput) {
                 pro.propay.fillBillingInfo(addressDialog.mostRecentValidInput);
-                delete addressDialog.mostRecentValidInput;
             }
             else {
-                addressDialog.billingInfoFilled = false;
+                // Billing info cannot be unfilled on the propay page if it was filled previously
+                addressDialog.billingInfoFilled =
+                    (pro.propay.onPropayPage() && addressDialog.billingInfoFilled) || false;
             }
 
             eventlog(500459);
@@ -2541,7 +2542,6 @@ var addressDialog = {
 
         if (typeof callback === 'function') {
             callback(addressDialog.mostRecentValidInput);
-            delete addressDialog.mostRecentValidInput;
         }
         if (pro.propay.onPropayPage()) {
             addressDialog.closeDialog();
@@ -2641,7 +2641,6 @@ var addressDialog = {
             }
             if (addressDialog.mostRecentValidInput) {
                 pro.propay.initBillingInfo(addressDialog.mostRecentValidInput);
-                delete addressDialog.mostRecentValidInput;
             }
             return true;
         }

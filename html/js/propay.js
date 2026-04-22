@@ -246,7 +246,7 @@ pro.propay = {
         const currentGateway = this.currentGateway && this.currentGateway.gatewayId;
 
         if (this.requiresBilling()) {
-            if (!addressDialog.validInputs) {
+            if (!addressDialog.validInputs || !addressDialog.mostRecentValidInput) {
                 addressDialog.validateAndPay(false, true);
             }
             if (addressDialog.validInputs === null) {
@@ -2432,6 +2432,11 @@ pro.propay = {
         $('.sk-stripe-loading', addressDialog.getStripeDialog()).removeClass('hidden');
 
         const gatewayId = this.currentGateway.gatewayId;
+
+        if (this.requiresBillingAddress[gatewayId]
+            && (!addressDialog.billingInfoFilled || (addressDialog.validInputs === false))) {
+            addressDialog.validateAndPay(false, true);
+        }
 
         if (this.requiresBillingAddress[gatewayId]
             && (!addressDialog.billingInfoFilled || (addressDialog.validInputs === false))) {
