@@ -552,30 +552,10 @@
             });
     });
 
-    // @private set2 helper
-    ns.set2response = function(attribute, res) {
-        let error = typeof res === 'number' || res instanceof Error;
-        if (!error) {
-            const {result} = res.batch ? res.batch.pop() : res;
-
-            assert(result !== undefined, `Unexpected API response handling for ${attribute}`);
-
-            res = result;
-            error = typeof result === 'number' && result < 0;
-        }
-        if (error) {
-            logger.warn(`Error setting user attribute "${attribute}", result: ${res}!`);
-            throw res;
-        }
-
-        return res;
-    };
-
     // send commands and attribute updates in batched mode
     // @see {@link mega.attr.set}
     ns.set2 = async function(cmds, attribute, value, pub, nonHistoric, useVersion, options) {
         let savedValue = value;
-        const attrName = attribute;
 
         options = {
             utf8: false,
@@ -598,13 +578,7 @@
         const req = {a: 'up', [attribute]: savedValue};
 
         if (useVersion) {
-            let version = this._versions[cacheKey];
-
-            if (!version) {
-                await Promise.resolve(this.get(u_handle, attrName, pub, nonHistoric)).catch(nop);
-
-                version = this._versions[cacheKey];
-            }
+            const version = this._versions[cacheKey];
 
             req[attribute] = version ? [savedValue, version] : [savedValue];
             req.a = 'upv';
@@ -620,32 +594,30 @@
         }
         let res = await api.screq(cmds ? [...cmds, req] : req).catch(echo);
 
-        if (res === EEXPIRED && useVersion && this._conflictHandlers[attribute]) {
-            logger.error(
-                `Server returned version conflict for attribute "${attribute}"`, this._versions[cacheKey]
-            );
-            attribCache.removeItem(cacheKey, false);
+        let error = typeof res === 'number' || res instanceof Error;
+        if (!error) {
+            const {result} = res.batch ? res.batch.pop() : res;
 
-            const attrVal = await this.get(u_handle, attrName, pub, nonHistoric, false, false, false, options.utf8);
-            const valObj = {
-                localValue: value,
-                mergedValue: value,
-                remoteValue: attrVal,
-                latestVersion: this._versions[cacheKey]
-            };
-            const matched = this._conflictHandlers[attribute].some((cb, index) => cb(valObj, index));
+            assert(result !== undefined, `Unexpected API response handling for ${attribute}`);
 
-            if (matched) {
-                res = await this.set2(attrName, valObj.mergedValue, pub, nonHistoric, true, options);
+            res = result;
+            error = typeof result === 'number' && result < 0;
+        }
+
+        if (error) {
+            if (self.d) {
+                logger.warn(`Error setting user attribute "${attribute}", result: ${res}!`);
             }
+            throw res;
         }
-        const result = this.set2response(attribute, res);
 
-        attribCache.setItem(cacheKey, JSON.stringify([{av: savedValue, v: result[attribute]}, 0]));
-        if (result[attribute]) {
-            this._versions[cacheKey] = result[attribute];
+        attribCache.setItem(cacheKey, JSON.stringify([{av: savedValue, v: res[attribute]}, 0]));
+        if (res[attribute]) {
+            this._versions[cacheKey] = res[attribute];
         }
-        logger.info(`Setting user attribute "${attribute}"`, result, [res]);
+        if (self.d) {
+            logger.info(`Setting user attribute "${attribute}"`, res);
+        }
 
         return res;
     };
@@ -726,6 +698,9 @@
 
         // Otherwise if a non-encrypted private attribute, base64 encode the data
         else if (attribute[0] === '^') {
+            if (attribute === '^!keys') {
+                return MegaPromise.reject(EACCESS);
+            }
             savedValue = base64urlencode(value);
         }
 

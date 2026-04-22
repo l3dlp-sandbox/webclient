@@ -91,10 +91,14 @@ lazy(mega, 'keyMgr', () => {
         return new Uint8Array(u8.buffer, u8.byteOffset, len);
     };
 
-    const cleanupCachedAttribute = async() => {
+    const cleanupCachedAttribute = async(aRemAttrVersion) => {
         if (u_attr['^!keys']) {
             logger.warn('Cleaning ug-provided ^!keys attribute.');
             delete u_attr['^!keys'];
+        }
+        if (aRemAttrVersion && mega.attr._versions[`${u_handle}_^!keys`]) {
+            logger.warn('Cleaning stored ^!keys-attr version...', mega.attr._versions[`${u_handle}_^!keys`]);
+            mega.attr._versions[`${u_handle}_^!keys`] = null;
         }
         return attribCache.removeItem(`${u_handle}_^!keys`);
     };
@@ -115,7 +119,7 @@ lazy(mega, 'keyMgr', () => {
                 keyMgr.acceptPendingInShares().catch(dump);
             })
             .catch((ex) => {
-                cleanupCachedAttribute().catch(dump);
+                cleanupCachedAttribute(1).catch(dump);
                 throw ex;
             });
     };
@@ -223,6 +227,9 @@ lazy(mega, 'keyMgr', () => {
             // indicates an unresolved version clash
             this.versionclash = false;
 
+            // if there was a failure importing ^!keys
+            this.importfailure = false;
+
             // feature flag: enable with the blog post going live
             this.secure = true;
 
@@ -248,7 +255,12 @@ lazy(mega, 'keyMgr', () => {
             }
 
             if (keys) {
-                return this.importKeysContainer(keys, -0x4D454741);
+                return this.importKeysContainer(keys, -0x4D454741)
+                    .catch((ex) => {
+                        logger.error(ex);
+                        cleanupCachedAttribute(1).catch(dump);
+                        throw ex;
+                    });
             }
 
             if (d) {
@@ -373,7 +385,7 @@ lazy(mega, 'keyMgr', () => {
                 const len = (blob[p - 3] << 16) + (blob[p - 2] << 8) + blob[p - 1];
 
                 if (p + len > blob.length) {
-                    return false;
+                    return -1;
                 }
                 tagpos[tag] = [p, len];
                 p += len + 4;
@@ -381,21 +393,21 @@ lazy(mega, 'keyMgr', () => {
 
             const version = this.gettlv(blob, tagpos, 1)[0];
             if (!version) {
-                return false;
+                return 1;
             }
 
             const creationtime = this.gettlv(blob, tagpos, 2);
             if (creationtime.byteLength !== 4) {
-                return false;
+                return 2;
             }
 
             const identity = this.gettlv(blob, tagpos, 3);
             if (ab_to_base64(identity) !== u_handle) {
-                return false;
+                return 3;
             }
 
             if ((val = this.gettlv(blob, tagpos, 4)).byteLength !== 4) {
-                return false;
+                return 4;
             }
 
             const generation = this.u8uint32(val);
@@ -416,17 +428,17 @@ lazy(mega, 'keyMgr', () => {
 
                 const prived25519 = this.gettlv(blob, tagpos, 16);
                 if (prived25519.length !== 32) {
-                    return false;
+                    return 5;
                 }
 
                 const privcu25519 = this.gettlv(blob, tagpos, 17);
                 if (privcu25519.length !== 32) {
-                    return false;
+                    return 6;
                 }
 
                 const privrsa = this.gettlv(blob, tagpos, 18);
                 if (privrsa.length < 512) {
-                    return false;
+                    return 7;
                 }
 
                 this.keyring = Object.create(null);
@@ -438,6 +450,9 @@ lazy(mega, 'keyMgr', () => {
                 this.privcu25519 = privcu25519;
 
                 u_privk = crypto_decodeprivkey2(this.privrsa);
+                if (!u_privk) {
+                    return 8;
+                }
             }
 
             this.attr = attr;
@@ -494,7 +509,7 @@ lazy(mega, 'keyMgr', () => {
                 });
             }
 
-            return true;
+            return 0;
         }
 
         // utility functions - move elsewhere?
@@ -771,6 +786,7 @@ lazy(mega, 'keyMgr', () => {
                 return;
             }
             this.prevkeys = s;
+            this.importfailure = 0;
 
             if (d) {
                 logger.warn('Importing keys...', s && s.length);
@@ -778,6 +794,7 @@ lazy(mega, 'keyMgr', () => {
 
             // header format: 20 / reserved (always 0)
             if (s.charCodeAt(0) !== 20) {
+                this.importfailure = `Hv(${s.charCodeAt(0)})`;
                 throw new SecurityError('Unexpected key repository, please try again later.');
             }
             const algo = {name: "AES-GCM", iv: this.str2u8(s.substr(2, 12))};
@@ -791,10 +808,22 @@ lazy(mega, 'keyMgr', () => {
             const res = await crypto.subtle.decrypt(algo, this.gcmkey, this.str2u8(s.substr(14)))
                 .catch((ex) => {
                     logger.error(ex);
+                    this.importfailure = `sdecrypt(${s.length})`;
                     throw new SecurityError(`Your key repository cannot be read (${s.length}) Please try again later.`);
                 });
 
-            if (!this.unserialise(new Uint8Array(res))) {
+            const error = this.unserialise(new Uint8Array(res));
+            if (error) {
+                const {owner, actors} = mBroadcaster.crossTab;
+                eventlog(501220, JSON.stringify([
+                    1,
+                    error,
+                    stage,
+                    res.byteLength,
+                    !!owner | 0,
+                    Object(actors).length | 0
+                ]));
+                this.importfailure = `unserialise(${error})`;
                 throw new SecurityError(`
                     The cryptographic state of your account appears corrupt.
                     Your data cannot be accessed safely. Please try again later.
@@ -895,7 +924,7 @@ lazy(mega, 'keyMgr', () => {
                     logger.error(ex);
                     logger.error(ex);
                     logger.error(ex);
-                    eventlog(99813, JSON.stringify([4, String(ex).trim().split('\n')[0]]));
+                    eventlog(99813, JSON.stringify([5, String(ex).trim().split('\n')[0], this.importfailure]));
                 })
                 .finally(() => {
                     this.resolveCommitFetchPromises(false);

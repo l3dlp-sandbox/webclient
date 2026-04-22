@@ -1,0 +1,368 @@
+/* pro-login-dialog */
+
+body.web-desktop > .mega-sheet.login-sheet a:focus,
+body.web-desktop > .mega-sheet.login-sheet button:focus,
+body.web-desktop > .mega-sheet.login-sheet input[type="checkbox"]:focus,
+body.web-desktop .content-holder .mega-sheet.login-sheet a:focus,
+body.web-desktop .content-holder .mega-sheet.login-sheet button:focus,
+body.web-desktop .content-holder .mega-sheet.login-sheet input[type="checkbox"]:focus {
+    outline: initial;
+    outline: -webkit-focus-ring-color auto 1px;
+}
+
+body.web-desktop > .mega-sheet.login-sheet {
+    z-index: 1200;
+}
+body.web-desktop .content-holder .mega-sheet.login-sheet {
+    background: none;
+    overflow: hidden;
+}
+.pro-login-dialog-overlay.page-bound.overlay-wrap,
+.twofa-login-overlay.overlay-wrap.active {
+    padding: 56px 24px;
+    box-sizing: border-box;
+    transition: none;
+}
+body.desktop .twofa-login-overlay.page-bound.overlay-wrap.active {
+    background: none;
+}
+body.mobile .pro-login-dialog-overlay.page-bound.overlay-wrap,
+body.mobile .twofa-login-overlay.overlay-wrap.active {
+    background: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+body.mobile .pro-login-dialog-overlay.page-bound.overlay-wrap .header-title,
+body.mobile .pro-login-dialog-overlay.page-bound.overlay-wrap .main > *,
+body.mobile .pro-login-dialog-overlay.page-bound.overlay-wrap .login-page-footer,
+body.mobile .twofa-login-overlay.overlay-wrap.active .header-title,
+body.mobile .twofa-login-overlay.overlay-wrap.active .main > *,
+body.mobile .twofa-login-overlay.overlay-wrap.active .login-page-footer {
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+body.web-desktop .pro-login-dialog-overlay.page-bound.overlay-wrap,
+body.web-desktop .twofa-login-overlay.overlay-wrap.active,
+body.web-desktop .signup-link-dialog-overlay {
+    min-height: 600px;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+}
+.pro-login-dialog-overlay.page-bound.overlay-wrap .sheet,
+.twofa-login-overlay.overlay-wrap.active .sheet,
+.signup-link-dialog-overlay .sheet {
+    pointer-events: all;
+}
+body.mobile .pro-login-dialog-overlay.page-bound.overlay-wrap {
+    padding-bottom: 16px;
+    pointer-events: all;
+}
+body.mobile .twofa-login-overlay.overlay-wrap {
+    box-sizing: border-box;
+    background: none;
+    padding: 0 24px;
+}
+body.mobile .twofa-login-overlay.overlay-wrap .header-title button {
+    display: none;
+}
+/* shared 2FA verification sheet */
+.twofa-login-overlay .twofactor-shared-verification {
+    box-sizing: border-box;
+    width: 420px;
+    text-align: start;
+}
+body.mobile .twofa-login-overlay .close {
+    right: 0.5rem;
+}
+body.mobile .twofa-login-overlay .twofactor-shared-verification {
+    width: 100%;
+}
+.twofa-login-overlay .twofactor-shared-verification .form-title {
+    color: var(--mobile-text-primary);
+    font: var(--mobile-font-heading-h2);
+    margin: 8px 0 16px;
+    text-align: start;
+}
+.twofa-login-overlay .twofactor-shared-verification .form-info {
+    color: var(--mobile-text-primary);
+    font: var(--mobile-font-copy-regular);
+    margin: 0 0 16px;
+    text-align: start;
+}
+.twofa-login-overlay .twofactor-shared-verification .code-container {
+    border: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 42px) 24px;
+    column-gap: 12px;
+    row-gap: 12px;
+    padding: 0;
+    position: relative;
+}
+.twofa-login-overlay .twofactor-shared-verification .code-container.submitting::after {
+    content: '';
+    display: block;
+    grid-column: 7;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    --icon-size: 24px;
+    animation: rotate 1s infinite;
+    animation-timing-function: steps(8, end);
+}
+body.mobile .twofa-login-overlay .twofactor-shared-verification .code-container.submitting::after {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+}
+.twofa-login-overlay .twofactor-shared-verification .mega-input.box-style {
+    margin: 0;
+    width: 42px;
+    min-width: auto;
+    height: 47px;
+}
+body.mobile .twofa-login-overlay .twofactor-shared-verification .code-container {
+    grid-template-columns: repeat(6, 42px);
+}
+.twofa-login-overlay .twofactor-shared-verification .mega-input.box-style .message-container {
+    width: auto;
+    white-space: nowrap;
+}
+.twofa-login-overlay .twofactor-shared-verification .mega-input.box-style .message-container > i {
+    --icon-size: 16px;
+    --mask-color: var(--mobile-text-error);
+}
+.twofa-login-overlay .twofactor-shared-verification .code-container input {
+    padding: 0;
+    text-align: center;
+}
+.twofa-login-overlay .twofactor-shared-verification .code-container input::-webkit-outer-spin-button,
+.twofa-login-overlay .twofactor-shared-verification .code-container input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+.twofa-login-overlay .content .twofactor-shared-verification a.mega-component.nav-elem.text-only.link {
+    color: var(--mobile-link-primary);
+    padding: 0;
+    height: auto;
+    margin-top: 24px;
+}
+.twofa-login-overlay .twofactor-shared-verification .nav-elem.button.block {
+    margin-top: 16px;
+    width: 100%;
+}
+
+body.web-desktop .overlay-wrap .pro-login-dialog {
+    width: 420px;
+    border-radius: var(--mobile-border-radius-large);
+    margin-inline: auto;
+    padding-top: 8px;
+}
+.overlay-wrap.pro-login-dialog-overlay .header-title h1,
+.overlay-wrap.pro-login-dialog-overlay .header-title h2 {
+    font: var(--mobile-font-heading-h2);
+    margin: 0;
+}
+
+.overlay-wrap .pro-login-dialog .content-block {
+    background-color: var(--mobile-page-background);
+}
+.overlay-wrap .pro-login-dialog .fields {
+    display: flex;
+    flex-direction: column;
+}
+.overlay-wrap .pro-login-dialog .login-context-banner {
+    align-items: flex-start;
+    background: var(--mobile-notification-info);
+    border-radius: var(--mobile-border-radius-medium);
+    color: var(--mobile-text-primary);
+    display: flex;
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    text-align: start;
+}
+.overlay-wrap .pro-login-dialog .login-context-banner i {
+    --icon-size: 18px;
+    --mask-color: var(--mobile-support-info);
+    flex: 0 0 auto;
+    margin-inline-end: 8px;
+}
+.overlay-wrap .pro-login-dialog .login-context-banner.error {
+    background: var(--mobile-notification-error);
+}
+.overlay-wrap .pro-login-dialog .login-context-banner.error i {
+    --mask-color: var(--mobile-support-error);
+}
+.overlay-wrap .pro-login-dialog .login-context-banner .login-context-copy {
+    flex: 1 1 auto;
+}
+.overlay-wrap .pro-login-dialog .login-context-banner .login-context-title {
+    font: var(--mobile-font-copy-semibold);
+    margin-bottom: 4px;
+}
+.overlay-wrap .pro-login-dialog .login-context-banner .login-context-body {
+    font: var(--mobile-font-caption-large-regular);
+}
+.overlay-wrap .pro-login-dialog .login-error-box {
+    align-items: flex-start;
+    background: var(--mobile-notification-error);
+    border-radius: var(--mobile-border-radius-medium);
+    color: var(--mobile-text-primary);
+    display: flex;
+    font: var(--mobile-font-caption-large-regular);
+    margin: 0 0 6px;
+    padding: 12px 16px;
+    text-align: start;
+}
+.overlay-wrap .pro-login-dialog .login-error-box i {
+    --icon-size: 18px;
+    --mask-color: var(--mobile-support-error);
+    flex: 0 0 auto;
+    margin-inline-end: 8px;
+}
+.overlay-wrap .pro-login-dialog .login-error-box .login-error-text {
+    flex: 1 1 auto;
+}
+.overlay-wrap .pro-login-dialog .login-page-forgot-bl {
+    padding: 6px 0 0;
+    text-align: end;
+}
+.overlay-wrap .pro-login-dialog .login-page-forgot-bl a {
+    text-decoration: underline;
+    font: var(--mobile-font-link-small-semibold);
+    color: var(--mobile-link-primary);
+}
+.overlay-wrap .pro-login-dialog aside {
+    margin: 12px 0 40px;
+    color: var(--text-color-medium);
+    background: transparent;
+    text-align: center;
+    padding: 12px 0 0;
+}
+.overlay-wrap .pro-login-dialog .footer-container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0 0;
+}
+.overlay-wrap .pro-login-dialog > aside:last-child.hidden {
+    display: inline-block !important;
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+    margin: 0 0 40px;
+    padding: 0;
+}
+.overlay-wrap .pro-login-dialog .footer-container .checkbox-block {
+    margin-bottom: 24px;
+    padding: 0;
+}
+body.mobile .overlay-wrap .pro-login-dialog .footer-container .checkbox-block {
+    margin-bottom: 32px;
+}
+.overlay-wrap .pro-login-dialog .mega-checkbox .checkbox-action {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    color: var(--text-color-high);
+    text-align: start;
+}
+.overlay-wrap .pro-login-dialog .mega-checkbox .checkbox-action > * + * {
+    margin-top: 4px;
+}
+.overlay-wrap .pro-login-dialog .mega-checkbox .checkbox-title {
+    color: var(--text-color-high);
+    font: var(--mobile-font-caption-large-regular);
+}
+.overlay-wrap .pro-login-dialog .mega-checkbox .checkbox-subtext {
+    color: var(--text-color-medium);
+    font: var(--mobile-font-caption-small-regular);
+}
+.overlay-wrap .pro-login-dialog .top-dialog-login-button {
+    background: var(--mobile-button-primary);
+    border-radius: var(--mobile-border-radius-medium);
+    height: 48px;
+    font: var(--mobile-font-link-large-semibold);
+    color: var(--mobile-text-inverse-accent);
+}
+.overlay-wrap .sheet .content .pro-login-dialog aside p a {
+    color: var(--text-color-high);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font: var(--mobile-font-link-large-semibold);
+}
+.overlay-wrap .pro-login-dialog .mega-input.pm.box-style {
+    margin: 20px 0 16px;
+    width: 100%;
+}
+body.mobile .overlay-wrap .pro-login-dialog .mega-input.pm.box-style {
+    margin-bottom: 24px;
+}
+.overlay-wrap .pro-login-dialog .mega-input.pm.box-style.errored .message-container {
+    display: flex;
+    align-items: center;
+}
+.overlay-wrap .pro-login-dialog .mega-input.pm.box-style .message-container i {
+    --mask-color: var(--mobile-text-error);
+    --icon-size: 18px;
+}
+.overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip {
+    padding-top: 16px;
+    display: none;
+}
+.overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip .login-security-tip {
+    background-color: var(--mobile-page-background);
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    color: var(--text-color-medium);
+}
+
+/* Show security tip as a detached dialog card under the main sheet (desktop only) */
+body.web-desktop .overlay-wrap.pro-login-dialog-overlay .sheet {
+    position: relative;
+    overflow: visible;
+    margin: 0;
+    margin-bottom: 120px;
+}
+.overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip .security-tip-title {
+    display: flex;
+    align-items: baseline;
+    font: var(--mobile-font-caption-small-semibold);
+    color: var(--text-color-high);
+}
+.overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip .security-tip-title i {
+    margin-inline-end: 8px;
+}
+.overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip .login-security-tip p {
+    margin: 6px 0 0;
+    font: var(--mobile-font-caption-small-regular);
+}
+body.web-desktop .overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip {
+    display: block;
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    z-index: 2;
+    transition: none;
+}
+body.web-desktop .overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip .login-security-tip {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media screen and (max-height: 750px) {
+    body.web-desktop .overlay-wrap.pro-login-dialog-overlay .sheet {
+        margin-bottom: 0;
+        min-height: 530px;
+    }
+    body.web-desktop .overlay-wrap.pro-login-dialog-overlay .overlay-footer.pro-login-security-tip {
+        display: none;
+    }
+}
+
+/* end pro-login-dialog */

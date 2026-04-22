@@ -1,45 +1,209 @@
 <div class="bottom-page scroll-block selectable-txt">
+    ((MOBILE_LOADER))
 
-    ((TOP))
-
-
-   <div class="main-pad-block">
-
-      <div class="about-top-block">
-         <div class="main-mid-pad new-bottom-pages">
-           <h1>[$516]</h1>
-           <p>
-             [$1276] <br />[$1277]
-           </p>
-           <div class="clear"></div>
-         </div>
-      </div>
-        <div class="main-mid-pad new-bottom-pages support">
-            <div class="account-form-wrapper">
-                <div class="fm-account-labels">
-                    <div class="labels-block">
-                        <label>[$8526]</label>
-                    </div>
-                    <div class="labels-block">
-                        <label>[$7368]</label>
-                    </div>
+    <div class="get-support-block flex flex-column items-center">
+        <!-- Support request       -->
+        <div class="support-block submission request flex flex-column hidden">
+            <div class="contents flex-col-gap-sm">
+                <h2 class="heading-h1">[$516]</h2>
+                <div class="content flex-col-gap-sm">
+                    <span class="free">[$support_page_para_one]</span>
+                    <span class="free">[$support_page_para_two]</span>
+                    <span class="paying">[$support_page_para_one] [$support_paying_user_page_para_one]</span>
+                    <span class="paying">[$support_pg_paid_user_para_two]</span>
                 </div>
-                <div class="fm-account-inputs-blocks">
-                    <div class="account-select-block">
-                        <div class="mega-input dropdown-input box-style inline" id="support-subject">
-                            <span>[$8526]</span>
+            </div>
+            <div class="form-wrapper flex flex-column">
+                <div class="input-blocks flex flex-column">
+                    <div class="input-block verified-email flex-col-gap-sm hidden">
+                        <div class="labels-block caption-b-l">
+                            <div>[$verified_email]</div>
+                        </div>
+                        <div><span class="email"></span></div>
+                    </div>
+                    <div class="input-block flex flex-column hidden">
+                        <div class="labels-block caption-b-l">
+                            <div>[$category]</div>
+                        </div>
+                        <div class="support-category mega-input dropdown-input box-style inline">
+                            <span>[$1278]</span>
                             <i class="sprite-fm-mono icon-dropdown"></i>
-                            <div class="mega-input-dropdown hidden"></div>
+                            <div class="mega-input-dropdown hidden">
+                                <div class="dropdown-scroll flex flex-column"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="fm-account-input">
-                        <textarea placeholder="[$8525]"></textarea>
-                        <a href="" class="contact-new-button">[$1694]</a>
+                    <div class="other-hidden input-block flex flex-column hidden">
+                        <div class="labels-block caption-b-l">
+                            <div>[$issue]</div>
+                        </div>
+                        <div class="support-issue mega-input dropdown-input box-style inline">
+                            <span>[$1278]</span>
+                            <i class="sprite-fm-mono icon-dropdown"></i>
+                            <div class="mega-input-dropdown hidden">
+                                <div class="dropdown-scroll flex flex-column"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="support-related flex flex-column other-hidden hidden">
+                    <div class="title">[$support_page_related_articles_title]</div>
+                    <div class="list flex flex-column"></div>
+                </div>
+                <div class="accept-articles-read other-hidden hidden"></div>
+                <div class="support-device common-hidden input-block flex flex-column hidden">
+                    <div class="labels-block flex-row-gap-sm items-center">
+                        <div class="caption-b-l">[$support_page_device_input_title_part_one]</div>
+                        <span class="caption-l-r">([$support_page_device_input_title_part_two])</span>
+                    </div>
+                    <div class="device-info"></div>
+                    <div class="info caption-l-r flex-row-gap-sm">
+                        <div class="icon flex items-center">
+                            <i class="sprite-fm-mono icon-help-circle-thin-outline"></i>
+                        </div>
+                        <span>[$support_page_device_input_subtext]</span>
+                    </div>
+                </div>
+                <div class="support-message common-hidden flex flex-column hidden">
+                    <div class="message-input input-block flex flex-column">
+                        <div class="labels-block">
+                            <div>[$7368]</div>
+                        </div>
+                        <div class="message mega-textarea">
+                            <i class="sprite-fm-mono icon-close-component clear-input close-btn hidden"></i>
+                        </div>
+                        <div class="error flex-row-gap-sm hidden">
+                            <div class="icon flex items-center">
+                                <i class="sprite-fm-mono icon-alert-triangle-thin-outline"></i>
+                            </div>
+                            <span>[$support_page_message_too_short_error]</span>
+                        </div>
+                    </div>
+                    <div class="info flex-row-gap-sm">
+                        <div class="icon">
+                            <i class="sprite-fm-mono icon-alert-circle-thin-outline"></i>
+                        </div>
+                        <div class="text flex-col-gap-sm">
+                            <span class="info-title">[$support_page_message_info_title]</span>
+                            <span class="caption-l-r">[$support_page_message_info]</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="common-hidden cta hidden">[$1694]</button>
+            </div>
+        </div>
+
+        <!-- Support request submission success       -->
+        <div class="success-block flex items-center hidden">
+            <div class="content flex flex-column">
+                <div class="text flex-col-gap-sm">
+                    <div class="title">[$support_page_post_submission_title]</div>
+                    <div class="text-secondary">[$support_page_post_submission_text]</div>
+                </div>
+                <div class="buttons flex"></div>
+            </div>
+            <img alt="support request success" src="{staticpath}images/mega/chat-upgrade-rocket.webp">
+        </div>
+
+        <!-- to-login or verify email       -->
+        <div class="support-block verify-flow landing flex flex-column hidden">
+            <div class="contents flex-col-gap-sm">
+                <div class="heading-h1">[$516]</div>
+                <div class="content flex-col-gap-sm">
+                    <span>[$support_pg_verify_desc_para_one]</span>
+                    <span>[$support_verify_desc_para_two]</span>
+                </div>
+            </div>
+            <a class="cta clickurl" target="_blank" href="/login">[$login]</a>
+            <div class="body-sec">[$support_pg_lost_access]</div>
+        </div>
+
+        <!-- email form for verification start      -->
+        <div class="support-block verify-flow form email flex flex-column hidden">
+            <div class="contents flex-col-gap-sm">
+                <h2 class="heading-h1">[$516]</h2>
+                <div class="content flex-col-gap-sm">
+                    <span class="body-bold">[$verify_email]</span>
+                    <span>[$support_pg_verify_email_description]</span>
+                </div>
+            </div>
+            <div class="submit-email input-block flex flex-column">
+                <div class="labels-block caption-b-l">
+                    <div>[$your_email_address]</div>
+                </div>
+                <div class="email-input"></div>
+                <div class="info text-secondary flex-row-gap-sm">
+                    <div class="icon flex items-center">
+                        <i class="sprite-fm-mono icon-help-circle-thin-outline"></i>
+                    </div>
+                    <span>[$support_page_email_subtext]</span>
+                </div>
+                <div class="error flex-row-gap-sm hidden">
+                    <div class="icon flex items-center">
+                        <i class="sprite-fm-mono icon-alert-triangle-thin-outline"></i>
+                    </div>
+                    <span></span>
+                </div>
+            </div>
+            <button class="cta verify-email">[$556]</button>
+            <div class="error api flex-row-gap-sm hidden">
+                <div class="icon flex items-center">
+                    <i class="sprite-fm-mono icon-alert-triangle-thin-outline"></i>
+                </div>
+                <span></span>
+            </div>
+            <div class="text-secondary info-note">[$support_pg_verify_email_sub]</div>
+        </div>
+
+        <!-- otp verification       -->
+        <div class="support-block verify-flow form otp flex flex-column hidden">
+            <div class="contents flex-col-gap-sm">
+                <h2 class="heading-h1">[$516]</h2>
+                <div class="content flex-col-gap-sm">
+                    <span class="body-bold">[$verify_email]</span>
+                    <span class="otp-sent-message"></span>
+                </div>
+            </div>
+            <div class="form-input otp">
+                <div class="fields flex flex-column">
+                    <fieldset class="flex">
+                        <label>
+                            <input class="otp" type="number"/>
+                        </label>
+                        <label>
+                            <input class="otp" type="number"/>
+                        </label>
+                        <label>
+                            <input class="otp" type="number"/>
+                        </label>
+                        <label>
+                            <input class="otp" type="number"/>
+                        </label>
+                    </fieldset>
+                    <div class="error flex-row-gap-sm  hidden">
+                        <div class="icon flex items-center">
+                            <i class="sprite-fm-mono icon-alert-triangle-thin-outline"></i>
+                        </div>
+                        <span></span>
                     </div>
                 </div>
             </div>
-           <div class="clear"></div>
-      </div>
-  </div>
-      ((BOTTOM))
+            <div class="buttons flex flex-column flex-center">
+                <button class="cta verify w-100">[$1960]</button>
+                <button class="cta resend">[$resend_email_verification_otp]</button>
+                <button class="cta change-email">[$7743]</button>
+                <div class="api too-many-otp-req flex-row-gap-sm hidden caption-l-r">
+                    <div class="icon flex items-center">
+                        <i class="sprite-fm-mono icon-help-circle-thin-outline"></i>
+                    </div>
+                    <div class="flex-col-gap-xsm">
+                        <span>[$too_many_otp_resend_requests]</span>
+                        <span class="timer">[$too_many_otp_resend_requests_sub]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    ((BOTTOM))
 </div>

@@ -254,11 +254,13 @@
 }
 
 .it-box.dashboard-box .details-body .nav-body {
-    display: grid;
-    grid-auto-flow: column;
-    gap: 4px;
+    display: flex;
     margin: 12px 0;
     white-space: nowrap;
+}
+
+.it-box.dashboard-box .details-body .gap-4 {
+    gap: 4px;
 }
 
 .it-box.dashboard-box .details-body .info-wrap {
@@ -429,6 +431,10 @@
 
     .it-box.dashboard-box .it-tab span {
         font: 700 var(--text-caption-sm);
+    }
+
+    .it-box.dashboard-box .details-body .nav-body {
+        flex-wrap: wrap;
     }
 
 }

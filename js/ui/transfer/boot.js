@@ -386,6 +386,11 @@ mBroadcaster.once('boot_done', () => {
 
     ulmanager.ulSetup = (a0) => a0 && ulmanager.ulStart(a0);
 
+    const arabics = new Set([
+        'DZ', 'BH', 'TD', 'KM', 'DJ', 'EG', 'ER', 'IQ', 'JO', 'KW', 'LB', 'LY',
+        'MR', 'MA', 'OM', 'PS', 'QA', 'SA', 'SO', 'SS', 'SY', 'TZ', 'TN', 'AE', 'YE'
+    ]);
+
     self.getCountryAndLocales = () => {
         let country = 'ISO';
         let locales = '';
@@ -413,7 +418,7 @@ mBroadcaster.once('boot_done', () => {
         locales = mega.intl.test(locales) || mega.intl.test(locale) || 'ISO';
 
         // If locale is Arabic and country is non-Arabic country or non set,
-        if (locale === 'ar' && !arabics.includes(country)) {
+        if (locale === 'ar' && !arabics.has(country)) {
             // To avoid Firefox bug, set UAE as default country.
             locales = 'ar-AE';
         }

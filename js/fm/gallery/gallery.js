@@ -1292,6 +1292,7 @@ class MegaGallery {
             mega.ui.secondaryNav.hideBreadcrumb();
         }
 
+        mega.ui.secondaryNav.domNode.classList.remove('albums-grid-header');
         mega.ui.secondaryNav.updateInfoChipsAndViews();
         mega.ui.secondaryNav.updateSmallNavButton(!M.isGalleryPage() && !M.isAlbumsPage());
 

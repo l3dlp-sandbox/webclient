@@ -294,3 +294,17 @@ body.pwm-ui .mega-header .top-block {
     --icon-size: 12px;
     --mask-color: var(--mobile-icon-primary);
 }
+
+.mega-header .subtext {
+    display: flex;
+}
+
+.mega-header .subtext > * + * {
+    margin-inline-start: 8px;
+}
+
+.mega-header .subtext-icon::before {
+    padding: 2px;
+    text-align: center;
+    margin-top: 2px;
+}

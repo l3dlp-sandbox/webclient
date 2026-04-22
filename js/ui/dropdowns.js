@@ -5,8 +5,9 @@
  * @param {String}   [saveOption] Addition option for account page only. Allows to show "Show changes" notification
  * @param {String}   [contentBlock] id of  content block for dropdown aligment
  * @param {Object} [psOptions] options for the perfect scrollbar.
+ * @param {Boolean} [allowOverflow] allow dropdown to be visible outside the content block
  */
-function bindDropdownEvents($select, saveOption, contentBlock, psOptions) {
+function bindDropdownEvents($select, saveOption, contentBlock, psOptions, allowOverflow) {
     'use strict';
 
     var $dropdownItem = $('.option', $select);
@@ -96,22 +97,24 @@ function bindDropdownEvents($select, saveOption, contentBlock, psOptions) {
             dropdownBottPos = contentBlockHeight - (verticalOffset + dropdownHeight);
             dropdownLeftPos = contentBlockWidth - (horizontalOffset + dropdownWidth);
 
-            if (contentBlockHeight < (dropdownHeight + 20)) {
-                $dropdown.css({
-                    'margin-top': '-' + (verticalOffset - 10) + 'px',
-                    'height': (contentBlockHeight - 20) + 'px'
-                });
-            }
-            else if (dropdownBottPos < 10) {
-                $dropdown.css({
-                    'margin-top': '-' + (10 - dropdownBottPos) + 'px'
-                });
-            }
+            if (allowOverflow === undefined) {
+                if (contentBlockHeight < (dropdownHeight + 20)) {
+                    $dropdown.css({
+                        'margin-top': `-${verticalOffset - 10}px`,
+                        height: `${contentBlockHeight - 20}px`
+                    });
+                }
+                else if (dropdownBottPos < 10) {
+                    $dropdown.css({
+                        'margin-top': `-${10 - dropdownBottPos}px`
+                    });
+                }
 
-            if (dropdownLeftPos < 20) {
-                $dropdown.css({
-                    'margin-left': '-' + (10 - dropdownLeftPos) + 'px'
-                });
+                if (dropdownLeftPos < 20) {
+                    $dropdown.css({
+                        'margin-left': `-${10 - dropdownLeftPos}px`
+                    });
+                }
             }
 
             $contentBlock.rebind('mousedown.closeInputDropdown', e => {

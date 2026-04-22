@@ -171,20 +171,22 @@ var bottompage = {
 
         var $pagesMenu = $('.pages-menu.body', $content);
 
+        $('a.priority-support', bottompage.$footer).toggleClass('hidden', !u_attr || !u_attr.p);
+
         // Hide Pricing link for current Business or Pro Flexi accounts
         if ((u_attr && u_attr.b && u_attr.b.s !== pro.ACCOUNT_STATUS_EXPIRED) ||
             (u_attr && u_attr.pf && u_attr.pf.s !== pro.ACCOUNT_STATUS_EXPIRED)) {
-            $('a.link.pro', bottompage.$footer).addClass('hidden');
+            $('a.pro', bottompage.$footer).addClass('hidden');
             $('.pages-menu.link.pro', $pagesMenu).addClass('hidden');
         }
         else {
-            $('a.link.pro', bottompage.$footer).removeClass('hidden');
+            $('a.pro', bottompage.$footer).removeClass('hidden');
             $('.pages-menu.link.pro', $pagesMenu).removeClass('hidden');
         }
 
         if (u_type && (!mega.flags.ach || Object(window.u_attr).b)) {
             // Hide Achievements link for an non-achievement account and business account
-            $('a.link.achievements', bottompage.$footer).addClass('hidden');
+            $('a.achievements', bottompage.$footer).addClass('hidden');
         }
         else {
             $('a.link.achievements', bottompage.$footer).removeClass('hidden');

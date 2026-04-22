@@ -835,7 +835,6 @@ var redeem = {
                 'click',
                 function() {
                     if (!window.bCreatedVoucher && u_type !== 3) {
-                        login_txt = l[7712];
                         loadSubPage('login');
                     }
                     else {
@@ -867,7 +866,6 @@ var redeem = {
                         return false;
                     }
 
-                    register_txt = l[7712];
                     loadSubPage('register');
                     return false;
                 });

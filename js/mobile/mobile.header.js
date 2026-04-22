@@ -55,36 +55,46 @@ class MegaMobileHeader extends MegaComponent {
             this.renderLoggedIn();
         }
         else {
-            const authConfig = isPublicLink()
-                ? {
-                    text: l[968],
-                    page: 'register'
-                }
-                : {
-                    text: l.log_in,
-                    page: 'login',
-                    onBeforeRedirect: () => {
-                        login_next = getCleanSitePath();
-                    }
-                };
-
-            const authLink = new MegaLink({
+            const loginLink = new MegaLink({
                 parentNode: actionsNode,
-                text: authConfig.text,
-                type: 'normal',
-                componentClassname: 'underline no-bg login-button'
+                text: l.log_in,
+                type: "normal",
+                componentClassname: "underline no-bg login-button action-link"
             });
 
-            authLink.on('tap', () => {
-                if (authConfig.onBeforeRedirect) {
-                    authConfig.onBeforeRedirect();
+            const registerLink = new MegaLink({
+                parentNode: actionsNode,
+                text: l[209],
+                type: "normal",
+                componentClassname: "underline no-bg register-button action-link"
+            });
+
+            const _getLoginNext = () => {
+
+                const next = login_next || getCleanSitePath();
+
+                if (next === 'login' || next === 'register') {
+                    return false;
                 }
 
-                loadSubPage(authConfig.page);
+                return next;
+            };
+
+            loginLink.on('tap', () => {
+
+                login_next = _getLoginNext();
+                loadSubPage('login');
+            });
+
+            registerLink.on('tap', () => {
+
+                login_next = _getLoginNext();
+                loadSubPage('register');
             });
 
             mBroadcaster.once('login2', () => {
-                this.renderLoggedIn(authLink);
+                this.renderLoggedIn(loginLink);
+                registerLink.destroy();
             });
         }
 
@@ -146,7 +156,10 @@ class MegaMobileHeader extends MegaComponent {
 
         backLink.on('tap.back', () => {
 
-            if (!M.currentdirid || M.currentrootid === 'out-shares' || M.currentrootid === 'public-links'
+            if (page === 'login' && twofactor.loginDialog.active) {
+                twofactor.loginDialog.closeDialog();
+            }
+            else if (!M.currentdirid || M.currentrootid === 'out-shares' || M.currentrootid === 'public-links'
                     || String(M.currentdirid).startsWith('account/')) {
 
                 if (typeof mobile.settingsHelper.currentPage !== 'undefined'){
@@ -372,7 +385,8 @@ class MegaMobileHeader extends MegaComponent {
     }
 
     update() {
-        const noTabletView = isPublicLink() || page === 'keybackup' || page.startsWith('businesssignup');
+        const noTabletView = isPublicLink() || page === 'keybackup' || page.startsWith('businesssignup') ||
+            page === 'login' || page === 'register';
 
         const _hide = () => {
 
@@ -391,6 +405,10 @@ class MegaMobileHeader extends MegaComponent {
             }
 
             this.headerOptions = type;
+
+            if (this.avatarButton) {
+                this.avatarButton[page === 'register' && u_type === 0 || !u_attr || confirmok ? 'hide' : 'show']();
+            }
 
             this.show();
         }
@@ -455,6 +473,11 @@ class MegaMobileHeader extends MegaComponent {
 
             replace.domNode.replaceWith(this.avatarButton.domNode);
             replace.destroy();
+        }
+
+        // Hide temporary for not showing avatar too early
+        if (page === 'register') {
+            this.avatarButton.hide();
         }
     }
 
@@ -742,59 +765,70 @@ class MegaMobileHeader extends MegaComponent {
     */
     static types(index) {
         const showBinIcon = M.currentrootid === M.RubbishID && M.v.length;
+        const baseFm = {
+            'top-block': true,
+            'search': true,
+            'close': false,
+            'menu': true,
+            'filter': true,
+            'heading': true,
+            'create-folder': false,
+            'register-button': false,
+            'login-button': false
+        };
+        const baseAcc = {
+            'top-block': {hideTablet: false, hidePhone: true},
+            'search-wrapper': false,
+            'close': false,
+            'menu': true,
+            'bottom-block': true,
+            'filter': false,
+            'heading': true,
+            'clear-bin': false,
+            'create-folder': false,
+            'openapp': false
+        };
+        const baseLogin = {
+            'menu': false,
+            'login-button': false,
+            'register-button': false,
+            'bottom-block': false,
+            'back': false,
+            'filter': false,
+            'heading': false,
+            'clear-bin': false,
+            'create-folder': false,
+            'close': false,
+            'openapp': false
+        };
 
         return [
             {
-                'top-block': true,
-                'search': true,
-                'close': false,
-                'menu': true,
+                ...baseFm,
                 get 'bottom-block'() {
                     return !!M.currentdirid; // no currentdirid means it is not found
                 },
                 'back': false,
                 'openapp': !!pfid,
-                'filter': true,
-                'heading': true,
                 'clear-bin': showBinIcon,
-                'create-folder': false
+                'create-folder': false,
+                'register-button': !u_attr
             },
             {
-                'top-block': true,
-                'search': true,
-                'close': false,
-                'menu': true,
+                ...baseFm,
                 'bottom-block': true,
                 'openapp': !!pfid,
                 'back': true,
-                'filter': true,
-                'heading': true,
                 'clear-bin': showBinIcon,
-                'create-folder': false
+                'login-button': !u_attr
             },
             {
-                'top-block': {hideTablet: false, hidePhone: true},
-                'search-wrapper': false,
-                'close': false,
-                'menu': true,
-                'bottom-block': true,
+                ...baseAcc,
                 'back': {hideTablet: true, hidePhone: false},
-                'filter': false,
-                'heading': true,
-                'clear-bin': false,
-                'create-folder': false
             },
             {
-                'top-block': {hideTablet: false, hidePhone: true},
-                'search-wrapper': false,
-                'close': false,
-                'menu': true,
-                'bottom-block': true,
-                'back': true,
-                'filter': false,
-                'heading': true,
-                'clear-bin': false,
-                'create-folder': false
+                ...baseAcc,
+                'back': true
             },
             {
                 'top-block': false,
@@ -811,6 +845,26 @@ class MegaMobileHeader extends MegaComponent {
                 get 'create-folder'() {
                     return M.getNodeRights(M.currentdirid) > 0;
                 }
+            },
+            // login
+            {
+                ...baseLogin,
+                'register-button': !confirmok
+            },
+            // 2fa
+            {
+                ...baseLogin,
+                'bottom-block': true,
+                'back': true
+            },
+            // register
+            {
+                ...baseLogin,
+                'menu': !!u_type,
+                'login-button': !localStorage.businessSubAc,
+                'register-button': false,
+                'bottom-block': !u_type && !localStorage.businessSubAc && !localStorage.awaitingConfirmationAccount,
+                'back': true
             }
         ][index];
     }
@@ -846,6 +900,13 @@ class MegaMobileHeader extends MegaComponent {
         }
         if (is_mobile && mobile.nodeSelector.active) {
             iType = 4;
+        }
+        // non-logged in pages
+        if (page === 'login') {
+            iType = twofactor.loginDialog.active ? 6 : 5;
+        }
+        else if (page === 'register') {
+            iType = 7;
         }
 
         return MegaMobileHeader.types(iType);

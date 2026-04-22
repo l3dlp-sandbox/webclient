@@ -756,7 +756,7 @@ RecentsRender.prototype.handleByUserHandle = function($newRow, action) {
  */
 RecentsRender.prototype.hasMore = function(action) {
     'use strict';
-    return !action.isChild && (action.path.length !== 1 || action.path[0].h !== M.RootID);
+    return !action.isChild && action.path.length && (action.path.length !== 1 || action.path[0].h !== M.RootID);
 };
 
 /**

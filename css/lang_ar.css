@@ -46,8 +46,7 @@ body.fa, body.ar div, body.ar span, body.fa input, body.fa form, body.fa label, 
     body.rtl .bottom-page.top-title.white-text span,
     body.rtl .cmd-bg .bottom-page.top-title span,
     body.rtl .startpage.register.top-button.clickurl,
-    body.rtl .startpage.square-bl-hover .txt .header,
-    body.rtl .main-mid-pad.big-pad.register1 .main-italic-header {
+    body.rtl .startpage.square-bl-hover .txt .header {
         font-family: 'cai_bold','noto_nashk_bold', 'source_sans_prosemibold' !important;
     }
 

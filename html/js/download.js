@@ -440,31 +440,6 @@ function dlPageStartDownload() {
     $.dlhash = getSitePath();
 }
 
-function setMobileAppInfo() {
-    $('.mobile.download-app').attr('href', getMobileStoreLink());
-    switch (ua.details.os) {
-        case 'iPad':
-        case 'iPhone':
-            $('.app-info-block').addClass('ios');
-            break;
-
-        case 'Windows Phone':
-            $('.app-info-block').addClass('wp');
-            $('.mobile.dl-browser').addClass('disabled').off('click');
-            break;
-
-        case 'Android':
-            $('.app-info-block').addClass('android');
-            break;
-    }
-}
-
-function closedlpopup()
-{
-    document.getElementById('download_overlay').style.display='none';
-    document.getElementById('download_popup').style.left = '-500px';
-}
-
 function dlprogress(fileid, perc, bytesloaded, bytestotal,kbps, dl_queue_num)
 {
     var now = Date.now();
@@ -549,12 +524,17 @@ function start_import() {
         return;
     }
 
+    let _show;
     var dialogHeader = l[20751];
     var dialogTxt = l[20752];
     var dialogType = 'import_login_or_register';
     var buttonEventRegister = () => {
-        mega.ui.showRegisterDialog({
-            body: `${l.free_storage_info__create.replace('%s', bytesToSize(mega.bstrg, 0))}`,
+
+        tryCatch(() => {
+            sessionStorage.importSignupRedirect = getCleanSitePath();
+        })();
+
+        mega.ui.signup.showDialog({
             showLogin: true,
             onAccountCreated(gotLoggedIn, accountData) {
                 if (gotLoggedIn) {
@@ -563,30 +543,40 @@ function start_import() {
                 }
 
                 security.register.cacheRegistrationData(accountData);
-                mega.ui.sendSignupLinkDialog(accountData);
+                mega.ui.signup.showLinkDialog(accountData);
+            },
+            onDialogClosed() {
+                delete sessionStorage.importSignupRedirect;
+            },
+            onBack() {
+                return _show && _show();
             }
         });
     };
 
     var buttonEventLogin = function() {
-        mega.ui.showLoginRequiredDialog({minUserType: 3, skipInitialDialog: 1}).then(start_import);
+        mega.ui.login.showRequiredDialog({minUserType: 3, skipInitialDialog: 1}).then(start_import);
     };
 
-    msgDialog(dialogType, l[1193], dialogHeader, dialogTxt, function(e) {
-        if (e === -1) {
-            buttonEventLogin();
-        }
-        else if (e === 1) {
-            buttonEventRegister();
-        }
-        else if (e === -2) {
-            start_anoimport();
-        }
-        else {
-            dl_import = false;
-            delete localStorage.dlimp;
-        }
-    });
+    _show = () => {
+        msgDialog(dialogType, l[1193], dialogHeader, dialogTxt, e => {
+            if (e === -1) {
+                buttonEventLogin();
+            }
+            else if (e === 1) {
+                buttonEventRegister();
+            }
+            else if (e === -2) {
+                start_anoimport();
+            }
+            else {
+                dl_import = false;
+                delete localStorage.dlimp;
+            }
+        });
+    };
+
+    _show();
 }
 
 function start_anoimport()

@@ -1,0 +1,56 @@
+/* confirm-account-dialog */
+
+.confirm-account-dialog-overlay.page-bound.overlay-wrap.active {
+    background: none;
+    z-index: 0;
+}
+body.mobile .confirm-account-dialog-overlay.overlay-wrap {
+    padding: 56px 24px 16px;
+    box-sizing: border-box;
+}
+.overlay-wrap .confirm-account-dialog .confirm-login-header {
+    font: var(--mobile-font-heading-h2);
+    margin-top: 0;
+}
+body.web-desktop .overlay-wrap .confirm-account-dialog {
+    margin: 0;
+    text-align: start;
+    width: 560px;
+    margin-inline: auto;
+}
+.overlay-wrap .confirm-account-dialog .confirm-account-email {
+    align-items: center;
+    display: flex;
+    margin: 16px 0;
+}
+.overlay-wrap .confirm-account-dialog .confirm-account-email-avatar {
+    margin-inline-end: 10px;
+}
+.overlay-wrap .confirm-account-dialog .confirm-account-email-avatar .avatar-wrapper {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: var(--mobile-font-caption-large-regular);
+}
+.overlay-wrap .confirm-account-dialog .confirm-account-email-details {
+    font: var(--mobile-font-copy-regular);
+    color: var(--mobile-text-primary);
+}
+.overlay-wrap .confirm-account-dialog .mega-input.pm.box-style {
+    margin-top: 24px;
+}
+.overlay-wrap .confirm-account-dialog .login-button {
+    background: var(--mobile-button-primary);
+    border-radius: var(--mobile-border-radius-medium);
+    color: var(--mobile-text-inverse-accent);
+    font: var(--mobile-font-link-large-semibold);
+    height: 40px;
+    margin-top: 18px;
+    width: auto;
+}
+body.mobile .overlay-wrap .confirm-account-dialog .login-button {
+    width: 100%;
+}
+
+/* end confirm-account-dialog */

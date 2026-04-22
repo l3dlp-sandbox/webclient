@@ -2218,7 +2218,7 @@ function blockChromePasswordManager() {
 
     "use strict";
 
-    if (window.chrome) {
+    if (window.chrome && !is_mobile) {
         var $newPasswordField = $('input[type="password"][autocomplete="new-password"]');
         var switchReadonly = function __switchReadonly(input) {
 

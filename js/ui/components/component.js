@@ -203,6 +203,10 @@ class MegaComponent extends MegaDataEmitter {
         }
     }
 
+    find(selector) {
+        return this.domNode.componentSelector(selector);
+    }
+
     getSubNode(className, type) {
         let subNode = this.domNode.querySelector(`.${className}`);
         if (subNode) {

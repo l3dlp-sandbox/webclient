@@ -713,6 +713,7 @@
     font: var(--mobile-font-input-regular);
     color: var(--mobile-text-placeholder);
     -webkit-opacity: 1;
+    caret-color: var(--mobile-text-placeholder);
 }
 .pm.mega-input input.enter-pass::placeholder {
     font: var(--text-body2);
@@ -749,6 +750,7 @@
     --icon-size: 20px;
     --mask-color: var(--mobile-icon-secondary);
     opacity: 1;
+    cursor: pointer;
 }
 .mobile.mega-input input,
 .pm.mega-input input {

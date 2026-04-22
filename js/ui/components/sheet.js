@@ -88,6 +88,24 @@ class MegaSheet extends MegaOverlay {
         return this.domNode.megaSheetHeight;
     }
 
+    set width(key) {
+        const sheetWidth = MegaSheet.widthClass[key];
+
+        if (!sheetWidth) {
+
+            this.removeClass(...Object.values(MegaSheet.widthClass));
+
+            return;
+        }
+
+        this.domNode.megaSheetWidth = sheetWidth;
+        this.addClass(sheetWidth);
+    }
+
+    get width() {
+        return this.domNode.megaSheetWidth;
+    }
+
     /**
      * Method to open a sheet with data if passed as a param
      * @param {Object} [options] contains optional fields to set data
@@ -124,9 +142,12 @@ class MegaSheet extends MegaOverlay {
                 super.show(options);
                 this.type = options.type || 'normal';
                 this.height = options.sheetHeight || 'auto';
+                this.width = options.sheetWidth || '';
                 this.preventBgClosing = options.preventBgClosing || false;
                 this.onClose = options.onClose;
-                document.documentElement.classList.add('overlayed');
+                if (!options.noBlurBackground) {
+                    document.documentElement.classList.add('overlayed');
+                }
             });
         }
         else {
@@ -153,10 +174,10 @@ class MegaSheet extends MegaOverlay {
     hide(name) {
         mega.ui.overlay.domNode.classList.remove('arrange-to-back');
 
-        if ($.msgDialog) {
+        if ($.msgDialog && this.hasClass('msg-dialog')) {
             closeMsg(null);
         }
-        else if (this.safeShow && $.dialog === this.name) {
+        else if (this.safeShow && $.dialog === (name || this.name)) {
             closeDialog();
             this.safeShow = false;
         }
@@ -168,8 +189,14 @@ class MegaSheet extends MegaOverlay {
 
     clear() {
         this.domNode.classList.remove(this.name, this.type, this.height);
+
+        if (this.width) {
+            this.domNode.classList.remove(this.width);
+        }
+
         delete this.domNode.megaSheetType;
         delete this.domNode.megaSheetHeight;
+        delete this.domNode.megaSheetWidth;
 
         super.clear();
     }
@@ -206,6 +233,10 @@ MegaSheet.typeClass = {
 MegaSheet.heightClass = {
     full: 'full-height',
     auto: 'dynamic-height'
+};
+
+MegaSheet.widthClass = {
+    auto: 'dynamic-width'
 };
 
 // Create instance before fm is initialized

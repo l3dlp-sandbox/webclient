@@ -281,23 +281,31 @@ FileManager.prototype.initS4FileManager = mutex('s4-object-storage.lock', functi
     'use strict';
     const stringify = tryCatch((v) => JSON.stringify(v));
 
+    this.s4idd = ['load'];
+
     return Promise.resolve(this.require('s4'))
         .then(() => {
             const cnt = Object.keys(this.c[this.RootID] || {})
                 .map((h) => this.d[h]).filter((n) => n && n.s4);
 
+            this.s4idd[0] = cnt.length;
+
             if (cnt.length) {
+                this.s4idd[2] = [];
                 for (let i = cnt.length; i--;) {
                     const n = cnt[i];
-                    if (s4.kernel.validateS4Container(n) > 0) {
+                    const r = s4.kernel.validateS4Container(n);
+                    if (r > 0) {
                         break;
                     }
                     if (self.d) {
                         console.warn(`a node with s4-attr in root is not a (valid) container... ${n.h}`, stringify(n));
                     }
                     cnt.splice(i, 1);
+                    this.s4idd[2].push([r, n.h, !!n.s4 | 0, Object.keys(n.s4 || {}).join('|')]);
                 }
             }
+            this.s4idd[1] = cnt.length;
 
             if (!cnt.length) {
                 if (self.d) {
@@ -401,11 +409,12 @@ FileManager.prototype.initFileManager = async function() {
                             eventlog(
                                 99622,
                                 JSON.stringify([
-                                    1,
+                                    2,
                                     buildVersion.website,
                                     !!owner | 0,
                                     Object(actors).length | 0,
-                                    ex && ex.message || ex
+                                    ex && ex.message || ex,
+                                    this.s4idd
                                 ])
                             );
                         });
@@ -2241,7 +2250,8 @@ FileManager.prototype.initUIKeyEvents = function() {
     "use strict";
 
     $(window).rebind('keydown.uikeyevents', function(e) {
-        if ((M.chat && !$.dialog) || M.isAlbumsPage() || M.currentrootid === 'pwm') {
+        if ((M.chat && !$.dialog) || M.isAlbumsPage() || M.currentrootid === 'pwm' ||
+            $.dialog === 'pro-register-dialog' || $.dialog === 'pro-login-dialog') {
             return true;
         }
 
@@ -4274,7 +4284,10 @@ FileManager.prototype.cameraUploadUI = function() {
         properties: ['links', 'rename', 'copyrights', 'copy', 'move', 'share', 'saveAs'],
         copy: ['createfolder', 'start-group-chat'],
         move: ['createfolder'],
-        register: ['terms'],
+        'pro-register-dialog': ['languages'],
+        'pro-login-dialog': ['languages'],
+        'signup-link-overlay': ['languages'],
+        'confirm-account-dialog': ['languages'],
         selectFolder: ['createfolder'],
         saveAs: ['createfolder'],
         share: [

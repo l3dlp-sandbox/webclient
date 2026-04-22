@@ -45,11 +45,10 @@ lazy(mega.ui, 'key', () => {
         wrapperClassname: 'overlay overlay-container',
     });
 
-    return {
+    return freeze({
         step1() {
             mega.ui.setTheme();
             const idx = Date.now() % 6;
-            const { browser, version } = browserdetails(ua);
             const options = {
                 name: 'key',
                 classList: ['key-gen'],
@@ -72,7 +71,7 @@ lazy(mega.ui, 'key', () => {
                     ]),
                 ],
             };
-            if (browser === 'Safari' && parseInt(version.split('.').shift(), 10) < 16) {
+            if (window.safari && parseInt(browserdetails().version) < 16) {
                 delete options.videoHeader;
                 options.navImage = 'key-lock-fb';
             }
@@ -189,15 +188,17 @@ lazy(mega.ui, 'key', () => {
             overlay.show(options);
             clickURLs();
         }
-    };
+    });
 });
 
 /** Initialise they keys required for operation. */
 function init_key() {
+    'use strict';
+
     if (typeof u_k_aes === 'undefined') {
         return loadSubPage('start');
     }
-    mega.ui.key.step1();
+    tryCatch(() => mega.ui.key.step1(), self.reportError)();
 
     if (typeof u_privk === 'undefined') {
         crypto_rsagenkey();
@@ -209,7 +210,9 @@ function init_key() {
 
 /** Callback called on completion. */
 function ui_keycomplete() {
-    mega.ui.key.step2();
+    'use strict';
+
+    tryCatch(() => mega.ui.key.step2(), self.reportError)();
 
     // Sets the "Hide Recent Activity" toggle in Settings to `OFF` by default
     mBroadcaster.once('fm:initialized', () => {
@@ -217,7 +220,7 @@ function ui_keycomplete() {
         mega.config.set('showRecents', 1);
     });
 
-    const campaignTagger = () => {
+    onIdle(() => {
         const parse = tryCatch((v) => JSON.parse(v));
 
         let utm = localStorage.uTagUTM || sessionStorage.uTagUTM;
@@ -239,31 +242,23 @@ function ui_keycomplete() {
             delete sessionStorage.uTagUTM;
             delete sessionStorage.uTagMTM;
         }
-    };
-    onIdle(campaignTagger);
+    });
 
     if (u_attr.p === undefined || u_attr.p < 1 || u_attr.p > 4) {
         localStorage.keycomplete = true;
         sessionStorage.signinorup = 2;
 
-        // If mobile, log to see how many registrations are completed on mobile and load the cloud drive
         if (is_mobile) {
-
-            // Check if they actually started the registration process on mobile web
             if (localStorage.signUpStartedInMobileWeb) {
-
-                // Remove the flag as it's no longer needed and send a stats log
                 localStorage.removeItem('signUpStartedInMobileWeb');
-                api_req({ a: 'log', e: 99639, m: 'Started and completed registration on mobile webclient' });
+                eventlog(99639);
             }
             else {
-                // Otherwise they just completed sign up on the mobile web and may have started it on a mobile app
-                api_req({ a: 'log', e: 99627, m: 'Completed registration on mobile webclient' });
+                eventlog(99627);
             }
         }
         else {
-            // Otherwise log to see how many registrations are completed on regular webclient
-            api_req({ a: 'log', e: 99628, m: 'Completed registration on regular webclient' });
+            eventlog(99628);
         }
 
         if (!(u_attr && u_attr.b)) {

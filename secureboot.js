@@ -419,14 +419,20 @@ function getCleanSitePath(path) {
         if (path.miojid) {
             window.uTagMJID = path.miojid;
         }
+        if (path.kbLang) {
+            window.kbLang = path.kbLang;
+        }
+        if (path.kbPostId) {
+            window.kbPostId = path.kbPostId;
+        }
+        if (path.kbCatId) {
+            window.kbCatId = path.kbCatId;
+        }
 
         if (path.next) {
             window.nextPage = b64decode(path.next);
             if (path.plan) {
                 window.pickedPlan = path.plan;
-            }
-            else if (path.articleUrl) {
-                window.helpOrigin = b64decode(path.articleUrl);
             }
         }
     }
@@ -2084,6 +2090,7 @@ else if (!browserUpdate) {
     jsl.push({f:'css/fonts.css', n: 'fonts_css', j:2,w:5});
     jsl.push({f:'css/bottom-pages.css', n: 'bottom-pages_css', j:2,w:5});
     jsl.push({f:'css/bottom-menu.css', n: 'bottom-menu_css', j:2,w:5});
+    jsl.push({f:'css/support.css', n: 'support_css', j:2,w:5});
     jsl.push({f:'css/business.css', n: 'business_css', j:2,w:5});
     jsl.push({f:'css/pro.css', n: 'pro_css', j:2,w:5});
     jsl.push({f:'css/propay.css', n: 'propay_css', j:2,w:5});
@@ -2106,6 +2113,7 @@ else if (!browserUpdate) {
     jsl.push({f:'js/vendor/qrcode.js', n: 'qrcode', j:1,w:2, g: 'vendor'});
     jsl.push({f:'js/ui/password-revert.js', n: 'password-revert', j:1});
     jsl.push({f:'js/ui/publicServiceAnnouncement.js', n: 'psa_js', j:1,w:1});
+    jsl.push({f:'js/ui/dropdowns.js', n: 'dropdowns_js', j:1});
     jsl.push({f:'js/ui/megaInputs.js', n: 'megainputs_js', j:1,w:1});
     jsl.push({f:'js/ui/megaInputs-underlinedText.js', n: 'megainputs_underlinedtext_js', j:1,w:1});
     jsl.push({f:'js/ui/megaInputs-textArea.js', n: 'megainputs_textarea_js', j:1,w:1});
@@ -2129,6 +2137,8 @@ else if (!browserUpdate) {
     jsl.push({f:'css/jquery-ui.extra.css', n: 'jquery_ui_extra_css', j:2,w:5});
     jsl.push({f:'html/cookiepolicy.html', n: 'cookiepolicy', j:0});
     jsl.push({f:'css/cookiepolicy.css', n: 'cookiepolicy_css', j:2,w:5});
+    jsl.push({f:'js/ui/loginRequiredDialog.js', n: 'loginrequireddialog_js', j:1,w:1});
+    jsl.push({f:'js/ui/registerDialog.js', n: 'registerdialog_js', j:1,w:1});
 
     if (!is_mobile) {
         jsl.push({f:'js/jquery.tokeninput.js', n: 'jquerytokeninput_js', j:1});
@@ -2140,15 +2150,12 @@ else if (!browserUpdate) {
         jsl.push({f:'js/ui/dialog.js', n: 'dialogui_js', j:1,w:1});
         jsl.push({f:'js/ui/components/meganz/MComponent.js', n: 'm_component_js', j:1});
         jsl.push({f:'js/ui/credentialsWarningDialog.js', n: 'creddialogui_js', j:1,w:1});
-        jsl.push({f:'js/ui/loginRequiredDialog.js', n: 'loginrequireddialog_js', j:1,w:1});
-        jsl.push({f:'js/ui/registerDialog.js', n: 'registerdialog_js', j:1,w:1});
         jsl.push({f:'js/ui/keySignatureWarningDialog.js', n: 'mega_js', j:1,w:7});
         jsl.push({f:'js/ui/feedbackDialog.js', n: 'feedbackdialogui_js', j:1,w:1});
         jsl.push({f:'js/ui/forcedUpgradeProDialog.js', n: 'forcedupgradeprodialog_js', j:1,w:1});
         jsl.push({f:'js/ui/dcAppPromoDialog.js', n: 'dcAppPromoDialog_js', j:1,w:1});
         jsl.push({f:'js/ui/alarm.js', n: 'alarm_js', j:1,w:1});
         jsl.push({f:'js/ui/toast.js', n: 'toast_js', j:1,w:1});
-        jsl.push({f:'js/ui/top-tooltip-login.js', n: 'top-tooltip-login', j:1});
         jsl.push({f:'js/fm/transfer-progress-widget.js', n: 'tpw_js', j:1});
 
         // S4 activation page in FM
@@ -2318,8 +2325,13 @@ else if (!browserUpdate) {
     jsl.push({f:'js/mobile/mobile.header.js', n: 'mobile_header_js', j: 1, w: 1});
     jsl.push({f:'js/mobile/mobile.top.menu.js', n: 'mobile_top_menu_js', j: 1, w: 1});
 
+    jsl.push({f:'html/login.html', n: 'login', j:0});
+    jsl.push({f:'css/login-page.css', n: 'login_page_css', j:2,w:5});
     jsl.push({f:'css/mobile/mobile.header.css', n: 'mobile_header_css', j: 2, w: 5});
     jsl.push({f:'css/mobile/mobile.top.menu.css', n: 'mobile_top_menu_css', j: 2, w: 5});
+    jsl.push({f:'css/login-dialog.css', n: 'login_dialog_css', j:2,w:5});
+    jsl.push({f:'css/confirm-account-dialog.css', n: 'confirm_account_dialog_css', j:2,w:5});
+    jsl.push({f:'css/register-dialog.css', n: 'register_dialog_css', j:2,w:5});
 
     if (!is_mobile) {
 
@@ -2372,7 +2384,6 @@ else if (!browserUpdate) {
         jsl.push({f:'js/fm/account-change-password.js', n: 'fm_account_change_password_js', j:1});
         jsl.push({f:'js/fm/account-change-email.js', n: 'fm_account_change_email_js', j:1});
         jsl.push({f:'js/fm/dialogs.js', n: 'fm_dialogs_js', j:1});
-        jsl.push({f:'js/ui/dropdowns.js', n: 'dropdowns_js', j:1});
         jsl.push({f:'css/node-filter.css', n: 'nodefilter_css', j:2});
         jsl.push({f:'js/ui/node-filter.js', n: 'nodefilter_js', j:1});
         jsl.push({f:'js/ui/info-panel.js', n: 'infopanel_js', j:1});
@@ -2438,7 +2449,6 @@ else if (!browserUpdate) {
         jsl.push({f:'css/chat-bundle.css', n: 'meetings_css', j:2, w:30});
 
         jsl.push({f:'html/key.html', n: 'key', j:0});
-        jsl.push({f:'html/login.html', n: 'login', j:0});
         jsl.push({f:'html/fm.html', n: 'fm', j:0, w:3});
         jsl.push({f:'html/top-login.html', n: 'top-login', j:0});
         jsl.push({f:'html/dialogs.html', n: 'dialogs', j:0,w:2});
@@ -2555,6 +2565,7 @@ else if (!browserUpdate) {
         jsl.push({f:'css/sprites/mobile-fm-theme@light.css', n: 'mobile_fm_light_css', j:2, w:30});
 
         jsl.push({f:'html/top-mobile.html', n: 'top-mobile', j:0});
+        jsl.push({f:'html/mobile-loader.html', n: 'mobile-loader', j:0});
         jsl.push({f:'html/mobile-add-contact-card.html', n: 'mobile-add-contact-card', j:0});
         jsl.push({f:'css/mobile.css', n: 'mobile_css', j: 2, w: 30, c: 1, d: 1, m: 1});
         jsl.push({f:'css/mobile/mobile.settings.css', n: 'mobile_settings_css', j: 2, w: 30, c: 1, d: 1, m: 1});
@@ -2596,7 +2607,6 @@ else if (!browserUpdate) {
         jsl.push({f:'js/mobile/mobile.recovery.change-password.js', n: 'mobile_rec_change_password_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.register.js', n: 'mobile_register_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.signin.js', n: 'mobile_signin_js', j: 1, w: 1});
-        jsl.push({f:'js/mobile/mobile.support.js', n: 'mobile_support_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.upload-overlay.js', n: 'mobile_upload_overlay_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.contact-link.js', n: 'mobile_contactlink_js', j: 1, w: 1});
         jsl.push({f:'js/mobile/mobile.twofactor.js', n: 'mobile_twofactor_js', j: 1, w: 1});
@@ -2880,7 +2890,6 @@ else if (!browserUpdate) {
         'dcrawjs': {f:'js/vendor/dcraw.js', n: 'dcraw_js', j: 1},
         'datepicker_js': {f:'js/vendor/datepicker.js', n: 'datepicker_js', j:1},
         'sourcecode': {f:'html/sourcecode.html', n: 'sourcecode', j:0},
-        'register': {f:'html/register.html', n: 'register', j:0},
         'register_js': {f:'html/js/register.js', n: 'register_js', j:1},
         'download': {f:'html/download.html', n: 'download', j:0},
         'download_js': {f:'html/js/download.js', n: 'download_js', j:1},
@@ -3154,8 +3163,8 @@ else if (!browserUpdate) {
         'reset': ['reset', 'reset_js'],
         'verify': ['change_email', 'change_email_js'],
         'cancel': ['cancel', 'cancel_js'],
-        'register': ['register', 'register_js', 'zxcvbn_js'],
-        'newsignup': ['register', 'register_js', 'zxcvbn_js'],
+        'register': ['register_js', 'zxcvbn_js'],
+        'newsignup': ['register_js', 'zxcvbn_js'],
         'emailverify': ['zxcvbn_js'],
         '!': ['download', 'download_js', 'downloadUI_js', 'linkAccess_js', 'reportabuse_js'],
         'file': ['download', 'download_js', 'downloadUI_js', 'linkAccess_js', 'reportabuse_js'],

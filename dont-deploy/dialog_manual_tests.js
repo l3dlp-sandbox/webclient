@@ -485,8 +485,7 @@ const dialogTest = {
     /* lots of options on this one */
     ['pro-register-dialog']: () => {
         // const $pane = $('.register-side-pane.container');
-        mega.ui.showRegisterDialog({
-            body: 'some body text',
+        mega.ui.signup.showDialog(false, {
             // $wrapper: $pane,
             showLogin: true,
             // initFormEvents: true,

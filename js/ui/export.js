@@ -1531,13 +1531,7 @@ function logExportEvt(evtId, data) {
 
 
                     if (createdCount !== undefined) {
-                        copyToClipboard(getClipboardLinks());
-                        toast.show(
-                            (createdCount > 0)
-                                ? mega.icu.format(l.toast_link_created_and_copied, count)
-                                : (count === 1 ? l[1642] : l.links_copied),
-                            4
-                        );
+                        toast.show(mega.icu.format(l.links_created, count), 4);
                     }
 
                     if (!folderlink && !dlid) {

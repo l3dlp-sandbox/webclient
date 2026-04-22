@@ -388,7 +388,10 @@ class MegaFlyoutMenu extends MegaComponent {
         }
 
         this.domNode.parentNode.classList.add('flyout-shown');
-        document.getElementById(is_chatlink ? 'startholder' : 'pmlayout').classList.add('flyout-expanded');
+        const parent = document.getElementById(is_chatlink ? 'startholder' : 'pmlayout');
+        if (parent) {
+            parent.classList.add('flyout-expanded');
+        }
 
         if (!is_chatlink) {
             mega.ui.header.topBlockBottomBorder = true;
@@ -1086,11 +1089,22 @@ class MegaFlyoutMenu extends MegaComponent {
                         return;
                     }
                     const sortFn = M.getSortByNameFn2(1);
-                    this.flyoutMenu.list = keys.sort((a, b) => sortFn(M.d[a], M.d[b])).map(h => ({
-                        nodeHandle: h,
-                        itemComp: 'node',
-                        ignoreCustomRoute: true,
-                    }));
+                    this.flyoutMenu.list = keys.sort((a, b) => sortFn(M.d[a], M.d[b])).map(h => {
+                        
+                        const item = {
+                            nodeHandle: h,
+                            itemComp: 'node',
+                            ignoreCustomRoute: true
+                        };
+
+                        if (M.d[h].t === 1) {
+                            item.onClick = function() {
+                                M.openFolder(this.nodeHandle);
+                            }
+                        }
+
+                        return item;
+                    });
                 }
             });
         },

@@ -26,6 +26,12 @@ class MegaInteractable extends MegaComponent {
             if (options.subtext) {
                 this.subtext = options.subtext;
             }
+            if (options.subtextIcon) {
+                this.subtextIcon = options.subtextIcon;
+            }
+            if (options.subtextIconSize) {
+                this.subtextIconSize = options.subtextIconSize;
+            }
         }
 
         if (options.rightIcon) {
@@ -372,6 +378,44 @@ class MegaInteractable extends MegaComponent {
         }
         else if (elm) {
             elm.remove();
+        }
+    }
+
+    get subtextIcon() {
+        return this.domNode.querySelector('i.subtext-icon');
+    }
+
+    set subtextIcon(content) {
+        if (!this.subtext || !content) {
+            return;
+        }
+
+        const wrapper = this.domNode.querySelector('.text-box-wrapper');
+        const subText = wrapper.querySelector('.sub-text');
+        const container = document.createElement('div');
+        const icon = document.createElement('i');
+
+        container.className = 'subtext';
+        icon.className = `subtext-icon ${content}`;
+        wrapper.removeChild(subText);
+        container.append(icon, subText);
+        wrapper.appendChild(container);
+    }
+
+    set subtextIconSize(size) {
+        if (!this.subtextIcon || !size) {
+            return;
+        }
+
+        const sizeClass = MegaInteractable.iconSizesClass[size];
+        if (!sizeClass) {
+            return;
+        }
+
+        const elm = this.domNode.querySelector('i.subtext-icon');
+
+        if (elm) {
+            elm.classList.add(sizeClass);
         }
     }
 

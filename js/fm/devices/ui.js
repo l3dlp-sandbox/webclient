@@ -254,9 +254,7 @@ lazy(mega.devices, 'ui', () => {
             if (h === M.RootID) {
                 const oldSds = u_attr['*!sds'] ? tlvstore.decrypt(u_attr['*!sds']) : {};
                 const sds = { ...oldSds, [id]: `${sdsCode}`};
-                return mega.attr.set2(
-                    null, 'sds', sds, false, true, true
-                );
+                return mega.attr.set2(null, 'sds', sds, false, true, true);
             }
             // Anything except a full sync - Changes the node attribute
             const sds = node.sds

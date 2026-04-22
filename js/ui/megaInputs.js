@@ -293,13 +293,16 @@ $.fn.megaInputsShowMessage = function(msg) {
 /**
  * MegaInputs Hide message and error with sanity check.
  */
-$.fn.megaInputsHideError = $.fn.megaInputsHideMessage = function() {
+$.fn.megaInputsHideError = $.fn.megaInputsHideMessage = function(clear) {
 
     'use strict';
 
     var megaInput = $(this).data('MegaInputs');
 
     if (megaInput) {
+        if (clear && typeof megaInput.clearMessage === 'function') {
+            megaInput.clearMessage();
+        }
         megaInput.hideError();
     }
     else {

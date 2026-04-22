@@ -3311,7 +3311,7 @@ Chat.prototype.removeMessagesByRetentionTime = function (chatId) {
     }
   }
 };
-Chat.prototype.loginOrRegisterBeforeJoining = function (chatHandle, forceRegister, forceLogin, notJoinReq, onLoginSuccessCb) {
+Chat.prototype.loginOrRegisterBeforeJoining = function (chatHandle, forceRegister, forceLogin, notJoinReq, onLoginSuccessCb, fromLogin) {
   if (!chatHandle && page !== 'securechat' && (page === 'chat' || page.indexOf('chat') > -1)) {
     chatHandle = getSitePath().split("chat/")[1].split("#")[0];
   }
@@ -3328,7 +3328,7 @@ Chat.prototype.loginOrRegisterBeforeJoining = function (chatHandle, forceRegiste
     return stay;
   };
   const doShowLoginDialog = function () {
-    mega.ui.showLoginRequiredDialog({
+    mega.ui.login.showRequiredDialog({
       minUserType: 3,
       skipInitialDialog: 1,
       onLoginSuccessCb
@@ -3339,28 +3339,17 @@ Chat.prototype.loginOrRegisterBeforeJoining = function (chatHandle, forceRegiste
     });
   };
   const doShowRegisterDialog = function () {
-    mega.ui.showRegisterDialog({
-      title: l[5840],
+    mega.ui.signup.showDialog({
       onCreatingAccount () {},
-      onLoginAttemptFailed () {
-        msgDialog(`warninga:${  l[171]}`, l[1578], l[218], null, (e) => {
-          if (e) {
-            $('.pro-register-dialog').addClass('hidden');
-            if (signupPromptDialog) {
-              signupPromptDialog.hide();
-            }
-            doShowLoginDialog();
-          }
-        });
-      },
       onAccountCreated (gotLoggedIn, registerData) {
         if (finish(!gotLoggedIn)) {
           security.register.cacheRegistrationData(registerData);
-          mega.ui.sendSignupLinkDialog(registerData);
+          mega.ui.signup.showLinkDialog(registerData);
           megaChat.destroy();
         }
       },
-      onLoginSuccessCb
+      onLoginSuccessCb,
+      fromLogin
     });
   };
   if (u_handle && u_handle !== "AAAAAAAAAAA") {
@@ -11984,7 +11973,7 @@ class Join extends REaCt().Component {
     };
     this.showConfirmationDialog = () => {
       megaChat.destroy();
-      return mega.ui.sendSignupLinkDialog(JSON.parse(localStorage.awaitingConfirmationAccount), () => {
+      return mega.ui.signup.showLinkDialog(JSON.parse(localStorage.awaitingConfirmationAccount), () => {
         delete localStorage.awaitingConfirmationAccount;
         u_logout(true).then(() => location.reload());
       });
@@ -12053,7 +12042,7 @@ class Join extends REaCt().Component {
           onClick: () => loadSubPage('register')
         }, l[5582]), REaCt().createElement("span", null, l[5585], REaCt().createElement("a", {
           href: "#",
-          onClick: () => mega.ui.showLoginRequiredDialog({
+          onClick: () => mega.ui.login.showRequiredDialog({
             minUserType: 3,
             skipInitialDialog: 1
           }).done(() => this.setState({

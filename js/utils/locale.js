@@ -1069,7 +1069,9 @@ mBroadcaster.once('boot_done', function populate_l() {
     }
 
     // MEGA static hosts
+    l.mega_pages_host = 'https://mega.io';
     l.mega_help_host = 'https://help.mega.io';
+    l.megakb_origin = `${l.mega_help_host}/${getKbLangSlug(window.kbLang)}`.replace(/\/*$/, '');
 
     l[8762] = escapeHTML(l[8762]).replace("[S]", "<span class='red'>").replace("[/S]", "</span>");
     l[208] = escapeHTML(l[208]).replace('[/A]', '</a>');
@@ -1260,10 +1262,7 @@ mBroadcaster.once('boot_done', function populate_l() {
     }
     l[20650] = escapeHTML(l[20650]).replace(/\[S]/g, '<span>').replace(/\[\/S]/g, '</span>')
         .replace('[A]', '<a href="/repay" class="clickurl">').replace('[/A]', '</a>');
-    l['20635.a'] = escapeHTML(l[20635])
-        .replace('[A]', '<a class="clickurl" href="/register" data-eventid="99797">')
-        .replace('[/A]', '</a>');
-    l[20635] = escapeHTML(l[20635]).replace('[A]', '<a>').replace('[/A]', '</a>');
+    l[20635] = escapeHTML(l[20635]).replace('[A]', '<a href="/register">').replace('[/A]', '</a>');
     l[20713] = escapeHTML(l[20713]).replace('[B]%1[/B]', '<b>%1</b>');
     l[20714] = escapeHTML(l[20714])
         .replace('[B1]%1[/B1]', '<b class="plan-time">%1</b>')
@@ -1298,7 +1297,6 @@ mBroadcaster.once('boot_done', function populate_l() {
         .replace(/\[S]/g, '<span>').replace(/\[\/S]/g, '</span>')
         .replace('[A]', '<a class="clickurl" href="/pro" data-eventid="500490">')
         .replace('[/A]', '</a>');
-    l[22900] = escapeHTML(l[22900]).replace('[A]', '<a class="reg-success-change-email-btn">').replace('[/A]', '</a>');
     l['23062.k'] = escapeHTML(l[23062]).replace('[%s]', l[7049]);
     l[23243] = escapeHTML(l[23243])
         .replace('[A]', '<a href="https://mega.io/terms" class="clickurl" target="_blank">')
@@ -1657,8 +1655,8 @@ mBroadcaster.once('boot_done', function populate_l() {
     l.blocked_rsn_terminated = escapeHTML(l.blocked_rsn_terminated)
         .replace('[A]', '<a href="https://mega.io/terms" target="_blank" rel="noopener noreferrer">')
         .replace('[/A]', '</a>')
-        .replace('[BR]', '<br><br>');
-    l.blocked_rsn_copyright = escapeHTML(l.blocked_rsn_copyright).replace('[BR]', '<br><br>');
+        .replace('[BR]', ' ');
+    l.blocked_rsn_copyright = escapeHTML(l.blocked_rsn_copyright).replace('[BR]', ' ');
 
     const faqLink = 'https://help.mega.io/plans-storage/space-storage/transfer-quota';
     const faqLinkAttr = 'target="_blank" class="clickurl" rel="noopener noreferrer"';
@@ -2082,6 +2080,39 @@ mBroadcaster.once('boot_done', function populate_l() {
         .replace('[/A]', '</a>')
         .replace('%1', '<a href = "mailto:%2" class="link clickurl">%2</a>')
         .replace(/%2/g, 'abuse@mega.io');
+    l.register_terms = escapeHTML(l.register_terms)
+        .replace('[A]', '<a href="https://mega.io/terms" class="clickurl" target="_blank">')
+        .replace('[/A]', '</a>');
+    l.register_dialog_title = escapeHTML(l.register_dialog_title)
+        .replace('[S]', '<span class="red">')
+        .replace('[/S]', '</span>');
+    l.support_page_para_two = escapeHTML(l.support_page_para_two)
+        .replace('[A1]', `<a class="link" href="${l.mega_pages_host}/pricing" target="_blank" rel="noopener">`)
+        .replace('[/A1]', '</a>')
+        .replace('[A2]', `<a class="link" href="${l.megakb_origin}" target="_blank" rel="noopener">`)
+        .replace('[/A2]', '</a>');
+    l.support_pg_paid_user_para_two = escapeHTML(l.support_pg_paid_user_para_two)
+        .replace('[A1]', `<a class="link" href="${l.megakb_origin}" target="_blank" rel="noopener">`)
+        .replace('[/A1]', '</a>');
+    l.support_pg_lost_access = escapeHTML(l.support_pg_lost_access)
+        .replace('[A]', `<button class="link show-form">`)
+        .replace('[/A]', '</button>');
+    l.support_verify_desc_para_two = escapeHTML(l.support_verify_desc_para_two)
+        .replace(
+            '[A]',
+            `<a class="link" href="${l.mega_help_host}/accounts/login-issues" target="_blank" rel="noopener">`
+        )
+        .replace('[/A]', '</a>');
+    l.support_pg_verify_email_sub = escapeHTML(l.support_pg_verify_email_sub)
+        .replace('[A]', `<a class="link" href="mailto:support@mega.io">`)
+        .replace('[/A]', '</a>')
+        .replace('[A1]', `<a class="link" href="${l.megakb_origin}" target="_blank" rel="noopener">`)
+        .replace('[/A1]', '</a>');
+    l.support_page_message_info = escapeHTML(l.support_page_message_info)
+        .replace('[A]', `<a class="link clickurl" href="/fm" target="_blank" rel="noopener">`)
+        .replace('[/A]', '</a>')
+        .replace('[A1]', `<a class="link" href="https://transfer.it/start" target="_blank" rel="noopener">`)
+        .replace('[/A1]', '</a>');
 
     const common = [
         15536, 16119, 16120, 16313, 16316, 16360, 18228, 18268, 18282,
@@ -2179,4 +2210,29 @@ function getRemappedLangCode(langCode) {
         return remaps[langCode];
     }
     return langCode;
+}
+
+/**
+ * Convert webclient language codes to slugs recognised by help.mega.io.
+ *
+ * @param {string} langCode The two character language code used internally by webclient
+ * @returns {string} The slug known by help.mega.io, or empty string (English)
+ */
+function getKbLangSlug(langCode) {
+    'use strict';
+
+    const supported = {
+        ar: 'ar',
+        br: 'pt',
+        cn: 'zh-hans',
+        ct: 'zh-hant',
+        de: 'de',
+        es: 'es',
+        fr: 'fr',
+        ru: 'ru',
+    };
+
+    langCode = langCode || lang;
+
+    return supported[langCode] || '';
 }

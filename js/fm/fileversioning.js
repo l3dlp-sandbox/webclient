@@ -722,7 +722,7 @@
                     selections.file = selections.handles[0];
                     for (let i = 0; i < res.length; i++) {
                         const result = res[i];
-                        if (result.status === 'fulfilled') {
+                        if (result.status === 'fulfilled' && result.value.length) {
                             if (!selections.versions.length) {
                                 selections.versions.push(result.value[0].h);
                             }

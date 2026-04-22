@@ -407,80 +407,6 @@ var mobile = {
     },
 
     /**
-     * Initialise the back arrow icon in the header to go back to a specific page without URL
-     * @param {Object} $page The jQuery selector for the current page
-     * @param {Object} $page The jQuery selector for the previuos page
-     */
-    initStepBackButton: function($page, $targetPage) {
-
-        'use strict';
-
-        // Unhide back button, then add on click/tap handler
-        $('.fm-icon.back', $page).removeClass('hidden').rebind('tap', function() {
-
-            // If page to go back to is specified, show that and hide current one
-            if (typeof $targetPage === 'object') {
-
-                // Hide current page
-                $page.addClass('hidden');
-
-                // Show previous page
-                $targetPage.removeClass('hidden');
-            }
-
-            // Prevent double taps
-            return false;
-        });
-    },
-
-    /**
-     * Initialises the Login and Register tab buttons
-     * @param {String} showTab The tab to show immediately i.e. 'login' or 'register'
-     */
-    initTabs: function(showTab) {
-
-        'use strict';
-
-        // Cache selectors
-        var $screen = $('.mobile.signin-register-block');
-        var $loginTab = $screen.find('.top-link.sign-in');
-        var $loginNavHead = $screen.find('.fm-header-txt.sign-in');
-        var $registerTab = $screen.find('.top-link.register');
-        var $registerNavHead = $screen.find('.fm-header-txt.register');
-        var $loginContent = $screen.find('.tab-block.sign-in');
-        var $registerContent = $screen.find('.tab-block.register');
-
-        // Show the signin content and light up the signin tab
-        if (showTab === 'login') {
-            $loginContent.removeClass('hidden');
-            $loginTab.addClass('hidden');
-            $registerNavHead.addClass('hidden');
-            $loginNavHead.removeClass('hidden');
-        }
-        else {
-            // Otherwise show the register content and light up the register tab
-            $registerContent.removeClass('hidden');
-            $registerTab.addClass('hidden');
-            $loginNavHead.addClass('hidden');
-            $registerNavHead.removeClass('hidden');
-        }
-
-        // If the login tab is clicked, load the login page
-        $loginTab.off('tap').on('tap', function() {
-
-            loadSubPage('login');
-            return false;
-        });
-
-        // If the register tab is clicked, load the register page
-        $registerTab.off('tap').on('tap', function() {
-
-            loadSubPage('register');
-            return false;
-        });
-    },
-
-    /**
      * Initialise checkbox on click/tap functionality which has special styling and requires extra code
      * @param {String|jQuery} container The container class name which contains the checkbox input and label
      */
@@ -565,37 +491,6 @@ var mobile = {
         else {
             // Otherwise if not logged in, load the home page
             loadSubPage('start');
-        }
-    },
-
-    /**
-     * Changes the app store badge depending on what device they have
-     */
-    initMobileAppButton: function() {
-
-        'use strict';
-
-        var $appStoreButton = $('.download-app, .startpage .mobile-apps-button');
-
-        // Set the link
-        $appStoreButton.attr('href', getMobileStoreLink());
-
-        // If iOS, Windows or Android show the relevant app store badge
-        switch (ua.details.os) {
-
-            case 'iPad':
-            case 'iPhone':
-                $appStoreButton.removeClass('hidden').addClass('ios');
-                break;
-
-            case 'Windows Phone':
-                $appStoreButton.removeClass('hidden').addClass('wp');
-                break;
-
-            default:
-                // Android and others
-                $appStoreButton.removeClass('hidden').addClass('android');
-                break;
         }
     },
 
@@ -727,43 +622,6 @@ var mobile = {
                 }
                 this.classList.add('icon-eye-reveal');
                 this.classList.remove('icon-eye-hidden');
-            }
-        });
-    },
-
-    /**
-     * Make back button works as closing overlay.
-     * @param {Object} $overlay target overlay
-     */
-    initOverlayPopstateHandler: function($overlay) {
-
-        'use strict';
-
-        pushHistoryState();
-
-        var $closeBtn = $overlay.find('.close-button, .cancel, .fm-dialog-close');
-
-        $(window).rebind('popstate.mega-mobile', function() {
-
-            $closeBtn.trigger('tap');
-            $(this).off('popstate.mega-mobile');
-        });
-    },
-
-    /**
-     *  Make maxlength work on input with type number.
-     */
-    initNumberMaxlength: function($page) {
-
-        'use strict';
-
-        $('input[type="number"][maxlength]', $page).rebind('keydown.applyMaxlength', function(e) {
-
-            if (this.value.length === parseInt($(this).attr('maxlength'))
-                && ((e.keyCode >= 48 && e.keyCode <= 57)
-                    || (e.keyCode >= 96 && e.keyCode <= 105))
-                || e.keyCode === 69) {
-                e.preventDefault();
             }
         });
     },
@@ -1180,30 +1038,6 @@ self.openSaveAsDialog = (node, content, cb) => {
 };
 
 window['selectFolder' + 'Dialog'] = () => Promise.resolve(M.RootID);
-
-mega.ui['showReg' + 'isterDialog'] = nop;
-
-mega.ui.showLoginRequiredDialog = async function() {
-    'use strict';
-
-    if (u_type === false) {
-
-        loadSubPage('login');
-        return mBroadcaster.when('login');
-    }
-};
-
-/**
- * Shim for sendSignupLinkDialog, likely called from showOverQuotaRegisterDialog
- * @param {Object} accountData The registration vars in localStorage.awaitingConfirmationAccount
- */
-mega.ui.sendSignupLinkDialog = function(accountData) {
-
-    'use strict';
-
-    parsepage(pages['mobile']);
-    mobile.register.showConfirmEmailScreen(accountData);
-};
 
 mega.loadReport = {};
 var previews = {};

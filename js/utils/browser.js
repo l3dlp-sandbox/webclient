@@ -346,6 +346,9 @@ function browserdetails(useragent) {
     else if (useragent.indexOf(' line/') > 0) {
         browser = 'Line';
     }
+    else if (useragent.indexOf(' brave/') > 0) {
+        browser = 'Brave';
+    }
     else if (useragent.indexOf(' chromium/') > 0) {
         browser = 'Chromium';
     }

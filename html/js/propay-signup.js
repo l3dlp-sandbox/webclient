@@ -343,49 +343,8 @@ pro.propay.signup = {
     },
 
     updatePasswordStrength(strength) {
-        const {className} = strength;
-
-        const $passwordWrapper = $('.password-wrapper', this.$accountDetailsDiv)
-            .removeClass('strengthen error');
-        const $passwordStrength = $('.password-strength', $passwordWrapper)
-            .addClass('hidden')
-        const $passwordStrengthIcon = $('i', $passwordStrength);
-        const $passwordStrengthText = $('.password-strength-text', $passwordStrength);
-        const $passwordNotStored = $('.password-not-stored', $passwordWrapper);
-        $passwordNotStored.addClass('hidden');
-
-        $passwordStrengthIcon.attr('class', 'sprite-fm-mono icon-size-18');
-        $passwordStrength.attr('class', 'password-strength');
-
-        if (className && className.startsWith('good')) {
-            $passwordStrength.addClass(className);
-
-            if (className === 'good1') {
-                $passwordWrapper.addClass('strengthen');
-                $passwordStrengthIcon.addClass('icon-alert-triangle-thin-outline');
-                $passwordStrengthText.text(l.weak_pass_try_stronger);
-            }
-            else if ((className === 'good2') || (className === 'good3')) {
-                $passwordWrapper.addClass('strengthen');
-                $passwordStrengthIcon.addClass('icon-alert-circle-thin-outline');
-                $passwordStrengthText.safeHTML(l['1121']);
-                $passwordNotStored.removeClass('hidden')
-            }
-            else {
-                $passwordStrengthIcon.addClass('icon-check-circle-thin-outline');
-                $passwordStrengthText.safeHTML(l.this_is_strong_password);
-                $passwordNotStored.removeClass('hidden')
-            }
-        }
-        else if (typeof strength === 'string') {
-            $passwordStrengthIcon.addClass('icon-alert-circle-thin-outline');
-            $passwordStrengthText.text(strength);
-            return;
-        }
-        else {
-            $passwordStrengthIcon.addClass('icon-alert-triangle-thin-outline');
-            $passwordStrengthText.text(l.err_no_pass);
-            $passwordNotStored.removeClass('hidden')
+        if (typeof mega.ui.signup.updatePasswordStrength === 'function') {
+            mega.ui.signup.updatePasswordStrength(strength, this.$accountDetailsDiv);
         }
     },
 

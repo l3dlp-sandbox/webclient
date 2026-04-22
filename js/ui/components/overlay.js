@@ -261,6 +261,12 @@ class MegaOverlay extends MegaComponent {
         this.clearUserEvents();
 
         this.removeClass('action-button-bottom');
+
+        if (this.addedClasses) {
+            this.removeClass(...this.addedClasses);
+            delete this.addedClasses;
+        }
+
         this.trigger('clear');
     }
 
@@ -316,6 +322,8 @@ class MegaOverlay extends MegaComponent {
         }).on('click.dialogBack', cb.bind(null));
 
         this.headerTitleNode.prepend(btn.domNode);
+
+        this.rebind('back', () => btn.trigger('click.dialogBack'));
     }
 
     clearBackBtn() {
@@ -487,7 +495,7 @@ class MegaOverlay extends MegaComponent {
 
     updateScrollbar() {
         if (this.overlayNode.Ps) {
-            this.overlayNode.Ps.update();
+            onIdle(() => this.overlayNode.Ps.update());
         }
     }
 

@@ -37,7 +37,7 @@ var security = {
             return l.err_no_pass;   // Enter a password
         }
         // Check if the passwords are not the same
-        if (password !== confirmPassword) {
+        if (confirmPassword && password !== confirmPassword) {
             return l[9066];         // Passwords don't match. Check and try again.
         }
 
@@ -63,9 +63,8 @@ var security = {
 
         // Check for minimum password strength score from ZXCVBN library
         if ((zxcvbn(password).score < security.minPasswordScore)) {
-            // Your password needs to be stronger.
-            // Make it longer, add special characters or use uppercase and lowercase letters.
-            return l[1104];
+            // Your password is easily guessed. Try making your password longer.
+            return l.weak_pass_try_stronger;
         }
 
         return true;
@@ -1100,11 +1099,6 @@ security.register = {
                 // Hide the loading spinner
                 loadingDialog.hide();
 
-                // If successful result, show a dialog success
-                if (is_mobile && result === 0) {
-                    mobile.messageOverlay.show(l[16351]);    // The email was sent successfully.
-                }
-
                 // Run the callback requested by the calling function to show a check email dialog or whatever
                 completeCallback(result, firstName, lastName, newEmail);
             }
@@ -1197,6 +1191,17 @@ security.login = {
 
     /** Callback to run after login is complete */
     loginCompleteCallback: null,
+
+    /**
+     * Clear cached login credentials used for retries such as 2FA.
+     */
+    clearCachedLoginState() {
+        'use strict';
+
+        this.email = null;
+        this.password = null;
+        this.rememberMe = false;
+    },
 
 
     /**
@@ -1371,6 +1376,9 @@ security.login = {
         'use strict';
 
         security.persistAccountSession(masterKeyArray32, temporarySessionIdBase64);
+        security.login.clearCachedLoginState();
+
+        confirmok = 0;
 
         // Redirect to key generation page
         loadSubPage('key');
@@ -1497,9 +1505,7 @@ security.login = {
         security.persistAccountSession(...keyAndSessionData);
 
         // Cleanup temporary login variables
-        security.login.email = null;
-        security.login.password = null;
-        security.login.rememberMe = false;
+        security.login.clearCachedLoginState();
 
         // Continue to perform 'ug' request and afterwards run the loginComplete callback
         return u_checklogin4(u_storage.sid)
@@ -1544,17 +1550,23 @@ security.login = {
 
         // If there was a 2FA error, show a message that the PIN code was incorrect and clear the text field
         else if (result === EFAILED) {
-            twofactor.loginDialog.showVerificationError();
+            if (twofactor.loginDialog.pinInputs && twofactor.loginDialog.fieldset) {
+                twofactor.loginDialog.showError();
+            }
+            else {
+                twofactor.loginDialog.init(oldStartLoginCallback, newStartLoginCallback);
+                onIdle(() => twofactor.loginDialog.showError());
+            }
             return true;
         }
 
         // Cleanup temporary login variables
-        security.login.email = null;
-        security.login.password = null;
-        security.login.rememberMe = false;
+        security.login.clearCachedLoginState();
 
         // close two-factor dialog if it was opened
-        twofactor.loginDialog.closeDialog();
+        if (twofactor.loginDialog.active) {
+            twofactor.loginDialog.closeDialog(result > 0);
+        }
 
         // Check for suspended account
         if (result === EBLOCKED) {
@@ -1571,7 +1583,15 @@ security.login = {
 
         // Check for incomplete registration
         else if (result === EINCOMPLETE) {
-            msgDialog('warningb', l[882], l[9082]); // This account has not completed the registration
+            msgDialog(
+                '>*registration-incomplete',
+                false,
+                l.login_incomplete_registration_title,
+                l.login_incomplete_registration_text + '<br><br>' +
+                l.login_incomplete_registration_detail
+                    .replace('[A]', '<a href="mailto:support@mega.io" class="primary-link">')
+                    .replace('[/A]', '</a>')
+            );
 
             return true;
         }

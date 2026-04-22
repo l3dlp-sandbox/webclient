@@ -49,6 +49,7 @@
 }
 
 .toast-notification .message-body {
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -87,6 +88,15 @@
 
 .long-title-truncate:last-child {
     margin-inline-end: 0;
+}
+
+body.mobile .toast-notification .message-body {
+    display: -webkit-box;
+    text-overflow: clip;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {

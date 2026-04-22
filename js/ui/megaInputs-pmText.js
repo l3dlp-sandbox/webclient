@@ -508,6 +508,13 @@ mega.ui.MegaInputs.prototype.pmText._updateShowHideErrMsg = function() {
     // Hide all error upon reinitialize
     this.hideError();
 
+    this.clearMessage = function() {
+        var $wrapper = this.$input.parent();
+        var $msgContainer = $('.message-container', $wrapper);
+
+        $msgContainer.empty();
+    };
+
     /**
      * Display an informational message below the input's underline.
      *

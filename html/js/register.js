@@ -1,24 +1,24 @@
-var rv = {};
-
 /**
  * When the user tries to register, but they already have an account and they used the same password for registration,
  * log them in and if they were in an ephemeral session, try transfer their ephemeral files as well to the account
  */
 var loginFromEphemeral = {
-
-    init: function() {
+    init: (rv, context) => {
 
         'use strict';
+
+        loginFromEphemeral.context = context || null;
+        loginFromEphemeral.rv = rv || loginFromEphemeral.rv;
 
         var rememberMe = true;
         var twoFactorPin = null;
 
         loadingDialog.show();
 
+        const {rv: {email, password}, old: {startLogin: oldLogin}, new: {startLogin: newLogin}} = loginFromEphemeral;
+
         // Checks if they have an old or new registration type, after this the flow will continue to login
-        security.login.checkLoginMethod(rv.email, rv.password, twoFactorPin, rememberMe,
-                                        loginFromEphemeral.old.startLogin,
-                                        loginFromEphemeral.new.startLogin);
+        security.login.checkLoginMethod(email, password, twoFactorPin, rememberMe, oldLogin, newLogin);
     },
 
     /**
@@ -70,8 +70,7 @@ var loginFromEphemeral = {
 
         'use strict';
 
-        // Remove loading spinner on the button
-        $('.top-dialog-login-button').removeClass('loading');
+        const {context} = loginFromEphemeral;
 
         // Check and handle the common login errors
         if (security.login.checkForCommonErrors(result, loginFromEphemeral.old.startLogin,
@@ -96,7 +95,7 @@ var loginFromEphemeral = {
                 boot_auth(null, result);
 
                 // The user got logged-in when trying to register, let's migrate the ephemeral account
-                var msg = l[16517].replace('%1', rv.email);
+                var msg = l[16517].replace('%1', loginFromEphemeral.rv.email);
 
                 // On dialog confirm, import the ephemeral session files to the user's Inbox
                 msgDialog('info', l[761], msg, null, tryCatch(() => {
@@ -115,367 +114,38 @@ var loginFromEphemeral = {
             else if (pro.propay.onPropayPage()) {
                 pro.propay.signup.continuePaymentFlow();
             }
+            else if (context && typeof context.registrationDone === 'function') {
+
+                loginFromEphemeral.context = null;
+                loginFromEphemeral.rv = null;
+                u_type = result;
+                u_checked = true;
+
+                if (is_mobile) {
+                    if (mega.ui.header && mega.ui.header.avatarButton) {
+                        mega.ui.header.renderLoggedIn(mega.ui.header.avatarButton);
+                    }
+
+                    if (mega.ui.topmenu && mega.ui.topmenu.menuNode) {
+                        mega.ui.topmenu.menuNode.textContent = '';
+                        mega.ui.topmenu.renderMenuItems();
+                    }
+                }
+
+                context.registrationDone(true);
+            }
             else {
                 // Show message that they've been successfully logged in then on OK reload the page
                 msgDialog('info', l[18280], l[8745], null, reload);
             }
         }
         else {
-            // Show message that the email has already been registered and to choose an alternative email to proceed
-            $('#register-email-registerpage2').megaInputsShowError(l[1297]);
-            $('.account.input-wrapper.email input').focus();
-            msgDialog('warninga', 'Error', l[7869]);
+            assert(context, 'Context should be set for failed registration login attempts');
+
+            loginFromEphemeral.context = null;
+            loginFromEphemeral.rv = null;
+            u_logout();
+            context.showExistingAccountError();
         }
     }
 };
-
-function registeraccount() {
-
-    'use strict';
-
-    rv.password = $('#register-password-registerpage2').val();
-    rv.first = $.trim($('#register-firstname-registerpage2').val());
-    rv.last = $.trim($('#register-lastname-registerpage2').val());
-    rv.email = $.trim($('#register-email-registerpage2').val());
-    rv.name = rv.first + ' ' + rv.last;
-
-    // Support of old registration is removed in ticket WEB-15124
-
-    const signup = () => {
-        security.register.startRegistration(
-            rv.first,
-            rv.last,
-            rv.email,
-            rv.password,
-            false,
-            continueNewRegistration);
-    };
-
-    if (u_type === 0) {
-        // An ephemeral account is registering, save the cloud nodes in case we need to migrate later
-        const names = Object.create(null);
-        names[M.RootID] = 'ephemeral-account';
-
-        M.getCopyNodes([M.RootID], null, names)
-            .then((nodes) => {
-                if (Array.isArray(nodes) && nodes.length) {
-                    $.ephNodes = nodes;
-                    $.ephNodes[0].t = 1; // change RootID's t2 to t1
-                }
-
-                signup();
-            });
-    }
-    else {
-        signup();
-    }
-}
-
-/**
- * Continue the new method registration
- * @param {Number} result The result of the 'uc2' API request
- */
-function continueNewRegistration(result) {
-
-    'use strict';
-
-    loadingDialog.hide();
-
-    if (result === 0) {
-
-        $('.mega-dialog.registration-page-success').off('click');
-
-        mega.ui.sendSignupLinkDialog(rv);
-
-        u_attr.terms = 1;
-
-        security.register.cacheRegistrationData(rv);
-    }
-    else if (result === EACCESS || result === EEXIST) {
-        loginFromEphemeral.init();
-    }
-    else {
-        msgDialog('warninga', l[1578], l[200], result);
-    }
-}
-
-function pageregister() {
-
-    /* jshint -W074 */
-    if (u_type > 0) {
-        msgDialog('warninga', l[135], l[5843]); // You are already logged in. You can only create one MEGA account
-        return false;
-    }
-
-    var err = false;
-    var $formWrapper = $('.main-mid-pad.register1 form');
-    var $firstName = $('#register-firstname-registerpage2', $formWrapper);
-    var $lastName = $('#register-lastname-registerpage2', $formWrapper);
-    var $email = $('#register-email-registerpage2', $formWrapper);
-    var $password = $('#register-password-registerpage2', $formWrapper);
-    var $confirmPassword = $('#register-password-registerpage3', $formWrapper);
-
-    var firstName = $.trim($firstName.val());
-    var lastName = $.trim($lastName.val());
-    var email = $.trim($email.val());
-    var password = $password.val();
-    var confirmPassword = $confirmPassword.val();
-    var errReasons = [];
-
-    // Check if the entered passwords are valid or strong enough
-    var passwordValidationResult = security.isValidPassword(password, confirmPassword);
-
-    // If bad result
-    if (passwordValidationResult !== true) {
-        if (!password) {
-            errReasons.push('mp');
-        }
-        else if (password !== confirmPassword) {
-            errReasons.push('pm');
-        }
-
-        // Show error for password field, clear the value and refocus it
-        $password.val('').focus().trigger('input');
-        $password.megaInputsShowError(l[1102] + ' ' + passwordValidationResult);
-
-        // Show error for confirm password field and clear the value
-        $confirmPassword.val('');
-        $confirmPassword.parent().addClass('error');
-
-        err = 1;
-    }
-
-    if (email === '' || !isValidEmail(email)) {
-        if (email === '') {
-            errReasons.push('me');
-        }
-        else {
-            errReasons.push('ie');
-        }
-
-        $email.megaInputsShowError(l[1100] + ' ' + l[1101]);
-        $email.focus();
-        err = 1;
-    }
-
-    if (firstName === '' || lastName === '') {
-        if (firstName === '') {
-            errReasons.push('mf');
-        }
-        if (lastName === '') {
-            errReasons.push('ml');
-        }
-
-        $firstName.megaInputsShowError(l[1098] + ' ' + l[1099]);
-        $lastName.megaInputsShowError();
-        $firstName.focus();
-        err = 1;
-    }
-
-    // Fire eventlog once if submit can't proceed
-    if (err) {
-        eventlog(501133, errReasons.join(','), true);
-    }
-
-    if (!err) {
-        if ($('.understand-check', $formWrapper).hasClass('checkboxOff')) {
-            msgDialog('warninga', l[1117], l[21957]);
-        }
-        else if ($('.register-check', $formWrapper).hasClass('checkboxOff')) {
-            msgDialog('warninga', l[1117], l[1118]);
-        }
-        else {
-            // for business sub-users signup we are still using signup code.
-            // and business sub-users registration flow is different and more direct than normal users
-            // as it doesnt contain "uc2" due to the implied email confirmation (because the user is coming
-            // from invitation email)
-            // Note: for business no backward compatibility is needed and V2 registration is mandatory
-            if (localStorage.businessSubAc) {
-                var signupcode = '';
-                window.businessSubAc = JSON.parse(localStorage.businessSubAc);
-                signupcode = window.businessSubAc.signupcode;
-                var ctx = {
-                    checkloginresult: function (u_ctx, r) {
-                        if (typeof r[0] === 'number' && r[0] < 0) {
-                            msgDialog('warningb', l[135], l[200]);
-                        }
-                        else {
-                            loadingDialog.hide();
-                            u_type = r;
-
-                            security.login.checkLoginMethod($email.val().toLowerCase(),
-                                $password.val(), null, false,
-                                signin.old.startLogin,
-                                signin.new.startLogin);
-
-                            mega.ui.onboardBusSub = 1;
-                            delete localStorage.businessSubAc;
-                        }
-                    },
-                    businessUser: $password.val()   // we need the plain enterd password in later stages
-                    // because u_checklogin take the byte array of the password.
-                };
-                // var passwordByteArray = prepare_key_pw($password.val());
-                // var passwordaes = new sjcl.cipher.aes(passwordByteArray);
-                // var uh = stringhash($email.val().toLowerCase(), passwordaes);
-                u_checklogin(ctx,
-                    true,
-                    null,
-                    signupcode,
-                    $firstName.val() + ' ' + $lastName.val());
-            }
-            else if (u_type === false) {
-                loadingDialog.show();
-                u_storage = init_storage(localStorage);
-                u_checklogin({
-                    checkloginresult: function(u_ctx, r) {
-                        u_type = r;
-                        registeraccount();
-                    }
-                }, true);
-            }
-            else if (u_type === 0) {
-                registeraccount();
-            }
-        }
-    }
-}
-
-
-function init_register() {
-    'use strict';
-
-    var $formWrapper = $('.main-mid-pad.register1');
-    var $inputs = $formWrapper.find('input');
-    var $button = $('.register-button', $formWrapper);
-    var $email = $formWrapper.find('#register-email-registerpage2');
-    var $firstName = $formWrapper.find('#register-firstname-registerpage2');
-    var $lastName = $formWrapper.find('#register-lastname-registerpage2');
-
-    if (register_txt) {
-        $('.main-top-info-block').removeClass('hidden');
-        $('.main-top-info-text').text(register_txt);
-        register_txt = false;
-    }
-
-    if (localStorage.registeremail) {
-        $email.val(localStorage.registeremail);
-    }
-
-    $firstName.rebind('input.resetWithLastname', function() {
-        $lastName.megaInputsHideError();
-    });
-
-    $lastName.rebind('input.resetWithFirstname', function() {
-        $firstName.megaInputsHideError();
-    });
-
-    $inputs.rebind('keyup.registerforminteraction', () => {
-        $inputs.off('keyup.registerforminteraction');
-        eventlog(501132, true);
-    });
-
-    $inputs.rebind('keydown.initregister', function(e) {
-        if (e.keyCode === 13) {
-            pageregister();
-            return false;
-        }
-    });
-
-    $button.rebind('click.initregister', function() {
-
-        if ($(this).hasClass('disabled')) {
-            return false;
-        }
-        pageregister();
-        eventlog(99809);
-    });
-
-    $button.rebind('keydown.initregister', function (e) {
-        if (e.keyCode === 13 && !$(this).hasClass('disabled')) {
-            pageregister();
-        }
-    });
-
-    var $regInfoContainer = $('.main-mid-pad.big-pad.register1 .main-left-block').removeClass('businessSubAc');
-    $('.mega-input.title-ontop', $regInfoContainer).removeClass('hidden');
-    $('.account.top-header', $regInfoContainer).safeHTML(l[1095]);
-
-    // business sub-account registration
-    if (localStorage.businessSubAc) {
-        var userInfo = JSON.parse(localStorage.businessSubAc);
-        // we know here that userInfo contain all needed attr, otherwise higher layers wont allow us
-        // to get here.
-        $email.val(userInfo.e);
-        $lastName.val(from8(base64urldecode(userInfo.lastname)));
-        $firstName.val(from8(base64urldecode(userInfo.firstname)));
-        var headerText = l[19129].replace('[A]', '<span class="red">').replace('[/A]', '</span>');
-        $('.account.top-header', $regInfoContainer).safeHTML(headerText);
-
-        $email.addClass('hidden');
-        $lastName.addClass('hidden');
-        $firstName.addClass('hidden');
-        $regInfoContainer.addClass('businessSubAc');
-        $('.checkbox-block.pw-remind .radio-txt', $formWrapper).safeHTML(l[23748]);
-    }
-
-    // Init inputs events
-    accountinputs.init($formWrapper);
-
-    // New register sercurity info slider
-    var timer;
-
-    // Aniamte slide -1 to previous, 1 to next, 0 is nothing
-    var animateSlide = function(direction) {
-        var $slideWrapper = $('.register-slide-wrapper', $formWrapper);
-        var lastSlide = $slideWrapper.find('.register-slide-page').length;
-        var currentSlide = parseInt($slideWrapper.attr('data-slide'));
-        var to = 0;
-
-        if (direction < 0) {
-            to = currentSlide === 1 ? lastSlide : currentSlide - 1;
-            $slideWrapper.attr('data-slide', to);
-        }
-        else if (direction > 0) {
-            to = currentSlide === lastSlide ? 1 : currentSlide + 1;
-            $slideWrapper.attr('data-slide', to);
-        }
-    };
-
-    // Auto looping for the slider
-    var startTimer = function () {
-        clearInterval(timer);
-
-        timer = setInterval(function() {
-
-            // Prevent multiple jump after refocused tab
-            if (document.visibilityState === 'hidden') {
-                return false;
-            }
-
-            animateSlide(1);
-        }, 4000);
-    };
-
-    if (self.InitFileDrag) {
-        onIdle(InitFileDrag);
-    }
-    startTimer();
-
-    // Click next or prev.
-    $('.slider-ctrl-button', $formWrapper).rebind('click', function() {
-        if ($(this).hasClass('prev')) {
-            animateSlide(-1);
-        }
-        else if ($(this).hasClass('next')) {
-            animateSlide(1);
-        }
-        startTimer();
-    });
-}
-
-function register_signup(email) {
-    document.getElementById('register_email').value = email;
-    document.getElementById('register_email').readOnly = true;
-    document.getElementById('register_password_confirm_div').style.display = '';
-}

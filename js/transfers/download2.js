@@ -1704,14 +1704,12 @@ var dlmanager = {
         if (localStorage.awaitingConfirmationAccount) {
             var accountData = JSON.parse(localStorage.awaitingConfirmationAccount);
             this.logger.debug('showOverQuotaRegisterDialog: awaitingConfirmationAccount!');
-            return mega.ui.sendSignupLinkDialog(accountData);
+            return mega.ui.signup.showLinkDialog(accountData);
         }
 
         api_req({a: 'log', e: 99613, m: 'on overquota register dialog shown'});
 
-        mega.ui.showRegisterDialog({
-            title: l[17],
-            body: '<p>' + l[8834] + '</p><p>' + l[8833] + '</p><h2>' + l[1095] + '</h2>',
+        mega.ui.signup.showDialog({
             showLogin: true,
 
             onAccountCreated: function(gotLoggedIn, accountData) {
@@ -1723,7 +1721,7 @@ var dlmanager = {
                 }
                 else {
                     security.register.cacheRegistrationData(accountData);
-                    mega.ui.sendSignupLinkDialog(accountData);
+                    mega.ui.signup.showLinkDialog(accountData);
 
                     api_req({a: 'log', e: 99650, m: 'on overquota account created.'});
                 }

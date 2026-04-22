@@ -34,6 +34,7 @@
                 || (is_fm() && page.substr(0, 5) !== 'start')
                 || page === 'download'
                 || page.substr(0, 11) === 'filerequest'
+                || page === 'support'
             )
         ) {
             return;

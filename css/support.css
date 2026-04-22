@@ -1,0 +1,464 @@
+/* #region parent */
+#mainlayout.get-support #startholder {
+    background: var(--mobile-page-background);
+}
+#mainlayout.get-support .create-account-button.signup-button {
+    border: 0;
+    border-radius: 8px;
+    background: var(--mobile-text-primary);
+    color: var(--mobile-text-inverse);
+}
+#mainlayout.get-support .create-account-button.signup-button span {
+    font: var(--mobile-font-copy-semibold);
+}
+body.rtl .get-support-block {
+    direction: rtl;
+}
+
+/* #endregion parent */
+
+/* #region shared */
+.get-support-block .flex-col-gap-sm,
+.get-support-block .flex-col-gap-xsm {
+    display: flex;
+    flex-direction: column;
+}
+.get-support-block .flex-col-gap-sm > * + * {
+    margin-top: var(--spacing-3);
+}
+.get-support-block .flex-col-gap-xsm > * + * {
+    margin-top: var(--spacing-2);
+}
+.get-support-block .flex-row-gap-sm {
+    display: flex;
+}
+.get-support-block .flex-row-gap-sm > * + * {
+    margin-inline-start: var(--spacing-3);
+}
+.get-support-block .w-100 {
+    width: 100%;
+}
+.get-support-block .support-block,
+.get-support-block .success-block {
+    color: var(--mobile-text-primary);
+    font: var(--mobile-font-copy-regular);
+}
+.get-support-block .support-block {
+    max-width: 648px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-9) var(--spacing-7) var(--spacing-12);
+}
+.get-support-block .support-block > * + * {
+    margin-top: var(--spacing-8);
+}
+.get-support-block .support-block .heading-h1 {
+    font: var(--mobile-font-heading-h1);
+    line-height: 200%;
+}
+.get-support-block .support-block .body-sec {
+    color: var(--mobile-text-secondary);
+}
+.get-support-block .support-block .body-bold {
+    font: var(--mobile-font-copy-bold);
+}
+.get-support-block .support-block .email {
+    overflow-wrap: break-word;
+}
+.get-support-block .support-block .caption-l-r {
+    font: var(--mobile-font-caption-large-regular);
+    letter-spacing: 0.02em;
+}
+.get-support-block .support-block .info-title {
+    font: var(--mobile-font-copy-semibold);
+}
+.get-support-block .support-block .caption-b-l {
+    font: var(--mobile-font-caption-large-bold);
+}
+.get-support-block .support-block .cta {
+    font: var(--mobile-font-copy-semibold);
+    color: var(--mobile-text-inverse-accent);
+}
+.get-support-block .support-block a.link,
+.get-support-block .support-block button.link {
+    text-decoration: underline;
+    color: var(--mobile-link-primary);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font: var(--mobile-font-copy-regular);
+}
+.get-support-block .support-block .text-secondary,
+.get-support-block .success-block .text-secondary {
+    color: var(--mobile-text-secondary);
+}
+.get-support-block .support-block .mega-input input:not(:placeholder-shown) {
+    color: var(--mobile-text-primary);
+}
+.get-support-block .support-block .mega-input input::placeholder {
+    color: var(--mobile-text-secondary);
+}
+.get-support-block .support-block a.cta,
+.get-support-block .support-block button.cta {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-4) var(--spacing-7);
+    border-radius: var(--mobile-border-radius-medium);
+    background: var(--mobile-button-primary);
+    cursor: pointer;
+    border: none;
+}
+.get-support-block .support-block .form-wrapper > * + * {
+    margin-top: var(--spacing-8);
+}
+.get-support-block .support-block .input-blocks > * + * {
+    margin-top: var(--spacing-7);
+}
+.get-support-block .support-block .input-block > * + * {
+    margin-top: var(--spacing-2);
+}
+.get-support-block .support-block .mega-input.dropdown-input {
+    padding: var(--spacing-4) var(--spacing-5);
+    height: auto;
+}
+.get-support-block .support-block .mega-input.dropdown-input > span:not(.dirty) {
+    padding: 0;
+    color: var(--mobile-text-placeholder);
+}
+.get-support-block .support-block .mega-input.dropdown-input > span {
+    padding: 0;
+    color: var(--mobile-text-primary);
+}
+.get-support-block .support-block .mega-input.dropdown-input::before {
+    border: 1px solid var(--mobile-border-strong);
+    border-radius: var(--mobile-border-radius-medium);
+    background: var(--mobile-page-background);
+}
+.get-support-block .support-block .mega-input.dropdown-input > * + * {
+    margin-top: 10px;
+}
+.get-support-block .support-block .mega-input.dropdown-input i::before {
+    color: var(--mobile-icon-primary);
+}
+.get-support-block .support-block .input-blocks .mega-input-dropdown {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    min-width: auto;
+    padding: var(--spacing-3) 0;
+    border: 0;
+    border-radius: var(--mobile-border-radius-medium);
+    box-shadow: var(--mobile-shadow-subtle);
+    background: var(--mobile-surface-1);
+}
+.get-support-block .support-block .input-blocks .mega-input-dropdown .option {
+    min-height: 24px;
+    padding: var(--spacing-4);
+    background: none;
+}
+.get-support-block .support-block .input-blocks .mega-input-dropdown .option:not(.disabled):hover {
+    background: var(--button-hover);
+}
+.get-support-block .support-block .info {
+    color: var(--mobile-text-secondary);
+    align-items: flex-start;
+}
+.get-support-block .support-block .submit-email .info .icon {
+    padding-top: var(--spacing-2);
+}
+.get-support-block .support-block .info .sprite-fm-mono {
+    --icon-size: 18px;
+}
+.get-support-block .support-block .info i::before {
+    font-size: 18px;
+    color: var(--mobile-icon-secondary);
+}
+.get-support-block .support-block .error {
+    color: var(--color-system-error);
+}
+.get-support-block .support-block .checkbox-wrapper {
+    width: 20px;
+    height: 20px;
+}
+.get-support-block .support-block .checkbox-wrapper::before {
+    font-size: 18px;
+}
+
+/* #endregion shared */
+
+/* #region form-view */
+body:not(.pro-user) .get-support-block .paying,
+body.pro-user .get-support-block .free {
+    display: none;
+}
+.get-support-block .support-block.submission > .contents .heading-h1 {
+    margin: 0;
+}
+.get-support-block .support-block .input-block.verified-email {
+    padding: var(--spacing-4);
+    border-radius: var(--mobile-border-radius-medium);
+    background: var(--mobile-surface-1);
+    color: var(--color-discount-secondary-text);
+}
+.get-support-block .support-related > * + * {
+    margin-top: var(--spacing-7);
+}
+.get-support-block .support-related .title {
+    padding: 0;
+    font: var(--mobile-font-heading-h3);
+    line-height: 32px;
+    color: var(--mobile-text-brand);
+    letter-spacing: 0.01em;
+}
+.get-support-block .support-related .wrapper {
+    text-decoration: underline;
+    padding: var(--spacing-3) 0 var(--spacing-3);
+}
+.get-support-block .support-related .wrapper:first-child {
+    padding: 0 0 var(--spacing-3);
+}
+.get-support-block .support-related .wrapper i {
+    color: var(--color-copy-primary);
+}
+.get-support-block .support-related .related-article {
+    padding-left: 0;
+    height: auto;
+}
+.get-support-block .support-message .message {
+    width: 100%;
+    border-radius: var(--mobile-border-radius-medium);
+    border: 1px solid var(--mobile-border-strong);
+    background: var(--mobile-page-background);
+}
+.get-support-block .support-message .message .box-style.mobile {
+    border: none;
+}
+.get-support-block .support-message .message textarea {
+    background: var(--mobile-page-background);
+}
+.get-support-block .support-message .message .ps__rail-x {
+    display: none;
+}
+.get-support-block .support-message > * + * {
+    margin-top: var(--spacing-5);
+}
+.get-support-block .support-message .info {
+    padding: var(--spacing-5) var(--spacing-7);
+    border-radius: var(--mobile-border-radius-medium);
+    background: var(--mobile-notification-info);
+    color: var(--color-copy-primary);
+}
+.get-support-block .support-message .info span:nth-of-type(2) {
+    letter-spacing: 0.02em;
+}
+.get-support-block .support-message .info i::before {
+    color: var(--mobile-support-info);
+}
+.get-support-block .support-message .message.mega-textarea {
+    position: relative;
+}
+.get-support-block .support-message .message.mega-textarea .close-btn {
+    position: absolute;
+    top: var(--spacing-4);
+    inset-inline-end: var(--spacing-5);
+    z-index: 2;
+    cursor: pointer;
+    color: var(--color-icon-secondary);
+}
+.get-support-block .support-message .message.mega-textarea .textArea {
+    padding-inline-end: var(--spacing-8);
+}
+
+/* #endregion form-view */
+
+/* #region success-view */
+.get-support-block .success-block {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-9) var(--spacing-9) var(--spacing-12);
+    box-sizing: border-box;
+}
+.get-support-block .success-block > * + * {
+    margin-inline-start: var(--spacing-8);
+}
+.get-support-block .success-block img {
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    object-position: center;
+}
+.get-support-block .success-block .content > * + * {
+    margin-top: var(--spacing-9);
+}
+.get-support-block .success-block .title {
+    font: var(--mobile-font-family-heading);
+    font-size: 56px;
+    line-height: 120%;
+    font-weight: 700;
+}
+.get-support-block .success-block .buttons {
+    flex-flow: row wrap;
+}
+.get-support-block .success-block .buttons > * + * {
+    margin-inline-start: var(--spacing-5);
+}
+.get-support-block .success-block .buttons span {
+    font: var(--mobile-font-copy-semibold);
+}
+.get-support-block .success-block .buttons a i {
+    margin: 0;
+}
+.get-support-block .success-block .buttons a:first-of-type {
+    background: var(--mobile-button-brand);
+    color: var(--mobile-icon-on-color);
+}
+.get-support-block .success-block .buttons a:first-of-type span {
+    color: rgba(250, 250, 250, 1);
+}
+.get-support-block .success-block .buttons a:nth-of-type(2) {
+    background: var(--mobile-button-secondary);
+}
+.get-support-block .success-block .buttons a:nth-of-type(2) span {
+    color: var(--mobile-text-primary);
+}
+.get-support-block .success-block .buttons a:nth-of-type(2) i::before {
+    color: var(--mobile-icon-primary);
+}
+
+/* #endregion success-view */
+
+/* #region verify-flow view */
+.get-support-block .verify-flow .buttons > * + * {
+    margin-top: var(--spacing-7);
+}
+
+/* #endregion verify-flow view */
+
+/* #region verify-flow form view */
+.get-support-block .verify-flow.form > .contents .heading-h1 {
+    margin: 0;
+}
+.get-support-block .verify-flow.form .error.api {
+    padding-bottom: var(--spacing-3);
+}
+.get-support-block .verify-flow.otp .api.too-many-otp-req {
+    align-items: flex-start;
+    padding: var(--spacing-4) var(--spacing-5);
+    border-radius: var(--mobile-border-radius-medium);
+    border: 1px solid var(--mobile-border-strong);
+    width: 100%;
+    box-sizing: border-box;
+}
+.get-support-block .verify-flow.otp .api.too-many-otp-req .icon {
+    margin-top: var(--spacing-2);
+}
+.get-support-block .verify-flow.otp .otp-sent-message span.email {
+    overflow-wrap: break-word;
+}
+.get-support-block .verify-flow.otp .buttons .cta.change-email,
+.get-support-block .verify-flow.otp .buttons .cta.resend {
+    background: transparent;
+    border: none;
+    text-decoration: underline;
+    color: var(--mobile-text-primary);
+}
+.get-support-block .verify-flow.otp fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+.get-support-block .verify-flow.otp fieldset > * + * {
+    margin-inline-start: var(--spacing-4);
+}
+.get-support-block .verify-flow.otp input.otp {
+    width: 44px;
+    height: 48px;
+    padding: 14px 12px;
+    border: 1px solid var(--mobile-border-strong);
+    border-radius: var(--mobile-border-radius-medium);
+    background: var(--mobile-page-background);
+    text-align: center;
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+}
+.get-support-block .verify-flow.otp input.otp:focus {
+    border-color: var(--mobile-border-strong-selected);
+}
+.get-support-block .verify-flow.otp input.otp.error,
+.get-support-block .message.mega-textarea.error-border {
+    border-color: var(--mobile-support-error);
+}
+.get-support-block .verify-flow.otp .fields > * + * {
+    margin-top: var(--spacing-2);
+}
+
+/* #endregion verify-flow form view */
+
+@media screen and (max-width: 1080px) {
+    .get-support-block .support-block {
+        max-width: 520px;
+    }
+    .get-support-block .support-block .caption-b-l {
+        font: var(--font-copy-sm-bold);
+    }
+    .get-support-block .support-block .mega-input.dropdown-input {
+        padding: 10px var(--spacing-4);
+    }
+    .get-support-block .support-message .info {
+        padding: var(--spacing-6) var(--spacing-7);
+    }
+    .get-support-block .support-message .info .sprite-fm-mono {
+        --icon-size: 24px;
+    }
+    .get-support-block .support-message .info i::before {
+        font-size: 24px;
+    }
+    .get-support-block .success-block {
+        padding: 40px 40px 60px;
+        flex-direction: column-reverse;
+    }
+    .get-support-block .success-block > * + * {
+        margin-inline: 0;
+        margin-bottom: var(--spacing-10);
+    }
+    .get-support-block .success-block .content > * + * {
+        margin-top: var(--spacing-10);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .get-support-block .support-block > * + * {
+        margin-top: var(--spacing-9);
+    }
+    .get-support-block .support-block .mega-input.dropdown-input {
+        padding: var(--spacing-3) var(--spacing-4);
+    }
+    .get-support-block .support-block .mega-input.dropdown-input > * + * {
+        margin-top: 6px;
+    }
+    .get-support-block .success-block {
+        padding: var(--spacing-11) var(--spacing-7) var(--spacing-13);
+    }
+    .get-support-block .success-block .content > * + * {
+        margin-top: var(--spacing-13);
+    }
+    .get-support-block .success-block .content .buttons {
+        flex-direction: column;
+    }
+    .get-support-block .success-block .buttons > * + * {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: var(--spacing-5);
+    }
+    .get-support-block .success-block .content .buttons .cta {
+        width: 100%;
+    }
+}

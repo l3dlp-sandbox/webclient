@@ -2423,3 +2423,47 @@ body.rtl .item-type-icon-90.icon-folder-90.double .item-type-icon-90.icon-folder
     left: auto;
     background-position-x: calc(var(--icon-size) / 12);
 }
+
+/* PNG glass icons */
+body i.glass-icon,
+body i.png-icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+body i.glass-icon.glass-cloud-circle {
+    background-image: url("../images/mega/glass/glass-cloud-circle.png");
+}
+body i.glass-icon.glass-shared-folder {
+    background-image: url("../images/mega/glass/glass-folder-share.png");
+}
+body i.glass-icon.glass-object-bucket {
+    background-image: url("../images/mega/glass/glass-bucket-objects.png");
+}
+body i.glass-icon.glass-details {
+    background-image: url("../images/mega/glass/glass-details.png");
+}
+body i.glass-icon.glass-contact {
+    background-image: url("../images/mega/glass/glass-contacts.png");
+}
+body i.glass-icon.glass-meetings {
+    background-image: url("../images/mega/glass/glass-video.png");
+}
+body i.glass-icon.glass-clock {
+    background-image: url("../images/mega/glass/glass-clock.png");
+}
+body i.glass-icon.glass-lock {
+    background-image: url("../images/mega/glass/glass-lock.png");
+}
+body i.glass-icon.glass-rocket {
+    background-image: url("../images/mega/glass/glass-rocket.png");
+}
+body i.glass-icon.glass-folder-sync {
+    background-image: url("../images/mega/glass/glass-folder-sync.png");
+}
+
+/* other PNG icons */
+body i.png-icon.email-sent {
+    background-image: url("../images/mega/email-sent.png");
+}

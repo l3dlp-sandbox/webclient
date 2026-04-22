@@ -20,7 +20,9 @@
     height: auto;
     box-sizing: border-box;
 }
-
+.mega-header .top-block {
+    align-items: center;
+}
 .mega-header .bottom-block {
     width: 100%;
     transition: height 100ms linear;
@@ -32,7 +34,6 @@
 .mega-header .banner-block {
     padding: 0;
 }
-
 .mega-header .nav-navigation,
 .mega-header .nav-actions {
     display: flex;
@@ -150,6 +151,9 @@
 
 .mobile .mega-header .nav-elem.underline.no-bg {
     padding: 0;
+}
+.mobile .mega-header .nav-actions a.action-link span {
+    font: var(--mobile-font-link-large-semibold);
 }
 
 .mobile .mega-header .link.avatar {

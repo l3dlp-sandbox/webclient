@@ -554,6 +554,13 @@ lazy(pro, 'proplan2', () => {
 
         // Set 1 hour for the maximum duration of a free tier meeting.
         $('#meet-up-to-duration', $tableContainer).text(mega.icu.format(l.pr_meet_up_to_duration, 1));
+
+        const maxProPlan = pro.getPlanObj(3, 1);
+
+        $('.pro-up-to-storage', $tableContainer)
+            .text(l.pr_up_to_storage.replace('%1', bytesToSize(maxProPlan.storage, 0)));
+        $('.pro-up-to-transfer', $tableContainer)
+            .text(l.pr_up_to_storage.replace('%1', bytesToSize(maxProPlan.transfer, 0)));
     };
 
     const initBuyPlan = ($givenPlans) => {
@@ -1040,7 +1047,10 @@ lazy(pro, 'proplan2', () => {
             },
             'faq6': {
                 question: l.pricing_page_faq_question_6,
-                answer: [l.pricing_page_faq_answer_6, l.pricing_page_faq_answer_6_2],
+                answer: [
+                    l.pricing_page_faq_answer_6,
+                    l.pricing_page_faq_answer_6_2.replace('%1', bytesToSize(pro.getPlanObj(3, 1).storage, 0)),
+                ],
                 eventId: 500352,
             },
         };

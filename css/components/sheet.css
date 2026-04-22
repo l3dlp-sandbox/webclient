@@ -152,6 +152,11 @@ body.web-desktop .mega-sheet .sheet {
     width: calc(100% - 16px);
 }
 
+body.web-desktop .mega-sheet.dynamic-width .sheet {
+    width: auto;
+    max-width: none;
+}
+
 body.web-desktop .mega-sheet .sheet,
 body.web-desktop .mega-sheet .sheet.ps {
     border-radius: var(--mobile-border-radius-extra-large);

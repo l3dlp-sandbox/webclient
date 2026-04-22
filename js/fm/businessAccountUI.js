@@ -907,11 +907,9 @@ BusinessAccountUI.prototype.openInvitationLink = function (signupCode) {
             if (u_type === false) {
                 res.signupcode = signupCode;
                 localStorage.businessSubAc = JSON.stringify(res);
+                loadSubPage('register');
                 if (is_mobile) {
-                    mobile.register.show(res);
-                }
-                else {
-                    loadSubPage('register');
+                    MegaMobileHeader.init(true);
                 }
             }
             else {

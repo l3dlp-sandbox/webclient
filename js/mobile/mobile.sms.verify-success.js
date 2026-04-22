@@ -53,9 +53,6 @@ mobile.sms.verifySuccess = {
             // If they were suspended when they started the process
             if (mobile.sms.isSuspended) {
 
-                // Set the phone number to show on the login page
-                login_txt = '+' + mobile.sms.phoneInput.countryCallCode + mobile.sms.phoneInput.phoneNumber;
-
                 // Hide the current page
                 mobile.sms.verifySuccess.$page.addClass('hidden');
 

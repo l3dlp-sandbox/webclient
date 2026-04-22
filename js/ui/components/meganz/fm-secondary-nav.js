@@ -517,6 +517,10 @@ lazy(mega.ui, 'secondaryNav', () => {
     const gridSortDirBtn = new MegaButton({
         parentNode: extraBtnWrapper,
         onClick: () => {
+            if (M.albums) {
+                mega.gallery.doSortAlbums(M.sortmode.n || 'ctime', -M.sortmode.d || 1);
+                return;
+            }
             if (M.sortmode) {
                 M.doSort(M.sortmode.n || 'name', -M.sortmode.d || 1);
                 M.previousdirid = M.currentdirid; // fix for avoid deselection on sort
@@ -524,7 +528,7 @@ lazy(mega.ui, 'secondaryNav', () => {
             }
         },
         componentClassname: 'sort-direction-button asc text-icon',
-        icon: 'sprite-fm-mono icon-up',
+        icon: 'sprite-fm-mono icon-arrow-up-thin-outline',
         text: 'test',
         iconSize: 16
     });
@@ -534,6 +538,13 @@ lazy(mega.ui, 'secondaryNav', () => {
 
         let colkey = this.attr('colkey');
         if (columnMenu.classList.contains('sort') && !ev.currentTarget.active) {
+            if (M.albums) {
+                mega.gallery.doSortAlbums(colkey, M.sortmode.d);
+                if (typeof $.hideContextMenu === 'function') {
+                    $.hideContextMenu();
+                }
+                return;
+            }
             M.doSort(colkey, M.sortmode.d);
             M.previousdirid = M.currentdirid; // fix for avoid deselection on sort
             M.renderMain();
@@ -653,6 +664,11 @@ lazy(mega.ui, 'secondaryNav', () => {
             $.gridHeader();
         }
 
+        let cols = M.columnsWidth.cloud;
+        if (M.albums && M.isAlbumsPage(1)) {
+            cols = mega.gallery.albumCols;
+        }
+
         for (let i = 0; i < columnKeys.length; i++) {
 
             const colBtn = columnMenu.componentSelector(`[colkey="${columnKeys[i]}"]`);
@@ -678,10 +694,10 @@ lazy(mega.ui, 'secondaryNav', () => {
                     forceHide = true;
                 }
 
-                const colValue = M.columnsWidth.cloud[colkey];
+                const colValue = cols[colkey];
 
-                colBtn.toggleClass('active', colValue.viewed);
-                colBtn.toggleClass('hidden', forceHide || !!colValue.disabled);
+                colBtn.toggleClass('active', colValue && colValue.viewed);
+                colBtn.toggleClass('hidden', forceHide || !colValue || !!colValue.disabled);
             }
         }
     };
@@ -1176,12 +1192,17 @@ lazy(mega.ui, 'secondaryNav', () => {
             }, 100);
 
             updateColBtnText();
-
-            const hideExtraMenu = M.gallery || M.albums || !M.onIconView || !M.v.length;
+            this.updateSortOptions();
+        },
+        updateSortOptions() {
+            const albumsGrid = M.albums && M.isAlbumsPage(1);
+            const albumsSingle = M.albums && !albumsGrid;
+            const hideExtraMenu = M.gallery || !albumsGrid && !M.onIconView || !M.v.length || albumsSingle;
 
             toggleGridExtraButtons(hideExtraMenu);
 
-            this.gridSortDirBtn.icon = `sprite-fm-mono icon-${M.sortmode && M.sortmode.d === 1 ? 'up' : 'down'}`;
+            this.gridSortDirBtn.icon =
+                `sprite-fm-mono icon-arrow-${M.sortmode && M.sortmode.d === 1 ? 'up' : 'down'}-thin-outline`;
             this.gridSortDirBtn.text = M.sortmode && colBtnsText[M.sortmode.n === 'ts' ? 'date' : M.sortmode.n];
         },
         showLayoutDropdown(ev) {

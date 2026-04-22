@@ -1161,6 +1161,7 @@ pro.proplan = {
      * /payment-astropay-pending
      * /payment-paysafecard-saleidXXX
      * @param {String} page The requested page from index.js e.g. payment-ecp-success etc
+     * @return {Boolean} True on successful return URL parsing
      */
     processReturnUrlFromProvider: function(page) {
 
@@ -1199,6 +1200,13 @@ pro.proplan = {
         else if (provider === 'sabadell') {
             sabadell.showPaymentResult(status);
         }
+
+        // Invalid or unexpected return URL
+        else {
+            return false;
+        }
+
+        return true;
     },
 
     /**
@@ -1264,7 +1272,6 @@ pro.proplan = {
             return false;
         }
         if (!u_type) {
-            login_txt = l[24673];
             login_next = 'discount' + mega.discountCode;
             return loadSubPage('login');
         }
@@ -1664,130 +1671,141 @@ pro.proplan = {
  */
 function showLoginDialog(email, password) {
     'use strict';
-    var $dialog = $('.pro-login-dialog');
+
+    var component = mega.ui.auth.getDialogComponent(page === 'login');
+
+    if (!component) {
+        return;
+    }
+
+    var $dialog = mega.ui.login.getDialogContent();
     var $inputs = $('input', $dialog);
-    var $button = $('.top-dialog-login-button', $dialog);
     $('aside', $dialog).addClass('hidden');
 
-    var closeLoginDialog = function() {
-        $('.fm-dialog-overlay').unbind('click.proDialog');
-        $('button.js-close', $dialog).unbind('click.proDialog');
+    component.show({
+        name: 'pro-login-dialog',
+        classList: ['pro-login-dialog-overlay'],
+        header: localStorage.megaLiteMode ? l.login_to_mega_lite : l[1768],
+        headerType: 'h1',
+        showClose: true,
+        actionOnBottom: false,
+        type: 'modal',
+        sheetHeight: 'auto',
+        sheetWidth: 'auto',
+        contents: [$dialog.removeClass('hidden')[0]],
+        preventBgClosing: true,
+        onClose: () => {
+            $dialog.addClass('hidden');
+            $('.fm-dialog-overlay').off('click.proDialog');
+            $('button.js-close', $dialog).off('click.proDialog');
+        },
+        footer: {
+            classList: ['pro-login-security-tip'],
+            slot: [mega.ui.login.buildSecurityTip()]
+        }
+    });
 
-        closeDialog();
+    // Init inputs events
+    accountinputs.init($dialog);
+    $inputs.megaInputsHideError(true);
+    const rememberWrap = $dialog[0].querySelector('.js-login-remember');
+    if (rememberWrap && !rememberWrap.megaCheckbox) {
+        rememberWrap.megaCheckbox = new MegaCheckbox({
+            parentNode: rememberWrap,
+            componentClassname: 'mega-checkbox login-check',
+            checkboxName: 'login-check3',
+            labelTitle: l.login_keep_me_logged_in,
+            checked: true
+        });
+    }
+
+    const submitWrap = $dialog[0].querySelector('.js-login-submit');
+    let loginBtn = submitWrap && submitWrap.componentSelector('.top-dialog-login-button, .dialog-login-button');
+
+    if (!loginBtn && submitWrap) {
+        loginBtn = new MegaButton({
+            parentNode: submitWrap,
+            componentClassname: 'mega-button block top-dialog-login-button dialog-login-button primary',
+            text: l[16345],
+            type: 'normal'
+        });
+    }
+
+    $('.input-email', $dialog).val(email || '');
+    $('.input-password', $dialog).val(password || '');
+
+    $('.top-login-forgot-pass', $dialog).rebind('click.loginreq', () => {
+
+        var email = document.getElementById('login-name3').value;
+
+        if (isValidEmail(email)) {
+            $.prefillEmail = email;
+        }
+
+        loadSubPage('recovery');
 
         return false;
-    };
-
-    M.safeShowDialog('pro-login-dialog', function() {
-
-        // Init inputs events
-        accountinputs.init($dialog);
-
-        // controls
-        const onLowTierProPg = page === 'pro' && window.mProTab;
-        if (onLowTierProPg) {
-            $('button.js-close', $dialog).addClass('hidden');
-        }
-        else {
-            $('button.js-close', $dialog).rebind('click.proDialog', closeLoginDialog);
-            $('.fm-dialog-overlay').rebind('click.proDialog', closeLoginDialog);
-        }
-
-        $('.input-email', $dialog).val(email || '');
-        $('.input-password', $dialog).val(password || '');
-
-        $('.top-login-forgot-pass', $dialog).rebind('click.forgetPass', function() {
-
-            var email = document.getElementById('login-name3').value;
-
-            if (isValidEmail(email)) {
-                $.prefillEmail = email;
-            }
-
-            loadSubPage('recovery');
-        });
-
-
-        $inputs.rebind('keydown.loginreq', function(e) {
-            if (e.keyCode === 13) {
-                doProLogin($dialog);
-            }
-        });
-
-        $button.rebind('click.loginreq', function() {
-            doProLogin($dialog);
-        });
-
-        // eslint-disable-next-line sonarjs/no-identical-functions
-        $button.rebind('keydown.loginreq', function(e) {
-            if (e.keyCode === 13) {
-                doProLogin($dialog);
-            }
-        });
-
-        onIdle(clickURLs);
-        return $dialog;
     });
+
+    $inputs.rebind('keydown', e => {
+        if (e.keyCode === 13) {
+            doProLogin($dialog);
+        }
+    });
+
+    if (loginBtn) {
+        loginBtn.rebind('click', () => doProLogin($dialog));
+        loginBtn.rebind('keydown', e => {
+            if (e.keyCode === 13) {
+                doProLogin($dialog);
+            }
+        });
+    }
+
+    onIdle(clickURLs);
 }
 
-var doProLogin = function($dialog) {
+function doProLogin($dialog) {
+    'use strict';
 
-    loadingDialog.show();
-
-    var $formWrapper = $dialog.find('form');
+    const loginBtn = $dialog[0].componentSelector('.dialog-login-button');
     var $emailInput = $dialog.find('input#login-name3');
     var $passwordInput = $dialog.find('input#login-password3');
     var $rememberMeCheckbox = $dialog.find('.login-check input');
 
     var email = $emailInput.val().trim();
     var password = $passwordInput.val();
-    var rememberMe = $rememberMeCheckbox.is('.checkboxOn');  // ToDo check if correct
+    var rememberMe = $rememberMeCheckbox.prop('checked') || $rememberMeCheckbox.is('.checkboxOn');
     var twoFactorPin = null;
+    const cb = mega.ui.login.getFlowCallbacks(completeProLogin);
+
+    if (loginBtn) {
+        loginBtn.loading = true;
+    }
+
+    $emailInput.megaInputsHideError(true);
+    $passwordInput.megaInputsHideError(true);
 
     if (email === '' || !isValidEmail(email)) {
         $emailInput.megaInputsShowError(l[141]);
         $emailInput.val('').focus();
-        loadingDialog.hide();
+        if (loginBtn) {
+            loginBtn.loading = false;
+        }
 
         return false;
     }
     else if (password === '') {
         $passwordInput.megaInputsShowError(l[1791]);
-        loadingDialog.hide();
+        if (loginBtn) {
+            loginBtn.loading = false;
+        }
 
         return false;
     }
 
     // Checks if they have an old or new registration type, after this the flow will continue to login
-    security.login.checkLoginMethod(email, password, twoFactorPin, rememberMe, startOldProLogin, startNewProLogin);
-};
-
-/**
- * Starts the old login proceedure
- * @param {String} email The user's email address
- * @param {String} password The user's password as entered
- * @param {String|null} pinCode The two-factor authentication PIN code (6 digit number), or null if N/A
- * @param {Boolean} rememberMe Whether the user clicked the Remember me checkbox or not
- */
-function startOldProLogin(email, password, pinCode, rememberMe) {
-    'use strict';
-    postLogin(email, password, pinCode, rememberMe).then(completeProLogin).catch(tell);
-}
-
-/**
- * Start the new login proceedure
- * @param {String} email The user's email addresss
- * @param {String} password The user's password as entered
- * @param {String|null} pinCode The two-factor authentication PIN code (6 digit number), or null if N/A
- * @param {Boolean} rememberMe A boolean for if they checked the Remember Me checkbox on the login screen
- * @param {String} salt The user's salt as a Base64 URL encoded string
- */
-function startNewProLogin(email, password, pinCode, rememberMe, salt) {
-
-    'use strict';
-
-    // Start the login using the new process
-    security.login.startLogin(email, password, pinCode, rememberMe, salt, completeProLogin);
+    security.login.checkLoginMethod(email, password, twoFactorPin, rememberMe, cb.old, cb.new);
 }
 
 /**
@@ -1800,9 +1818,16 @@ function completeProLogin(result) {
     var $formWrapper = $('.pro-login-dialog form');
     var $emailField = $formWrapper.find('input#login-name3');
     var $passwordField = $formWrapper.find('input#login-password3');
+    const loginDialog = $('.pro-login-dialog')[0];
+    const loginBtn = loginDialog && loginDialog.componentSelector('.dialog-login-button');
+    const callbacks = mega.ui.login.getFlowCallbacks(completeProLogin);
+
+    if (loginBtn) {
+        loginBtn.loading = false;
+    }
 
     // Check and handle the common login errors
-    if (security.login.checkForCommonErrors(result, startOldProLogin, startNewProLogin)) {
+    if (security.login.checkForCommonErrors(result, callbacks.old, callbacks.new)) {
         return false;
     }
 
@@ -1869,7 +1894,8 @@ function completeProLogin(result) {
         }
     }
     else {
-        fm_showoverlay();
+        $emailField.megaInputsHideError(true);
+        $passwordField.megaInputsHideError(true);
         $emailField.megaInputsShowError();
         $passwordField.megaInputsShowError(l[7431]);
 
@@ -1907,35 +1933,15 @@ async function checkPlanStorage(currentStored, planNum) {
 function showRegisterDialog(aPromise) {
     'use strict';
 
-    let body = null;
     let s4Feature = null;
-    let title = l[5840];
 
     // Add S4 ToS and update strings if there is Auth Code and dialog is fired on pro flexi page
     if (window.s4ac && pro.propay.planNum === pro.ACCOUNT_LEVEL_PRO_FLEXI) {
-        body = l.create_pro_flexi_with_s4.replace('%1', bytesToSize(3e+12, 0)); // 3 TB Pro flexi acc
         s4Feature = true;
-        title = l.create_your_mega_account;
     }
 
-    mega.ui.showRegisterDialog({
-        title,
-
-        body,
-
+    mega.ui.signup.showDialog({
         s4Flag: s4Feature,
-
-        onLoginAttemptFailed: function(registerData) {
-            msgDialog('warninga:' + l[171], l[1578], l[218], null, function(e) {
-                if (e) {
-                    $('.pro-register-dialog').addClass('hidden');
-                    if (signupPromptDialog) {
-                        signupPromptDialog.hide();
-                    }
-                    showLoginDialog(registerData.email);
-                }
-            });
-        },
 
         onAccountCreated: function(gotLoggedIn, registerData) {
             // If true this means they do not need to confirm their email before continuing to step 2
@@ -1959,8 +1965,7 @@ function showRegisterDialog(aPromise) {
                 loadSubPage('propay_' + proNum);
             }
             else {
-                $('.mega-dialog.registration-page-success').removeClass('hidden');
-                fm_showoverlay();
+                mega.ui.signup.showLinkDialog(registerData);
             }
         },
 

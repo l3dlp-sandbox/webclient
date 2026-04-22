@@ -390,6 +390,11 @@ html .theme-light-forced {
         --discount-main: rgba(48, 194, 101, 1);
 
 
+    /* Login page specific */
+
+        --surface-login-cover: rgba(250, 250, 250, 0.85);
+        --filter-login-cover: blur(36px);
+
     /* TODO: remove this once the library is updated */
         --surface-overlay-background: rgba(204, 204, 204, var(--surface-alpha, 0.9));
         --surface-main-inverted: rgba(51, 51, 51, var(--surface-alpha, 1));
@@ -643,6 +648,11 @@ html .theme-dark-forced {
         --stroke-main-inverted: rgba(255, 255, 255, var(--stroke-alpha, 1));
         --stroke-grey-1-inverted: rgba(250, 250, 250, var(--stroke-alpha, 1));
         --stroke-link-inverted: rgba(199, 199, 199, var(--stroke-alpha, 1));
+
+    /* Login page specific */
+    
+        --surface-login-cover: rgba(15, 15, 15, 0.85);
+        --filter-login-cover: blur(100px);
 
     /* TODO: remove this once the library is updated */
 
