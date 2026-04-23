@@ -283,19 +283,11 @@
                             loginRequiredDialog.hide();
                             const keepPromise = promise;
                             mega.ui.signup.showDialog({
-                                onDialogClosed() {
-                                    delete sessionStorage.importSignupRedirect;
-                                },
                                 onBack() {
                                     promise = keepPromise;
                                     loginRequiredDialog.show();
                                 }
                             }, promise);
-
-                            // if this is import save current path to session so redirect after register
-                            if (localStorage.folderLinkImport) {
-                                sessionStorage.importSignupRedirect = getCleanSitePath();
-                            }
                             promise = undefined;
 
                             return false;
@@ -484,6 +476,10 @@
             }
         });
 
+        if (is_mobile && page !== 'login') {
+            return loadSubPage('login');
+        }
+
         const component = getLoginDialogComponent(pageBound);
 
         if (!component) {
@@ -519,12 +515,7 @@
             noBlurBackground: pageBound
         };
 
-        if (is_mobile) {
-            if (page !== 'login') {
-                return loadSubPage('login');
-            }
-        }
-        else {
+        if (!is_mobile) {
             showOptions.type = 'modal';
             showOptions.sheetHeight = 'auto';
             showOptions.sheetWidth = 'auto';

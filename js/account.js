@@ -684,6 +684,10 @@ function u_setrsa(rsakey) {
                             return mega.keyMgr.initKeyManagement();
                         })
                         .then(() => {
+                            if (security.login.deferSetSid) {
+                                delete security.login.deferSetSid;
+                                watchdog.notify('setsid', u_sid);
+                            }
                             $promise.resolve(rsakey);
                         })
                         .catch((ex) => {
