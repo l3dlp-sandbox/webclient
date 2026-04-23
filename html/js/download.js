@@ -529,11 +529,6 @@ function start_import() {
     var dialogTxt = l[20752];
     var dialogType = 'import_login_or_register';
     var buttonEventRegister = () => {
-
-        tryCatch(() => {
-            sessionStorage.importSignupRedirect = getCleanSitePath();
-        })();
-
         mega.ui.signup.showDialog({
             showLogin: true,
             onAccountCreated(gotLoggedIn, accountData) {
@@ -544,9 +539,6 @@ function start_import() {
 
                 security.register.cacheRegistrationData(accountData);
                 mega.ui.signup.showLinkDialog(accountData);
-            },
-            onDialogClosed() {
-                delete sessionStorage.importSignupRedirect;
             },
             onBack() {
                 return _show && _show();

@@ -1375,6 +1375,7 @@ security.login = {
     skipToGenerateRsaKeys: function(masterKeyArray32, temporarySessionIdBase64) {
         'use strict';
 
+        security.login.deferSetSid = true;
         security.persistAccountSession(masterKeyArray32, temporarySessionIdBase64);
         security.login.clearCachedLoginState();
 

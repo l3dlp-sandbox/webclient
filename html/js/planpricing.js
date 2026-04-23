@@ -436,7 +436,7 @@ lazy(pro, 'proplan2', () => {
 
             $freeBanner.toggleClass(
                 'hidden',
-                !!tab || (typeof u_handle !== 'undefined' && (!localStorage.keycomplete || !window.accountConfirmed))
+                !!tab || (typeof u_handle !== 'undefined' && !localStorage.keycomplete && !window.accountConfirmed)
             );
             window.accountConfirmed = false;
 

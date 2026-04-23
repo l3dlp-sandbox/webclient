@@ -928,8 +928,6 @@ function init_page() {
 
         loadingDialog.show();
 
-        delete sessionStorage.importSignupRedirect;
-
         security.register.verifyEmailConfirmCode(confirmcode)
             .then(({email}) => {
                 page = 'login';
@@ -1024,12 +1022,6 @@ function init_page() {
     else if (page == 'register') {
         if (u_storage.sid && u_type !== 0) {
             loadSubPage('fm');
-            return false;
-        }
-
-        if (sessionStorage.importSignupRedirect && !localStorage.awaitingConfirmationAccount) {
-            loadSubPage(sessionStorage.importSignupRedirect);
-            delete sessionStorage.importSignupRedirect;
             return false;
         }
 

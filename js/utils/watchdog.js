@@ -381,6 +381,9 @@ mBroadcaster.once('boot_done', () => {
     watchdog.setup();
 
     api.observe('setsid', (sid) => {
+        if (security.login.deferSetSid) {
+            return;
+        }
         watchdog.notify('setsid', sid);
     });
 });
